@@ -1,0 +1,306 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cinemawala/casting/actor_page.dart';
+import 'package:cinemawala/costumes/add_costume.dart';
+import 'package:cinemawala/projects/project.dart';
+import 'package:flutter/material.dart';
+
+import '../utils.dart';
+import 'costume.dart';
+
+class CostumesPage extends StatefulWidget {
+  final Costume costume;
+  final Project project;
+
+  const CostumesPage({Key key, @required this.project, this.costume})
+      : super(key: key);
+
+  @override
+  _CostumesPageState createState() => _CostumesPageState(project, costume);
+}
+
+class _CostumesPageState extends State<CostumesPage> {
+  Color background, background1, color;
+
+  final Costume costume;
+  final Project project;
+  Set<String> artists = {};
+
+  _CostumesPageState(this.project, this.costume);
+
+  @override
+  void initState() {
+    super.initState();
+    costume.usedBy.forEach((key, value) {
+      artists.addAll(Iterable.castFrom(value));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    background = Colors.white;
+    color = Color(0xff6fd8a8);
+    if (background == Colors.white) {
+      background1 = Colors.black;
+    } else {
+      background1 = Colors.white;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black26,
+        body: Center(
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(8)),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        AspectRatio(
+                            aspectRatio: 4 / 3,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: costume.referenceImage == ''
+                                    ? Container(
+                                        color: Colors.grey,
+                                        child: Center(
+                                            child: Text(
+                                          'No Image',
+                                          style: TextStyle(color: background),
+                                        )),
+                                      )
+                                    : CachedNetworkImage(
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) =>
+                                                LinearProgressIndicator(
+                                                  value: progress.progress,
+                                                ),
+                                        errorWidget: (context, url, error) =>
+                                            Center(child: Text('Image')),
+                                        useOldImageOnUrlChange: true,
+                                        imageUrl: costume.referenceImage))),
+                        Positioned(
+                            top: 4,
+                            right: 4,
+                            child: CircleAvatar(
+                              backgroundColor: color,
+                              child: IconButton(
+                                onPressed: () async {
+                                  var back = await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              AddCostume(
+                                                project: project,
+                                                costume: costume.toJson(),
+                                              ),
+                                              Utils.RTL)) ??
+                                      false;
+                                  Navigator.pop(context, back);
+                                },
+                                color: background,
+                                splashColor: background1.withOpacity(0.2),
+                                icon: Icon(
+                                  Icons.edit,
+                                  size: 20,
+                                ),
+                              ),
+                            ))
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.black26, width: 0.5))),
+                      child: Text(
+                        '${costume.title}',
+                        style: TextStyle(
+                            color: background1,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.black26, width: 0.5))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Description :',
+                              style:
+                                  TextStyle(color: background1, fontSize: 14),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '${costume.description}',
+                              style:
+                                  TextStyle(color: background1, fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.black26, width: 0.5))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Used By :',
+                              style:
+                                  TextStyle(color: background1, fontSize: 14),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: artists.length < 1
+                                ? Text(
+                                    'Not used yet',
+                                    style: TextStyle(
+                                        color: background1, fontSize: 12),
+                                  )
+                                : Wrap(
+                                    direction: Axis.horizontal,
+                                    spacing: 4,
+                                    children: List<Widget>.generate(
+                                      artists.length,
+                                      (i) {
+                                        return InkWell(
+                                          onLongPress: () async {
+                                            var back = await Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                        pageBuilder: (_, __,
+                                                                ___) =>
+                                                            ActorPopUp(
+                                                                actor: Utils
+                                                                        .artistsMap[
+                                                                    artists
+                                                                        .elementAt(
+                                                                            i)],
+                                                                project:
+                                                                    project),
+                                                        opaque: false)) ??
+                                                false;
+                                            if (back) {
+                                              Utils.showLoadingDialog(
+                                                  context, 'Getting Artists');
+                                              Utils.getArtists(
+                                                  context, project.id);
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.all(2),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: color,
+                                              borderRadius:
+                                                  BorderRadius.circular(300),
+                                            ),
+                                            child: Text(
+                                                '${Utils.artistsMap[artists.elementAt(i)].names['English']}'),
+                                          ),
+                                        );
+                                      },
+                                    )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.black26, width: 0.5))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Scenes :',
+                              style:
+                                  TextStyle(color: background1, fontSize: 14),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: costume.scenes.length < 1
+                                ? Text(
+                                    'No Scenes',
+                                    style: TextStyle(
+                                        color: background1, fontSize: 12),
+                                  )
+                                : Wrap(
+                                    direction: Axis.horizontal,
+                                    spacing: 4,
+                                    children: List<Widget>.generate(
+                                      costume.scenes.length,
+                                      (i) {
+                                        return InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            margin: EdgeInsets.all(2),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: color,
+                                              borderRadius:
+                                                  BorderRadius.circular(300),
+                                            ),
+                                            child: Text(
+                                                '${Utils.scenesMap[costume.scenes[i]].titles['English']}'),
+                                          ),
+                                        );
+                                      },
+                                    )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
