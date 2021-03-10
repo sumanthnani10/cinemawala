@@ -463,7 +463,7 @@ class _AddActorState extends State<AddActor>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.ADD_ARTIST}',
+        var resp = await http.post(Utils.ADD_ARTIST,
             body: jsonEncode(actor),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);
@@ -542,7 +542,7 @@ class _AddActorState extends State<AddActor>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.EDIT_ARTIST}',
+        var resp = await http.post(Utils.EDIT_ARTIST,
             body: jsonEncode(actor),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);

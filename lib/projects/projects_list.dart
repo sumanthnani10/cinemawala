@@ -34,7 +34,7 @@ class _ProjectsList extends State<ProjectsList> {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Projects');
     var resp = await http
-        .post('${Utils.GET_PROJECTS}', body: {"user_id": "${Utils.USER_ID}"});
+        .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
     // // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);

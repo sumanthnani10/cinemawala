@@ -347,7 +347,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.ADD_PROP}',
+        var resp = await http.post(Utils.ADD_PROP,
             body: jsonEncode(prop),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);
@@ -426,7 +426,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.EDIT_PROP}',
+        var resp = await http.post(Utils.EDIT_PROP,
             body: jsonEncode(prop),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);

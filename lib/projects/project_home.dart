@@ -4,6 +4,7 @@ import 'package:cinemawala/daily_budget/daily_budget.dart';
 import 'package:cinemawala/locations/locations_list.dart';
 import 'package:cinemawala/props/props_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
+import 'package:cinemawala/schedule/schedules.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -78,7 +79,9 @@ class _ProjectHome extends State<ProjectHome> {
         "title": "Schedule",
         "key": "schedule",
         "image": "assets/images/schedule.png",
-        "onClick": /*PropsList(project: project,)*/ null,
+        "onClick": Schedules(
+          project: project,
+        ),
         "color": Colors.lime[400],
       },
       {

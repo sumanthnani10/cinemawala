@@ -352,7 +352,7 @@ class _AddCostume extends State<AddCostume>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.ADD_COSTUME}',
+        var resp = await http.post(Utils.ADD_COSTUME,
             body: jsonEncode(costume),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);
@@ -431,7 +431,7 @@ class _AddCostume extends State<AddCostume>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.EDIT_COSTUME}',
+        var resp = await http.post(Utils.EDIT_COSTUME,
             body: jsonEncode(costume),
             headers: {"Content-Type": "application/json"});
         // // debugPrint(resp.body);

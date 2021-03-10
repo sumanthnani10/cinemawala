@@ -7,12 +7,13 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  cached_network_image: ^2.5.0
+  table_calendar: ^2.3.3
+  cached_network_image: ^2.5.1
   carousel_pro: ^1.0.0
-  firebase_auth: "^0.20.0+1"
-  image_picker: ^0.6.7+21
-  firebase_core: ^0.7.0
-  firebase_storage: ^7.0.0
+  firebase_auth: 1.0.0
+  image_picker: ^0.7.2
+  firebase_core: ^1.0.0
+  firebase_storage: ^8.0.0
   flutter:
     sdk: flutter
 

@@ -4,6 +4,7 @@ import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/scenes/scene.dart';
+import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -17,17 +18,19 @@ class Utils {
   static List<Prop> props;
   static List<Location> locations;
   static List<Scene> scenes;
+  static List<Schedule> schedules;
 
   static Map<String, Actor> artistsMap;
   static Map<String, Costume> costumesMap;
   static Map<String, Prop> propsMap;
   static Map<String, Location> locationsMap;
   static Map<String, Scene> scenesMap;
+  static Map<String, Schedule> schedulesMap;
 
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
 
   static getArtists(context, projectId) async {
-    var resp = await http.post('${Utils.GET_ARTISTS}',
+    var resp = await http.post(Utils.GET_ARTISTS,
         body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
@@ -49,7 +52,7 @@ class Utils {
   }
 
   static getCostumes(context, projectId) async {
-    var resp = await http.post('${Utils.GET_COSTUMES}',
+    var resp = await http.post(Utils.GET_COSTUMES,
         body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
@@ -71,7 +74,7 @@ class Utils {
   }
 
   static getProps(context, projectId) async {
-    var resp = await http.post('${Utils.GET_PROPS}',
+    var resp = await http.post(Utils.GET_PROPS,
         body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
@@ -93,7 +96,7 @@ class Utils {
   }
 
   static getLocations(context, projectId) async {
-    var resp = await http.post('${Utils.GET_LOCATIONS}',
+    var resp = await http.post(Utils.GET_LOCATIONS,
         body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
@@ -115,7 +118,7 @@ class Utils {
   }
 
   static getScenes(context, projectId) async {
-    var resp = await http.post('${Utils.GET_SCENES}',
+    var resp = await http.post(Utils.GET_SCENES,
         body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
@@ -137,36 +140,68 @@ class Utils {
     return Utils.scenes;
   }
 
+  static getSchedules(context, projectId) async {
+    var resp = await http.post(Utils.GET_SCHEDULES,
+        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      // print(r);
+      if (r['status'] == 'success') {
+        Utils.schedules = [];
+        Utils.schedulesMap = {};
+        r['schedules'].forEach((i) {
+          Utils.schedules.add(Schedule.fromJson(i));
+          Utils.schedulesMap[Utils.schedules.last.id] = Utils.schedules.last;
+        });
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return Utils.schedules;
+  }
+
 /*-------------------------------------------------------------------------------------------------------------*/
 
 /*-------------------------------------------------LINKS-------------------------------------------------------*/
 
-  // static const String DOMAIN = "http://10.0.2.2:5001/cinemawala-2021b/us-central1/cinemawala/";
+  // static const String DOMAIN = "10.0.2.2:5001";
+  // static const String URL_PATH = "/cinemawala-2021b/us-central1/cinemawala";
+
   static const String DOMAIN =
-      "https://us-central1-cinemawala-2021b.cloudfunctions.net/cinemawala/";
-  static const String GET_PROJECTS = '${DOMAIN}getProjects';
-  static const String ADD_PROJECT = '${DOMAIN}addProject';
+      "us-central1-cinemawala-2021b.cloudfunctions.net";
+  static const String URL_PATH = "/cinemawala";
 
-  static const String GET_ARTISTS = '${DOMAIN}getArtists';
-  static const String ADD_ARTIST = '${DOMAIN}addArtist';
-  static const String EDIT_ARTIST = '${DOMAIN}editArtist';
-  static const String UPLOAD_ARTIST_IMAGE = '${DOMAIN}uploadArtistImage';
+  static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
+  static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
 
-  static const String GET_COSTUMES = '${DOMAIN}getCostumes';
-  static const String ADD_COSTUME = '${DOMAIN}addCostume';
-  static const String EDIT_COSTUME = '${DOMAIN}editCostume';
+  static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
+  static Uri ADD_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/addArtist');
+  static Uri EDIT_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/editArtist');
+  static Uri UPLOAD_ARTIST_IMAGE =
+      Uri.https('${DOMAIN}', '${URL_PATH}/uploadArtistImage');
 
-  static const String GET_PROPS = '${DOMAIN}getProps';
-  static const String ADD_PROP = '${DOMAIN}addProp';
-  static const String EDIT_PROP = '${DOMAIN}editProp';
+  static Uri GET_COSTUMES = Uri.https('${DOMAIN}', '${URL_PATH}/getCostumes');
+  static Uri ADD_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/addCostume');
+  static Uri EDIT_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/editCostume');
 
-  static const String GET_LOCATIONS = '${DOMAIN}getLocations';
-  static const String ADD_LOCATION = '${DOMAIN}addLocation';
-  static const String EDIT_LOCATION = '${DOMAIN}editLocation';
+  static Uri GET_PROPS = Uri.https('${DOMAIN}', '${URL_PATH}/getProps');
+  static Uri ADD_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/addProp');
+  static Uri EDIT_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/editProp');
 
-  static const String GET_SCENES = '${DOMAIN}getScenes';
-  static const String ADD_SCENE = '${DOMAIN}addScene';
-  static const String EDIT_SCENE = '${DOMAIN}editScene';
+  static Uri GET_LOCATIONS = Uri.https('${DOMAIN}', '${URL_PATH}/getLocations');
+  static Uri ADD_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/addLocation');
+  static Uri EDIT_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/editLocation');
+
+  static Uri GET_SCENES = Uri.https('${DOMAIN}', '${URL_PATH}/getScenes');
+  static Uri ADD_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/addScene');
+  static Uri EDIT_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/editScene');
+
+  static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
+  static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
+  static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
 
 /*---------------------------------------------------------------------------------*/
 

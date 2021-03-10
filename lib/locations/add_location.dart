@@ -404,7 +404,7 @@ class _AddLocation extends State<AddLocation>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.ADD_LOCATION}',
+        var resp = await http.post(Utils.ADD_LOCATION,
             body: jsonEncode(location),
             headers: {"Content-Type": "application/json"});
         // // // debugPrint(resp.body);
@@ -499,7 +499,7 @@ class _AddLocation extends State<AddLocation>
 
     try {
       if (imageUploaded) {
-        var resp = await http.post('${Utils.ADD_LOCATION}',
+        var resp = await http.post(Utils.EDIT_LOCATION,
             body: jsonEncode(location),
             headers: {"Content-Type": "application/json"});
         // // // debugPrint(resp.body);

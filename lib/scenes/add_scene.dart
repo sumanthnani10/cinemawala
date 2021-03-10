@@ -1067,7 +1067,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     var back = false;
 
     try {
-      var resp = await http.post('${Utils.ADD_SCENE}',
+      var resp = await http.post(Utils.ADD_SCENE,
           body: jsonEncode(body),
           headers: {"Content-Type": "application/json"});
       var r = jsonDecode(resp.body);
@@ -1201,7 +1201,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     var back = false;
 
     try {
-      var resp = await http.post('${Utils.EDIT_SCENE}',
+      var resp = await http.post(Utils.EDIT_SCENE,
           body: jsonEncode(body),
           headers: {"Content-Type": "application/json"});
       // // debugPrint(resp.body);
