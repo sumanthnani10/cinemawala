@@ -1,46 +1,48 @@
 import 'dart:convert';
 
-import 'package:cinemawala/projects/add_project.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:cinemawala/projects/project_home.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
 
-class ProjectsList extends StatefulWidget {
-  ProjectsList({Key key, this.title}) : super(key: key);
-  final String title;
+class RolesList extends StatefulWidget {
+  final Project project;
+
+  const RolesList({Key key, @required this.project}) : super(key: key);
 
   @override
-  _ProjectsList createState() => _ProjectsList();
+  _RolesList createState() => _RolesList(this.project);
 }
 
-class _ProjectsList extends State<ProjectsList> {
+class _RolesList extends State<RolesList> {
+  final Project project;
   Color background, color, background1;
-  List<Project> projects = [];
+  List<dynamic> roles = [];
   bool loading = false;
+
+  _RolesList(this.project);
 
   @override
   void initState() {
     loading = true;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getProjects();
+      getRoles();
     });
     super.initState();
   }
 
-  getProjects() async {
+  getRoles() async {
     loading = true;
-    Utils.showLoadingDialog(context, 'Getting Projects');
+    Utils.showLoadingDialog(context, 'Getting Roles');
     var resp = await http
         .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
     // // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        r['projects'].forEach((i) {
-          projects.add(Project(
+        r['roles'].forEach((i) {
+          roles.add(Project(
               id: i['id'],
               languages: i['languages'],
               name: i['name'],
@@ -50,10 +52,10 @@ class _ProjectsList extends State<ProjectsList> {
               role: i['roles']['${Utils.USER_ID}']));
         });
       } else {
-        projects = [];
+        roles = [];
       }
     } else {
-      projects = [];
+      roles = [];
     }
     setState(() {
       loading = false;
@@ -90,14 +92,14 @@ class _ProjectsList extends State<ProjectsList> {
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(
-          "Your Projects",
+          "Your Roles",
           style: TextStyle(color: background1),
         ),
       ),
-      body: projects.length > 0
+      body: roles.length > 0
           ? Column(
-              children: List<Widget>.generate(projects.length, (i) {
-              var project = projects[i];
+              children: List<Widget>.generate(roles.length, (i) {
+              var project = roles[i];
               return InkWell(
                 onTap: () async {
                   Utils.artists = null;
@@ -116,9 +118,10 @@ class _ProjectsList extends State<ProjectsList> {
                   Navigator.push(
                       context,
                       Utils.createRoute(
-                          ProjectHome(
-                            project: project,
-                          ),
+                          null /*ProjectHome(
+                          project: project,
+                        )*/
+                          ,
                           Utils.RTL));
                 },
                 child: Container(
@@ -136,13 +139,13 @@ class _ProjectsList extends State<ProjectsList> {
               );
             }))
           : Center(
-              child: Text(loading ? '' : 'No Projects.'),
+              child: Text(loading ? '' : 'No Roles.'),
             ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: color,
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddProject()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => null /*AddProject()*/));
         },
         child: Icon(
           Icons.add,

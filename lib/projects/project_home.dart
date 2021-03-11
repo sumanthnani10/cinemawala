@@ -7,7 +7,6 @@ import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:cinemawala/schedule/schedules.dart';
 import 'package:flutter/material.dart';
 
-import '../utils.dart';
 import 'project.dart';
 
 class ProjectHome extends StatefulWidget {
@@ -108,25 +107,8 @@ class _ProjectHome extends State<ProjectHome> {
         "color": Colors.green[100],
       },
     ];
-    loading = true;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getProject();
-    });
+    loading = false;
     super.initState();
-  }
-
-  getProject() async {
-    loading = true;
-    Utils.showLoadingDialog(context, 'Getting Project');
-    await Utils.getArtists(context, project.id);
-    await Utils.getCostumes(context, project.id);
-    await Utils.getProps(context, project.id);
-    await Utils.getLocations(context, project.id);
-    await Utils.getScenes(context, project.id);
-    Navigator.pop(context);
-    setState(() {
-      loading = false;
-    });
   }
 
   @override

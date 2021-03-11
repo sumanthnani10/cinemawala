@@ -9,7 +9,6 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:cinemawala/scenes/scene.dart';
-import 'package:cinemawala/schedule/schedule.dart';
 import 'package:cinemawala/schedule/select_scenes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,34 +18,42 @@ import '../utils.dart';
 
 class AddSchedule extends StatefulWidget {
   final Project project;
-  final Map<String, dynamic> schedule;
+  final Map<dynamic, dynamic> schedule;
+  final bool edit;
 
-  const AddSchedule({Key key, this.project, this.schedule}) : super(key: key);
+  const AddSchedule({Key key, this.project, this.schedule, this.edit})
+      : super(key: key);
 
   @override
   _AddScheduleState createState() =>
-      _AddScheduleState(this.project, this.schedule);
+      _AddScheduleState(this.project, this.schedule, this.edit);
 }
 
 class _AddScheduleState extends State<AddSchedule> {
   final Project project;
-  Map<String, dynamic> schedule;
+  Map<dynamic, dynamic> schedule;
 
-  _AddScheduleState(this.project, this.schedule);
+  _AddScheduleState(this.project, this.schedule, this.edit);
 
   Color background, background1, color;
-  bool loading = true, edit = false;
+  bool loading = true;
+  bool edit;
+  List<String> weeksDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   List<Scene> selectedScenes = [];
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
+  DateTime selectedDate;
 
   var bottomSheetHeadingStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
   @override
   void initState() {
+    edit = edit ?? false;
+    selectedDate =
+        DateTime(schedule['year'], schedule['month'], schedule['day']);
     schedule['scenes'].forEach((s) {
       Scene scene = Utils.scenesMap[s];
       selectedScenes.add(scene);
@@ -113,6 +120,20 @@ class _AddScheduleState extends State<AddSchedule> {
           physics: BouncingScrollPhysics(),
           child: Column(
             children: [
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}-${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}-${selectedDate.year}, ${weeksDays[selectedDate.weekday]}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Align(

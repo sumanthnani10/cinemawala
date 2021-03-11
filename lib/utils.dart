@@ -248,6 +248,26 @@ class Utils {
     );
   }
 
+  static Route createPopUpRoute(dest) {
+    return PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) => dest,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          double begin = 0;
+          double end = 1;
+          var curve = Curves.fastOutSlowIn;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return ScaleTransition(
+            scale: animation.drive(tween),
+            child: child,
+          );
+        },
+        opaque: false);
+  }
+
   static Future<String> openGallery() async {
     var pickedFile = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 25);
@@ -323,25 +343,30 @@ class Utils {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          contentPadding: const EdgeInsets.all(8),
-          children: <Widget>[
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(title)
-                ],
+        return WillPopScope(
+          onWillPop: () {
+            return;
+          },
+          child: SimpleDialog(
+            contentPadding: const EdgeInsets.all(8),
+            children: <Widget>[
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(title)
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

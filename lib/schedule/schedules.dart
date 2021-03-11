@@ -149,7 +149,7 @@ class _SchedulesState extends State<Schedules>
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarStyle: CalendarStyle(
                 selectedColor: color,
-                todayColor: Colors.deepOrange[200],
+                highlightToday: false,
                 outsideDaysVisible: false,
               ),
               onDaySelected: (date, events, _) {
@@ -160,32 +160,37 @@ class _SchedulesState extends State<Schedules>
                 setState(() {});
               },
               headerStyle: HeaderStyle(
-                formatButtonTextStyle:
-                    TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-                formatButtonDecoration: BoxDecoration(
-                  color: Colors.deepOrange[400],
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
+                formatButtonVisible: false,
               ),
             ),
           ),
           SizedBox.expand(
-            child: DraggableScrollableSheet(
-              initialChildSize: 310 / MediaQuery.of(context).size.height,
-              minChildSize: 310 / MediaQuery.of(context).size.height,
-              maxChildSize: 1,
-              builder: (context, scrollController) {
-                print(selectedSchedule == null
-                    ? null
-                    : selectedSchedule.toJson());
-                return SchedulePage(
-                    project: project,
-                    schedule: selectedSchedule,
-                    date: selectedDate,
-                    id: selectedDateId);
-              },
-            ),
-          )
+              child: SchedulePage(
+            project: project,
+            schedule: selectedSchedule,
+            date: selectedDate,
+            id: selectedDateId,
+            getAll: () {
+              getAll();
+            },
+            nextDate: () async {
+              selectedDate = selectedDate.add(Duration(days: 1));
+              selectedDateId =
+                  "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+              selectedSchedule = schedules[selectedDateId];
+              calendarController.setSelectedDay(selectedDate);
+              setState(() {});
+            },
+            prevDate: () async {
+              selectedDate = selectedDate.subtract(Duration(days: 1));
+              selectedDateId =
+                  "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+              selectedSchedule = schedules[selectedDateId];
+              calendarController.setSelectedDay(selectedDate);
+              setState(() {});
+            },
+            key: UniqueKey(),
+          ))
         ],
       ),
     );
