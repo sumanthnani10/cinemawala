@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
+import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,24 @@ class Utils {
   static Map<String, Schedule> schedulesMap;
 
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
+
+  static getProject(context, projectId) async {
+    var resp = await http.post(Utils.GET_PROJECT,
+        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        // print(r['project']);
+        return Project.fromJson(r['project']);
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
 
   static getArtists(context, projectId) async {
     var resp = await http.post(Utils.GET_ARTISTS,
@@ -175,6 +194,7 @@ class Utils {
   static const String URL_PATH = "/cinemawala";
 
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
+  static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
   static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
 
   static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
@@ -202,6 +222,9 @@ class Utils {
   static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
   static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
   static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
+
+  static Uri ADD_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/addRole');
+  static Uri EDIT_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/editRole');
 
 /*---------------------------------------------------------------------------------*/
 

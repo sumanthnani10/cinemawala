@@ -40,14 +40,7 @@ class _ProjectsList extends State<ProjectsList> {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
         r['projects'].forEach((i) {
-          projects.add(Project(
-              id: i['id'],
-              languages: i['languages'],
-              name: i['name'],
-              ownerID: i['owner_id'],
-              roles: i['roles'],
-              rolesIDs: i['roles_ids'],
-              role: i['roles']['${Utils.USER_ID}']));
+          projects.add(Project.fromJson(i));
         });
       } else {
         projects = [];
@@ -64,6 +57,7 @@ class _ProjectsList extends State<ProjectsList> {
   getProject(project) async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Project');
+    project = await Utils.getProject(context, project.id);
     await Utils.getArtists(context, project.id);
     await Utils.getCostumes(context, project.id);
     await Utils.getProps(context, project.id);
@@ -93,6 +87,25 @@ class _ProjectsList extends State<ProjectsList> {
           "Your Projects",
           style: TextStyle(color: background1),
         ),
+        actions: [
+          FlatButton.icon(
+            onPressed: () async {
+              getProjects();
+            },
+            color: color,
+            splashColor: background1.withOpacity(0.2),
+            label: Text(
+              "Reload",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.refresh_rounded,
+              size: 18,
+              color: Colors.indigo,
+            ),
+          )
+        ],
       ),
       body: projects.length > 0
           ? Column(

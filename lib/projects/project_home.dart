@@ -3,6 +3,7 @@ import 'package:cinemawala/costumes/costumes_list.dart';
 import 'package:cinemawala/daily_budget/daily_budget.dart';
 import 'package:cinemawala/locations/locations_list.dart';
 import 'package:cinemawala/props/props_list.dart';
+import 'package:cinemawala/roles/roles_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:cinemawala/schedule/schedules.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class ProjectHome extends StatefulWidget {
 }
 
 class _ProjectHome extends State<ProjectHome> {
-  final Project project;
+  Project project;
 
   _ProjectHome({@required this.project});
 
@@ -71,7 +72,9 @@ class _ProjectHome extends State<ProjectHome> {
         "title": "Roles",
         "key": "roles",
         "image": "assets/images/roles.png",
-        "onClick": /*Roles(project: project,)*/ null,
+        "onClick": RolesList(
+          project: project,
+        ),
         "color": Colors.orange[300],
       },
       {
@@ -113,6 +116,7 @@ class _ProjectHome extends State<ProjectHome> {
 
   @override
   Widget build(BuildContext context) {
+    // initState();
     color = Color(0xff6fd8a8);
     background = Colors.white;
     if (background == Colors.white) {
@@ -215,14 +219,19 @@ class _ProjectHome extends State<ProjectHome> {
                   int ind = i + 3;
                   return Expanded(
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
                         if (project.role['permissions'][categories[ind]['key']]
                             ['view']) {
-                          Navigator.push(
+                          var back = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       categories[ind]['onClick']));
+                          if (back != null) {
+                            if (back.runtimeType == Project) {
+                              project = back;
+                            }
+                          }
                         }
                       },
                       child: Stack(
