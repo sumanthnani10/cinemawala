@@ -18,7 +18,7 @@ class Role {
 
   factory Role.fromJson(Map<dynamic, dynamic> i) {
     return Role(
-        project: i['project'],
+        project: i['project_id'],
         userId: i['user_id'],
         name: i['name'],
         addedBy: i['added_by'],
@@ -33,7 +33,7 @@ class Role {
     return <dynamic, dynamic>{
       "added_by": this.addedBy,
       "name": this.name,
-      "project": this.project,
+      "project_id": this.project,
       "permissions": this.permissions,
       "user_id": this.userId,
       "role": this.role,

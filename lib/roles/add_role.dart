@@ -44,7 +44,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
         "name": "",
         "role": "",
         "user_id": "qwerty",
-        "project": project.id,
+        "project_id": project.id,
         "permissions": {
           "casting": {
             "view": false,
