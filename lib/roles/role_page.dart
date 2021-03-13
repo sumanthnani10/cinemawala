@@ -57,15 +57,18 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
           FlatButton.icon(
             onPressed: () async {
               var back = await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddRole(
-                            project: project,
-                            role: role.toJson(),
-                          ),
-                          Utils.RTL)) ??
-                  false;
-              Navigator.pop(context, back);
+                  context,
+                  Utils.createRoute(
+                      AddRole(
+                        project: project,
+                        role: role.toJson(),
+                      ),
+                      Utils.RTL));
+              if (back != null) {
+                if (back[0]) {
+                  Navigator.pop(context, back);
+                }
+              }
             },
             color: color,
             splashColor: background1.withOpacity(0.2),
@@ -128,7 +131,7 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
                   ),
                   Column(
                       children: List.generate(permissionsKeys.length, (i) {
-                    var keysVal = permissions[permissionsKeys[i]].keys.toList();
+                    var keysVal = ["view", "add", "edit"];
                     catName = permissionsKeys[i].replaceAll("_", " ");
                     int flag = 0;
                     String category = "";
@@ -167,19 +170,17 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Checkbox(
-                                        value: permissions[permissionsKeys[i]]
-                                                    [keysVal[0]] ==
-                                                true
-                                            ? permissions[permissionsKeys[i]]
-                                                [keysVal[j]]
-                                            : false,
-                                        activeColor: color,
-                                        onChanged: (bool value) {},
-                                      ),
+                                    Checkbox(
+                                      value: permissions[permissionsKeys[i]]
+                                                  [keysVal[0]] ==
+                                              true
+                                          ? permissions[permissionsKeys[i]]
+                                              [keysVal[j]]
+                                          : false,
+                                      activeColor: color,
+                                      onChanged: (bool value) {},
                                     ),
-                                    Expanded(child: Text("${permission}")),
+                                    Text("${permission}"),
                                     //Text(keysVal[j]),
                                   ],
                                 ),

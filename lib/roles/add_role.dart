@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:cinemawala/projects/project.dart";
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import "package:http/http.dart" as http;
 
 import "../utils.dart";
@@ -19,6 +20,7 @@ class AddRole extends StatefulWidget {
 class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
   Project project;
   Color background, background1, color;
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   Map<dynamic, dynamic> role;
   List<String> permissionsKeys;
   String catName = "";
@@ -97,6 +99,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // print(role['permissions']);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -105,6 +108,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
       background1 = Colors.white;
     }
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: background,
       appBar: AppBar(
         backgroundColor: color,
@@ -137,127 +141,177 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-            padding: const EdgeInsets.all(24),
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: TextField(
-                    controller: roleTitleController,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "Role Title",
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "Name",
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                Column(
-                    children: List.generate(permissionsKeys.length, (i) {
-                  var keysVal =
-                      role["permissions"][permissionsKeys[i]].keys.toList();
-                  catName = permissionsKeys[i].replaceAll("_", " ");
-                  int flag = 0;
-                  String category = "";
-                  for (int i = 0; i < catName.length; i++) {
-                    if (flag == 0) {
-                      category = category + catName[i].toUpperCase();
-                      flag = 1;
-                    } else if (catName[i] == " ") {
-                      category = category + catName[i];
-                      flag = 0;
-                    } else {
-                      category = category + catName[i];
-                    }
-                  }
-                  return Column(
-                    children: [
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${category}",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          )),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(keysVal.length, (j) {
-                            String permission = "";
-                            String val = keysVal[j];
-                            permission = permission +
-                                val[0].toUpperCase() +
-                                val.substring(1);
-                            return Flexible(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Checkbox(
-                                        value: role["permissions"]
-                                                        [permissionsKeys[i]]
-                                                    [keysVal[0]] ==
-                                                true
-                                            ? role["permissions"]
-                                                [permissionsKeys[i]][keysVal[j]]
-                                            : false,
-                                        activeColor: color,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            if (role["permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[0]] ==
-                                                    true &&
-                                                j != 0) {
-                                              role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]] = value;
-                                            } else if (j == 0) {
-                                              role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]] = value;
-                                            }
-                                          });
-                                        }),
-                                  ),
-                                  Expanded(child: Text("${permission}")),
-                                  //Text(keysVal[j]),
-                                ],
-                              ),
-                            );
-                          }),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Container(
+              padding: const EdgeInsets.all(24),
+              alignment: Alignment.topCenter,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: TextField(
+                      controller: roleTitleController,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (v) {
+                        role['role'] = v;
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: "Role Title",
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                    ],
-                  );
-                })),
-              ],
-            )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: TextField(
+                      controller: nameController,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.done,
+                      onChanged: (v) {
+                        role['name'] = v;
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: "Name",
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                      children: List.generate(permissionsKeys.length, (i) {
+                    var keysVal = ["view", "add", "edit"];
+                    catName = permissionsKeys[i].replaceAll("_", " ");
+                    int flag = 0;
+                    String category = "";
+                    for (int i = 0; i < catName.length; i++) {
+                      if (flag == 0) {
+                        category = category + catName[i].toUpperCase();
+                        flag = 1;
+                      } else if (catName[i] == " ") {
+                        category = category + catName[i];
+                        flag = 0;
+                      } else {
+                        category = category + catName[i];
+                      }
+                    }
+                    return Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${category}",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(keysVal.length, (j) {
+                              String permission = "";
+                              String val = keysVal[j];
+                              permission = permission +
+                                  val[0].toUpperCase() +
+                                  val.substring(1);
+                              if ((j > 0 &&
+                                      role["permissions"][permissionsKeys[i]]
+                                          [keysVal[0]]) ||
+                                  j == 0) {
+                                return Flexible(
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        if (role["permissions"]
+                                                        [permissionsKeys[i]]
+                                                    [keysVal[0]] ==
+                                                true &&
+                                            j != 0) {
+                                          role["permissions"]
+                                                      [permissionsKeys[i]]
+                                                  [keysVal[j]] =
+                                              !role["permissions"]
+                                                      [permissionsKeys[i]]
+                                                  [keysVal[j]];
+                                        } else if (j == 0) {
+                                          role["permissions"]
+                                                      [permissionsKeys[i]]
+                                                  [keysVal[j]] =
+                                              !role["permissions"]
+                                                      [permissionsKeys[i]]
+                                                  [keysVal[j]];
+                                          if (!role["permissions"]
+                                                  [permissionsKeys[i]]
+                                              [keysVal[j]]) {
+                                            role["permissions"]
+                                                    [permissionsKeys[i]]
+                                                [keysVal[1]] = false;
+                                            role["permissions"]
+                                                    [permissionsKeys[i]]
+                                                [keysVal[2]] = false;
+                                          }
+                                        } else if (role["permissions"]
+                                                        [permissionsKeys[i]]
+                                                    [keysVal[0]] ==
+                                                false &&
+                                            j != 0) {
+                                          scaffoldKey.currentState.showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      'View permission is needed for any other permissions.')));
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Checkbox(
+                                              value: role["permissions"][
+                                                          permissionsKeys[
+                                                              i]][keysVal[0]] ==
+                                                      true
+                                                  ? role["permissions"]
+                                                          [permissionsKeys[i]]
+                                                      [keysVal[j]]
+                                                  : false,
+                                              activeColor: color,
+                                              onChanged: (value) {}),
+                                          Text("${permission}"),
+                                          //Text(keysVal[j]),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Container();
+                            }),
+                          ),
+                        ),
+                      ],
+                    );
+                  })),
+                ],
+              )),
+        ),
       ),
     );
   }
@@ -301,7 +355,8 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, "Something went wrong.", "Please try again after sometime.");
     }
-    Navigator.pop(context, back);
+    project.roles[role["user_id"]] = role;
+    Navigator.pop(context, [back, project]);
   }
 
   editRole() async {
@@ -343,6 +398,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, "Something went wrong.", "Please try again after sometime.");
     }
-    Navigator.pop(context, back);
+    project.roles[role["user_id"]] = role;
+    Navigator.pop(context, [back, project]);
   }
 }

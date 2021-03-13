@@ -20,6 +20,7 @@ class _ProjectsList extends State<ProjectsList> {
   Color background, color, background1;
   List<Project> projects = [];
   bool loading = false;
+  Project project;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ProjectsList extends State<ProjectsList> {
     var resp = await http
         .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
     // // debugPrint(resp.body);
+    projects = [];
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
@@ -54,16 +56,16 @@ class _ProjectsList extends State<ProjectsList> {
     Navigator.pop(context);
   }
 
-  getProject(project) async {
+  getProject(proj) async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Project');
-    project = await Utils.getProject(context, project.id);
-    await Utils.getArtists(context, project.id);
-    await Utils.getCostumes(context, project.id);
-    await Utils.getProps(context, project.id);
-    await Utils.getLocations(context, project.id);
-    await Utils.getScenes(context, project.id);
-    await Utils.getSchedules(context, project.id);
+    project = await Utils.getProject(context, proj.id);
+    await Utils.getArtists(context, proj.id);
+    await Utils.getCostumes(context, proj.id);
+    await Utils.getProps(context, proj.id);
+    await Utils.getLocations(context, proj.id);
+    await Utils.getScenes(context, proj.id);
+    await Utils.getSchedules(context, proj.id);
     Navigator.pop(context);
     setState(() {
       loading = false;
@@ -110,7 +112,7 @@ class _ProjectsList extends State<ProjectsList> {
       body: projects.length > 0
           ? Column(
               children: List<Widget>.generate(projects.length, (i) {
-              var project = projects[i];
+                project = projects[i];
               return InkWell(
                 onTap: () async {
                   Utils.artists = null;

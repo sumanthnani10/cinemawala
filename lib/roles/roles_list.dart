@@ -26,7 +26,6 @@ class _RolesList extends State<RolesList> {
   @override
   void initState() {
     loading = true;
-    print(project.roles);
     project.roles.forEach((key, value) {
       roles.add(Role.fromJson(value));
     });
@@ -68,16 +67,17 @@ class _RolesList extends State<RolesList> {
               return InkWell(
                 onTap: () async {
                   var back = await Navigator.push(
-                          context,
-                          Utils.createRoute(
-                              RolePage(
-                                role: role,
-                                project: project,
-                              ),
-                              Utils.DTU)) ??
-                      false;
-                  if (back) {
-                    Navigator.pop(context, back);
+                      context,
+                      Utils.createRoute(
+                          RolePage(
+                            role: role,
+                            project: project,
+                          ),
+                          Utils.DTU));
+                  if (back != null) {
+                    if (back[0]) {
+                      Navigator.pop(context, back[1]);
+                    }
                   }
                 },
                 child: Container(
@@ -99,14 +99,19 @@ class _RolesList extends State<RolesList> {
             ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: color,
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          var back = await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => AddRole(
                         project: project,
                         role: null,
                       )));
+          if (back != null) {
+            if (back[0]) {
+              Navigator.pop(context, back[1]);
+            }
+          }
         },
         child: Icon(
           Icons.add,
