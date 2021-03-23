@@ -5,6 +5,7 @@ class Schedule {
   DateTime lastEditOn, created;
   int year, month, day;
   List<dynamic> scenes;
+  Map<String, dynamic> artistTimings;
 
   Schedule(
       {@required this.project,
@@ -16,7 +17,8 @@ class Schedule {
       @required this.year,
       @required this.month,
       @required this.day,
-      @required this.scenes});
+      @required this.scenes,
+      @required this.artistTimings});
 
   factory Schedule.fromJson(Map<dynamic, dynamic> i) {
     return Schedule(
@@ -24,6 +26,7 @@ class Schedule {
       id: i['id'],
       lastEditBy: i['last_edit_by'],
       addedBy: i['added_by'],
+      artistTimings: i['artist_timings'],
       created: DateTime.fromMillisecondsSinceEpoch(i['created']),
       lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']),
       day: i['day'],
@@ -42,6 +45,7 @@ class Schedule {
       "added_by": this.addedBy,
       "id": this.id,
       "year": this.year,
+      "artist_timings": this.artistTimings,
       "last_edit_by": this.lastEditBy,
       "last_edit_on": this.lastEditOn.millisecondsSinceEpoch,
       "created": this.created.millisecondsSinceEpoch

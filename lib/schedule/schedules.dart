@@ -167,6 +167,8 @@ class _SchedulesState extends State<Schedules>
           SizedBox.expand(
               child: SchedulePage(
             project: project,
+            artistTimings:
+                selectedSchedule != null ? selectedSchedule.artistTimings : {},
             schedule: selectedSchedule,
             date: selectedDate,
             id: selectedDateId,

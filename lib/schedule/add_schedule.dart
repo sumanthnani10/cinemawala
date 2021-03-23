@@ -44,6 +44,7 @@ class _AddScheduleState extends State<AddSchedule> {
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
+  Map<dynamic, dynamic> artistTimings = {};
   DateTime selectedDate;
 
   var bottomSheetHeadingStyle =
@@ -54,6 +55,7 @@ class _AddScheduleState extends State<AddSchedule> {
     edit = edit ?? false;
     selectedDate =
         DateTime(schedule['year'], schedule['month'], schedule['day']);
+    artistTimings = schedule['artist_timings'];
     schedule['scenes'].forEach((s) {
       Scene scene = Utils.scenesMap[s];
       selectedScenes.add(scene);
@@ -168,12 +170,29 @@ class _AddScheduleState extends State<AddSchedule> {
                                 selectedProps = {};
                                 selectedLocations = {};
                                 selectedCostumes = {};
+                                Map<String, dynamic> timings = {};
 
                                 selected.forEach((s) {
                                   Scene scene = Utils.scenesMap[s];
                                   selectedScenes.add(scene);
+                                  timings[s] = {};
                                   scene.artists.forEach((a) {
                                     selectedArtists.add(Utils.artistsMap[a]);
+                                    if (artistTimings.containsKey(s)) {
+                                      if (artistTimings[s].containsKey(a)) {
+                                        timings[s][a] = artistTimings[s][a];
+                                      } else {
+                                        timings[s][a] = {
+                                          "start": [8, 0, 0],
+                                          "end": [9, 0, 1],
+                                        };
+                                      }
+                                    } else {
+                                      timings[s][a] = {
+                                        "start": [8, 0, 0],
+                                        "end": [9, 0, 1],
+                                      };
+                                    }
                                   });
                                   for (var i in scene.costumes) {
                                     for (var j in i['costumes']) {
@@ -187,6 +206,8 @@ class _AddScheduleState extends State<AddSchedule> {
                                   selectedLocations
                                       .add(Utils.locationsMap[scene.location]);
                                 });
+                                schedule["artist_timings"] = timings;
+
                                 setState(() {});
                               }
                             },
@@ -236,8 +257,33 @@ class _AddScheduleState extends State<AddSchedule> {
                                         selectedProps = {};
                                         selectedLocations = {};
                                         selectedCostumes = {};
+                                        Map<String, dynamic> timings = {};
+
                                         selectedScenes.forEach((scene) {
                                           schedule['scenes'].add(scene.id);
+                                          var s = scene.id;
+                                          timings[s] = {};
+                                          scene.artists.forEach((a) {
+                                            selectedArtists
+                                                .add(Utils.artistsMap[a]);
+                                            if (artistTimings.containsKey(s)) {
+                                              if (artistTimings[s]
+                                                  .containsKey(a)) {
+                                                timings[s][a] =
+                                                    artistTimings[s][a];
+                                              } else {
+                                                timings[s][a] = {
+                                                  "start": [8, 0, 0],
+                                                  "end": [9, 0, 1],
+                                                };
+                                              }
+                                            } else {
+                                              timings[s][a] = {
+                                                "start": [8, 0, 0],
+                                                "end": [9, 0, 1],
+                                              };
+                                            }
+                                          });
                                           scene.artists.forEach((a) {
                                             selectedArtists
                                                 .add(Utils.artistsMap[a]);
@@ -255,6 +301,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                           selectedLocations.add(Utils
                                               .locationsMap[scene.location]);
                                         });
+                                        schedule["artist_timings"] = timings;
                                         setState(() {});
                                       },
                                       child: Container(
@@ -433,6 +480,7 @@ class _AddScheduleState extends State<AddSchedule> {
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
+          back = true;
           await Utils.showSuccessDialog(
               context,
               'Schedule Added',
