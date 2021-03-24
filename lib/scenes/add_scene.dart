@@ -1099,7 +1099,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
     Navigator.pop(context, back);
-    Utils.showScrollingDialog(context, "", body.toString(), null, null);
   }
 
   editScene() async {

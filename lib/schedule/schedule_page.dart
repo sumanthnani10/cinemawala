@@ -107,6 +107,9 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   String oneDigitToTwo(int i) {
+    if (i == 0) {
+      return "12";
+    }
     if (i > 9) {
       return "$i";
     } else {
@@ -253,7 +256,10 @@ class _SchedulePageState extends State<SchedulePage>
                             Align(
                               alignment: Alignment.centerLeft,
                               child: selectedArtists.length == 0
-                                  ? Text('No Artists')
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('No Artists'),
+                                    )
                                   : Column(
                                       children: List<Widget>.generate(
                                           selectedScene.artists.length, (j) {
@@ -272,45 +278,21 @@ class _SchedulePageState extends State<SchedulePage>
                                                   "${artist.names['English']}"),
                                               Row(
                                                 children: [
-                                                  InkWell(
-                                                      onTap: () async {
-                                                        TimeOfDay pickedTime =
-                                                            await showTimePicker(
-                                                                context:
-                                                                    context,
-                                                                initialTime:
-                                                                    TimeOfDay
-                                                                        .now());
-                                                        print(pickedTime);
-                                                      },
-                                                      child: Text(
-                                                        "${oneDigitToTwo(timings['start'][0])}:${oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.indigo),
-                                                      )),
+                                                  Text(
+                                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
                                                   Text(
                                                     " to ",
                                                     style: TextStyle(
                                                         color: background1),
                                                   ),
-                                                  InkWell(
-                                                      onTap: () async {
-                                                        TimeOfDay pickedTime =
-                                                            await showTimePicker(
-                                                                context:
-                                                                    context,
-                                                                initialTime:
-                                                                    TimeOfDay
-                                                                        .now());
-                                                        print(pickedTime);
-                                                      },
-                                                      child: Text(
-                                                        "${oneDigitToTwo(timings['end'][0])}:${oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.indigo),
-                                                      )),
+                                                  Text(
+                                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
                                                 ],
                                               )
                                             ],
@@ -640,7 +622,7 @@ class _SchedulePageState extends State<SchedulePage>
                                     Utils.DTU)) ??
                             false;
                         if (back) {
-                          Utils.getSchedules(context, project.id);
+                          getAll();
                         }
                       },
                       child: Text("+ Add Schedule"),

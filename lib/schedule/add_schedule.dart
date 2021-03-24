@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cinemawala/casting/actor.dart';
-import 'package:cinemawala/casting/actor_page.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/locations/location.dart';
@@ -46,6 +45,7 @@ class _AddScheduleState extends State<AddSchedule> {
   Set<Costume> selectedCostumes = {};
   Map<dynamic, dynamic> artistTimings = {};
   DateTime selectedDate;
+  int selectedSceneIndex = 0;
 
   var bottomSheetHeadingStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
@@ -72,7 +72,19 @@ class _AddScheduleState extends State<AddSchedule> {
       });
       selectedLocations.add(Utils.locationsMap[scene.location]);
     });
+    selectedSceneIndex = 0;
     super.initState();
+  }
+
+  String oneDigitToTwo(int i) {
+    if (i == 0) {
+      return "12";
+    }
+    if (i > 9) {
+      return "$i";
+    } else {
+      return "0$i";
+    }
   }
 
   @override
@@ -137,189 +149,205 @@ class _AddScheduleState extends State<AddSchedule> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Scenes", style: bottomSheetHeadingStyle)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                          InkWell(
-                            onTap: () async {
-                              var selected = await Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              SelectScenes(
-                                                project: project,
-                                                selectedScenes: selectedScenes,
-                                              ),
-                                          opaque: false)) ??
-                                  null;
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Scenes',
+                      style: bottomSheetHeadingStyle,
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        var selected = await Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) => SelectScenes(
+                                          project: project,
+                                          selectedScenes: selectedScenes,
+                                        ),
+                                    opaque: false)) ??
+                            null;
 
-                              if (selected != null) {
-                                schedule['scenes'] = selected;
+                        if (selected != null) {
+                          schedule['scenes'] = selected;
 
-                                selectedScenes = [];
-                                selectedArtists = {};
-                                selectedProps = {};
-                                selectedLocations = {};
-                                selectedCostumes = {};
-                                Map<String, dynamic> timings = {};
+                          selectedScenes = [];
+                          selectedArtists = {};
+                          selectedProps = {};
+                          selectedLocations = {};
+                          selectedCostumes = {};
+                          Map<String, dynamic> timings = {};
 
-                                selected.forEach((s) {
-                                  Scene scene = Utils.scenesMap[s];
-                                  selectedScenes.add(scene);
-                                  timings[s] = {};
-                                  scene.artists.forEach((a) {
-                                    selectedArtists.add(Utils.artistsMap[a]);
-                                    if (artistTimings.containsKey(s)) {
-                                      if (artistTimings[s].containsKey(a)) {
-                                        timings[s][a] = artistTimings[s][a];
-                                      } else {
-                                        timings[s][a] = {
-                                          "start": [8, 0, 0],
-                                          "end": [9, 0, 1],
-                                        };
-                                      }
-                                    } else {
-                                      timings[s][a] = {
-                                        "start": [8, 0, 0],
-                                        "end": [9, 0, 1],
-                                      };
-                                    }
-                                  });
-                                  for (var i in scene.costumes) {
-                                    for (var j in i['costumes']) {
-                                      selectedCostumes
-                                          .add(Utils.costumesMap[j]);
-                                    }
-                                  }
-                                  scene.props.forEach((p) {
-                                    selectedProps.add(Utils.propsMap[p]);
-                                  });
-                                  selectedLocations
-                                      .add(Utils.locationsMap[scene.location]);
-                                });
-                                schedule["artist_timings"] = timings;
-
-                                setState(() {});
+                          selected.forEach((s) {
+                            Scene scene = Utils.scenesMap[s];
+                            selectedScenes.add(scene);
+                            timings[s] = {};
+                            scene.artists.forEach((a) {
+                              selectedArtists.add(Utils.artistsMap[a]);
+                              if (artistTimings.containsKey(s)) {
+                                if (artistTimings[s].containsKey(a)) {
+                                  timings[s][a] = artistTimings[s][a];
+                                } else {
+                                  timings[s][a] = {
+                                    "start": [8, 0, 0],
+                                    "end": [9, 0, 1],
+                                  };
+                                }
+                              } else {
+                                timings[s][a] = {
+                                  "start": [8, 0, 0],
+                                  "end": [9, 0, 1],
+                                };
                               }
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(300),
-                              ),
-                              child: Text('+ Add Scene'),
-                            ),
-                          ),
-                        ] +
-                        List<Widget>.generate(selectedScenes.length, (i) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => null));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(300),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                      '${selectedScenes[i].titles['English']}'),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  InkWell(
-                                      onTap: () {
-                                        selectedScenes.removeAt(i);
+                            });
+                            for (var i in scene.costumes) {
+                              for (var j in i['costumes']) {
+                                selectedCostumes.add(Utils.costumesMap[j]);
+                              }
+                            }
+                            scene.props.forEach((p) {
+                              selectedProps.add(Utils.propsMap[p]);
+                            });
+                            selectedLocations
+                                .add(Utils.locationsMap[scene.location]);
+                          });
+                          schedule["artist_timings"] = timings;
+                          artistTimings = timings;
 
-                                        schedule['scenes'] = [];
-                                        selectedArtists = {};
-                                        selectedProps = {};
-                                        selectedLocations = {};
-                                        selectedCostumes = {};
-                                        Map<String, dynamic> timings = {};
+                          setState(() {});
+                        }
+                      },
+                      child: Text("+Add Scene"),
+                    )
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: color.withOpacity(0.2),
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: selectedScenes.length == 0
+                          ? <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
+                                child: Text('No Scenes Added'),
+                              )
+                            ]
+                          : List<Widget>.generate(
+                              selectedScenes.length,
+                              (i) => InkWell(
+                                onTap: () async {
+                                  selectedSceneIndex = i;
+                                  setState(() {});
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: selectedSceneIndex == i
+                                                ? BorderSide(
+                                                    color: color, width: 3)
+                                                : BorderSide(
+                                                    color: background,
+                                                    width: 3))),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '${selectedScenes[i].titles['English']}',
+                                          style: selectedSceneIndex == i
+                                              ? TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: background1)
+                                              : TextStyle(color: background1),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        InkWell(
+                                            child: Icon(
+                                              Icons.clear,
+                                              size: 14,
+                                            ),
+                                            onTap: () async {
+                                              selectedScenes.removeAt(i);
 
-                                        selectedScenes.forEach((scene) {
-                                          schedule['scenes'].add(scene.id);
-                                          var s = scene.id;
-                                          timings[s] = {};
-                                          scene.artists.forEach((a) {
-                                            selectedArtists
-                                                .add(Utils.artistsMap[a]);
-                                            if (artistTimings.containsKey(s)) {
-                                              if (artistTimings[s]
-                                                  .containsKey(a)) {
-                                                timings[s][a] =
-                                                    artistTimings[s][a];
-                                              } else {
-                                                timings[s][a] = {
-                                                  "start": [8, 0, 0],
-                                                  "end": [9, 0, 1],
-                                                };
-                                              }
-                                            } else {
-                                              timings[s][a] = {
-                                                "start": [8, 0, 0],
-                                                "end": [9, 0, 1],
-                                              };
-                                            }
-                                          });
-                                          scene.artists.forEach((a) {
-                                            selectedArtists
-                                                .add(Utils.artistsMap[a]);
-                                          });
-                                          for (var i in scene.costumes) {
-                                            for (var j in i['costumes']) {
-                                              selectedCostumes
-                                                  .add(Utils.costumesMap[j]);
-                                            }
-                                          }
-                                          scene.props.forEach((p) {
-                                            selectedProps
-                                                .add(Utils.propsMap[p]);
-                                          });
-                                          selectedLocations.add(Utils
-                                              .locationsMap[scene.location]);
-                                        });
-                                        schedule["artist_timings"] = timings;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                          child: Icon(
-                                        Icons.cancel_outlined,
-                                        color: Colors.red,
-                                        size: 18,
-                                      ))),
-                                ],
+                                              schedule['scenes'] = [];
+                                              selectedArtists = {};
+                                              selectedProps = {};
+                                              selectedLocations = {};
+                                              selectedCostumes = {};
+                                              Map<String, dynamic> timings = {};
+
+                                              selectedScenes.forEach((scene) {
+                                                schedule['scenes']
+                                                    .add(scene.id);
+                                                var s = scene.id;
+                                                timings[s] = {};
+                                                scene.artists.forEach((a) {
+                                                  selectedArtists
+                                                      .add(Utils.artistsMap[a]);
+                                                  if (artistTimings
+                                                      .containsKey(s)) {
+                                                    if (artistTimings[s]
+                                                        .containsKey(a)) {
+                                                      timings[s][a] =
+                                                          artistTimings[s][a];
+                                                    } else {
+                                                      timings[s][a] = {
+                                                        "start": [8, 0, 0],
+                                                        "end": [9, 0, 1],
+                                                      };
+                                                    }
+                                                  } else {
+                                                    timings[s][a] = {
+                                                      "start": [8, 0, 0],
+                                                      "end": [9, 0, 1],
+                                                    };
+                                                  }
+                                                });
+                                                scene.artists.forEach((a) {
+                                                  selectedArtists
+                                                      .add(Utils.artistsMap[a]);
+                                                });
+                                                for (var i in scene.costumes) {
+                                                  for (var j in i['costumes']) {
+                                                    selectedCostumes.add(
+                                                        Utils.costumesMap[j]);
+                                                  }
+                                                }
+                                                scene.props.forEach((p) {
+                                                  selectedProps
+                                                      .add(Utils.propsMap[p]);
+                                                });
+                                                selectedLocations.add(
+                                                    Utils.locationsMap[
+                                                        scene.location]);
+                                              });
+                                              schedule["artist_timings"] =
+                                                  timings;
+                                              artistTimings = timings;
+
+                                              setState(() {});
+                                            })
+                                      ],
+                                    )),
                               ),
                             ),
-                          );
-                        }),
+                    ),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -327,44 +355,137 @@ class _AddScheduleState extends State<AddSchedule> {
                       style: bottomSheetHeadingStyle,
                     )),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: selectedArtists.length == 0
-                      ? Text('No Artists')
-                      : Wrap(
-                          direction: Axis.horizontal,
-                          children: List<Widget>.generate(
-                              selectedArtists.length, (i) {
-                            return InkWell(
-                              onLongPress: () {
-                                Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => ActorPopUp(
-                                              actor:
-                                                  selectedArtists.elementAt(i),
-                                              project: project,
-                                            ),
-                                        opaque: false));
-                              },
-                              splashColor: background1.withOpacity(0.2),
-                              child: Container(
-                                margin: EdgeInsets.all(2),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius: BorderRadius.circular(300),
-                                ),
-                                child: Text(
-                                    "${selectedArtists.elementAt(i).names['English']}"),
-                              ),
-                            );
-                          }),
-                        ),
-                ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: selectedArtists.length == 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No Artists'),
+                      )
+                    : Column(
+                        children: List<Widget>.generate(
+                            selectedScenes[selectedSceneIndex].artists.length,
+                            (j) {
+                          Scene selectedScene =
+                              selectedScenes[selectedSceneIndex];
+                          Actor artist =
+                              Utils.artistsMap[selectedScene.artists[j]];
+                          var timings = artistTimings[selectedScene.id]
+                              [selectedScene.artists[j]];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${artist.names['English']}"),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                        onTap: () async {
+                                          TimeOfDay pickedTime =
+                                              await showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay
+                                                      .fromDateTime(DateTime(
+                                                          selectedDate.year,
+                                                          selectedDate.month,
+                                                          selectedDate.day,
+                                                          timings['start'][2] ==
+                                                                  1
+                                                              ? timings['start']
+                                                                      [0] +
+                                                                  12
+                                                              : timings['start']
+                                                                  [0],
+                                                          timings['start']
+                                                              [1])));
+                                          if (pickedTime != null) {
+                                            timings['start'][0] =
+                                                pickedTime.hourOfPeriod;
+                                            timings['start'][1] =
+                                                pickedTime.minute;
+
+                                            if (pickedTime.hourOfPeriod ==
+                                                pickedTime.hour) {
+                                              timings['start'][2] = 0;
+                                            } else {
+                                              timings['start'][2] = 1;
+                                            }
+
+                                            artistTimings[selectedScene.id]
+                                                    [selectedScene.artists[j]] =
+                                                timings;
+                                            schedule['artist_timings'] =
+                                                artistTimings;
+
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Text(
+                                          "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                          style:
+                                              TextStyle(color: Colors.indigo),
+                                        )),
+                                    Text(
+                                      " to ",
+                                      style: TextStyle(color: background1),
+                                    ),
+                                    InkWell(
+                                        onTap: () async {
+                                          TimeOfDay pickedTime =
+                                              await showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay
+                                                      .fromDateTime(DateTime(
+                                                          selectedDate.year,
+                                                          selectedDate.month,
+                                                          selectedDate.day,
+                                                          timings['end']
+                                                                      [2] ==
+                                                                  1
+                                                              ? timings['end']
+                                                                      [0] +
+                                                                  12
+                                                              : timings['end']
+                                                                  [0],
+                                                          timings['end'][1])));
+                                          if (pickedTime != null) {
+                                            timings['end'][0] =
+                                                pickedTime.hourOfPeriod;
+                                            timings['end'][1] =
+                                                pickedTime.minute;
+
+                                            if (pickedTime.hourOfPeriod ==
+                                                pickedTime.hour) {
+                                              timings['end'][2] = 0;
+                                            } else {
+                                              timings['end'][2] = 1;
+                                            }
+
+                                            artistTimings[selectedScene.id]
+                                                    [selectedScene.artists[j]] =
+                                                timings;
+                                            schedule['artist_timings'] =
+                                                artistTimings;
+
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Text(
+                                          "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                          style:
+                                              TextStyle(color: Colors.indigo),
+                                        )),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+              ),
+              Divider(
+                thickness: 2,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -414,6 +535,9 @@ class _AddScheduleState extends State<AddSchedule> {
                           }),
                         ),
                 ),
+              ),
+              Divider(
+                thickness: 2,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -550,3 +674,236 @@ class _AddScheduleState extends State<AddSchedule> {
     Navigator.pop(context, back);
   }
 }
+/*Padding(
+                padding: const EdgeInsets.all(8),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Scenes", style: bottomSheetHeadingStyle)),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                          InkWell(
+                            onTap: () async {
+                              var selected = await Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                          pageBuilder: (_, __, ___) =>
+                                              SelectScenes(
+                                                project: project,
+                                                selectedScenes: selectedScenes,
+                                              ),
+                                          opaque: false)) ??
+                                  null;
+
+                              if (selected != null) {
+                                schedule['scenes'] = selected;
+
+                                selectedScenes = [];
+                                selectedArtists = {};
+                                selectedProps = {};
+                                selectedLocations = {};
+                                selectedCostumes = {};
+                                Map<String, dynamic> timings = {};
+
+                                selected.forEach((s) {
+                                  Scene scene = Utils.scenesMap[s];
+                                  selectedScenes.add(scene);
+                                  timings[s] = {};
+                                  scene.artists.forEach((a) {
+                                    selectedArtists.add(Utils.artistsMap[a]);
+                                    if (artistTimings.containsKey(s)) {
+                                      if (artistTimings[s].containsKey(a)) {
+                                        timings[s][a] = artistTimings[s][a];
+                                      } else {
+                                        timings[s][a] = {
+                                          "start": [8, 0, 0],
+                                          "end": [9, 0, 1],
+                                        };
+                                      }
+                                    } else {
+                                      timings[s][a] = {
+                                        "start": [8, 0, 0],
+                                        "end": [9, 0, 1],
+                                      };
+                                    }
+                                  });
+                                  for (var i in scene.costumes) {
+                                    for (var j in i['costumes']) {
+                                      selectedCostumes
+                                          .add(Utils.costumesMap[j]);
+                                    }
+                                  }
+                                  scene.props.forEach((p) {
+                                    selectedProps.add(Utils.propsMap[p]);
+                                  });
+                                  selectedLocations
+                                      .add(Utils.locationsMap[scene.location]);
+                                });
+                                schedule["artist_timings"] = timings;
+                                artistTimings = timings;
+
+                                setState(() {});
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(300),
+                              ),
+                              child: Text('+ Add Scene'),
+                            ),
+                          ),
+                        ] +
+                        List<Widget>.generate(selectedScenes.length, (i) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => null));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(300),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      '${selectedScenes[i].titles['English']}'),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  InkWell(
+                                      onTap: () {
+                                        selectedScenes.removeAt(i);
+
+                                        schedule['scenes'] = [];
+                                        selectedArtists = {};
+                                        selectedProps = {};
+                                        selectedLocations = {};
+                                        selectedCostumes = {};
+                                        Map<String, dynamic> timings = {};
+
+                                        selectedScenes.forEach((scene) {
+                                          schedule['scenes'].add(scene.id);
+                                          var s = scene.id;
+                                          timings[s] = {};
+                                          scene.artists.forEach((a) {
+                                            selectedArtists
+                                                .add(Utils.artistsMap[a]);
+                                            if (artistTimings.containsKey(s)) {
+                                              if (artistTimings[s]
+                                                  .containsKey(a)) {
+                                                timings[s][a] =
+                                                    artistTimings[s][a];
+                                              } else {
+                                                timings[s][a] = {
+                                                  "start": [8, 0, 0],
+                                                  "end": [9, 0, 1],
+                                                };
+                                              }
+                                            } else {
+                                              timings[s][a] = {
+                                                "start": [8, 0, 0],
+                                                "end": [9, 0, 1],
+                                              };
+                                            }
+                                          });
+                                          scene.artists.forEach((a) {
+                                            selectedArtists
+                                                .add(Utils.artistsMap[a]);
+                                          });
+                                          for (var i in scene.costumes) {
+                                            for (var j in i['costumes']) {
+                                              selectedCostumes
+                                                  .add(Utils.costumesMap[j]);
+                                            }
+                                          }
+                                          scene.props.forEach((p) {
+                                            selectedProps
+                                                .add(Utils.propsMap[p]);
+                                          });
+                                          selectedLocations.add(Utils
+                                              .locationsMap[scene.location]);
+                                        });
+                                        schedule["artist_timings"] = timings;
+                                        artistTimings = timings;
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                          child: Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                        size: 18,
+                                      ))),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Artists",
+                      style: bottomSheetHeadingStyle,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: selectedArtists.length == 0
+                      ? Text('No Artists')
+                      : Wrap(
+                          direction: Axis.horizontal,
+                          children: List<Widget>.generate(
+                              selectedArtists.length, (i) {
+                            return InkWell(
+                              onLongPress: () {
+                                Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                        pageBuilder: (_, __, ___) => ActorPopUp(
+                                              actor:
+                                                  selectedArtists.elementAt(i),
+                                              project: project,
+                                            ),
+                                        opaque: false));
+                              },
+                              splashColor: background1.withOpacity(0.2),
+                              child: Container(
+                                margin: EdgeInsets.all(2),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.circular(300),
+                                ),
+                                child: Text(
+                                    "${selectedArtists.elementAt(i).names['English']}"),
+                              ),
+                            );
+                          }),
+                        ),
+                ),
+              ),
+              */

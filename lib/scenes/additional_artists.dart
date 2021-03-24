@@ -135,9 +135,9 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                           Navigator.pop(context);
                         }),
                     Text(
-                      "Add Company/Additional Artists",
+                      "Company/Additional Artists",
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: background1,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
