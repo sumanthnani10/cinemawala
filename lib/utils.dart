@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+import 'daily_budget/daily_budget.dart';
 import 'props/prop.dart';
 
 class Utils {
@@ -20,6 +21,7 @@ class Utils {
   static List<Location> locations;
   static List<Scene> scenes;
   static List<Schedule> schedules;
+  static List<DailyBudget> dailyBudgets;
 
   static Map<String, Actor> artistsMap;
   static Map<String, Costume> costumesMap;
@@ -27,6 +29,7 @@ class Utils {
   static Map<String, Location> locationsMap;
   static Map<String, Scene> scenesMap;
   static Map<String, Schedule> schedulesMap;
+  static Map<String, DailyBudget> dailyBudgetsMap;
 
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
 
@@ -182,6 +185,30 @@ class Utils {
     return Utils.schedules;
   }
 
+  static getDailyBudgets(context, projectId) async {
+    var resp = await http.post(Utils.GET_DAILY_BUDGETS,
+        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      // print(r);
+      if (r['status'] == 'success') {
+        Utils.dailyBudgets = [];
+        Utils.dailyBudgetsMap = {};
+        r['daily_budgets'].forEach((i) {
+          Utils.dailyBudgets.add(DailyBudget.fromJson(i));
+          Utils.dailyBudgetsMap[Utils.dailyBudgets.last.id] =
+              Utils.dailyBudgets.last;
+        });
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return Utils.schedules;
+  }
+
 /*-------------------------------------------------------------------------------------------------------------*/
 
 /*-------------------------------------------------LINKS-------------------------------------------------------*/
@@ -222,6 +249,13 @@ class Utils {
   static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
   static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
   static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
+
+  static Uri GET_DAILY_BUDGETS =
+      Uri.https('${DOMAIN}', '${URL_PATH}/getDailyBudgets');
+  static Uri ADD_DAILY_BUDGET =
+      Uri.https('${DOMAIN}', '${URL_PATH}/addDailyBudget');
+  static Uri EDIT_DAILY_BUDGET =
+      Uri.https('${DOMAIN}', '${URL_PATH}/editDailyBudget');
 
   static Uri ADD_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/addRole');
   static Uri EDIT_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/editRole');

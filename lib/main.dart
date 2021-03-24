@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/daily_budget/daily_budget.dart';
+import 'package:cinemawala/daily_budget/daily_budgets.dart';
 import 'package:cinemawala/projects/projects_list.dart';
 import 'package:cinemawala/props/props_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
@@ -479,8 +479,12 @@ class _HomeState extends State<Home> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DailyBudget()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DailyBudgets(
+                              project: project,
+                            )));
               },
               child: Container(
                 margin: EdgeInsets.all(8.0),

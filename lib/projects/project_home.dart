@@ -1,6 +1,6 @@
 import 'package:cinemawala/casting/actors_list.dart';
 import 'package:cinemawala/costumes/costumes_list.dart';
-import 'package:cinemawala/daily_budget/daily_budget.dart';
+import 'package:cinemawala/daily_budget/daily_budgets.dart';
 import 'package:cinemawala/locations/locations_list.dart';
 import 'package:cinemawala/props/props_list.dart';
 import 'package:cinemawala/roles/roles_list.dart';
@@ -106,7 +106,7 @@ class _ProjectHome extends State<ProjectHome> {
         "title": "Daily Budget",
         "key": "budget",
         "image": "assets/images/dailybudget.png",
-        "onClick": DailyBudget(),
+        "onClick": DailyBudgets(),
         "color": Colors.green[100],
       },
     ];
