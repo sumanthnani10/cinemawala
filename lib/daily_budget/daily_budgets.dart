@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../utils.dart';
+import 'daily_budget.dart';
 import 'daily_budget_page.dart';
 
 class DailyBudgets extends StatefulWidget {
@@ -28,7 +29,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
   Map<String, dynamic> dailyBudgets = {};
   DateTime selectedDate;
   Map<DateTime, List<dynamic>> calenderDailyBudget = {};
-  Map<String, dynamic> selectedDailyBudget;
+  DailyBudget selectedDailyBudget;
   String selectedDateId;
   bool loading;
   ScrollController cardScrollController = new ScrollController();
@@ -40,9 +41,10 @@ class _DailyBudgetsState extends State<DailyBudgets>
     loading = true;
     selectedDateId =
         "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
+    selectedDailyBudget = dailyBudgets[selectedDateId];
     calendarController = new CalendarController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getDailyBudgets();
+      // getDailyBudgets();
     });
     super.initState();
   }
@@ -127,13 +129,15 @@ class _DailyBudgetsState extends State<DailyBudgets>
           ),
           SizedBox.expand(
               child: DailyBudgetPage(
-            project: project,
-            schedule: selectedDailyBudget,
+                project: project,
+            dailyBudget: selectedDailyBudget,
             date: selectedDate,
             id: selectedDateId,
             getDailyBudgets: () {
               getDailyBudgets();
             },
+            budget:
+                selectedDailyBudget != null ? selectedDailyBudget.budget : {},
             nextDate: () async {
               selectedDate = selectedDate.add(Duration(days: 1));
               selectedDateId =

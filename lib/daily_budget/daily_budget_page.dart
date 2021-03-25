@@ -1,8 +1,11 @@
+import 'package:cinemawala/daily_budget/add_daily_budget.dart';
 import 'package:cinemawala/daily_budget/daily_budget.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:cinemawala/scenes/select_location.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../utils.dart';
 
 class DailyBudgetPage extends StatefulWidget {
   final Project project;
@@ -10,7 +13,7 @@ class DailyBudgetPage extends StatefulWidget {
   final DateTime date;
   final Map budget;
   final String id;
-  final VoidCallback nextDate, prevDate, getAll;
+  final VoidCallback nextDate, prevDate, getDailyBudgets;
 
   DailyBudgetPage(
       {Key key,
@@ -19,7 +22,7 @@ class DailyBudgetPage extends StatefulWidget {
       @required this.dailyBudget,
       @required this.date,
       @required this.id,
-      @required this.getAll,
+      @required this.getDailyBudgets,
       @required this.nextDate,
       @required this.prevDate})
       : super(key: key);
@@ -31,7 +34,7 @@ class DailyBudgetPage extends StatefulWidget {
       this.dailyBudget,
       this.date,
       this.id,
-      this.getAll,
+      this.getDailyBudgets,
       this.nextDate,
       this.prevDate);
 }
@@ -43,16 +46,18 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   DateTime date;
   Map budget;
   String id;
-  VoidCallback nextDate, prevDate, getAll;
+  VoidCallback nextDate, prevDate, getDailyBudgets;
 
   _DailyBudgetPage(this.project, this.budget, this.dailyBudget, this.date,
-      this.id, this.getAll, this.nextDate, this.prevDate);
+      this.id, this.getDailyBudgets, this.nextDate, this.prevDate);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Color background, background1, color;
-  var categoryheading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  var categoryHeading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   var subheading = TextStyle(fontSize: 18);
+
   List<dynamic> categories, subCategories;
+
   List<TextEditingController> contactControllers,
       quantityControllers,
       rateControllers,
@@ -60,14 +65,12 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
 
   var pickedDate, startTime, endTime;
   var formattedTimeOfDay;
-  AnimationController _animationController;
+  List<String> weeksDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
   TimeOfDay _timeOfDay = TimeOfDay.now();
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     budget = {
       'Location_Rent': {
         'Line_Producer': {
@@ -966,27 +969,600 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
     } else {
       background1 = Colors.white;
     }
-    return Scaffold(
+    return DraggableScrollableSheet(
+      initialChildSize: 300 / MediaQuery.of(context).size.height,
+      minChildSize: 300 / MediaQuery.of(context).size.height,
+      maxChildSize: 1,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xff6fd8a8),
+                  offset: Offset(0, -0.5),
+                  blurRadius: 4,
+                ),
+              ]),
+          child: dailyBudget != null
+              ? NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (OverscrollIndicatorNotification overscroll) {
+                    overscroll.disallowGlow();
+                    return;
+                  },
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        controller: scrollController,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(CupertinoIcons.back),
+                                    onPressed: () {},
+                                  ),
+                                  Text(
+                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(CupertinoIcons.forward),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                createAlertDialog(context, "Category")
+                                    .then((v) {
+                                  if (v == null) {
+                                  } else if (budget['${v}'] == null) {
+                                    budget['${v}'] = {};
+                                    setState(() {});
+                                  } else {
+                                    final snackbar = SnackBar(
+                                      duration: new Duration(seconds: 3),
+                                      content: Text(
+                                        "${v} is already used or check the name!!",
+                                        style: TextStyle(color: background),
+                                      ),
+                                      backgroundColor: background1,
+                                    );
+                                    _scaffoldKey.currentState
+                                        .showSnackBar(snackbar);
+                                  }
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "+Add Category",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.indigo),
+                                    )),
+                              ),
+                            ),
+                            Column(
+                              children:
+                                  List<Widget>.generate(budget.length, (i) {
+                                subCategories =
+                                    budget[categories[i]].keys.toList();
+                                return Column(
+                                  children: [
+                                    Divider(
+                                      thickness: 1,
+                                      color: background1,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${categories[i].replaceAll("_", " ")}",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: categoryHeading,
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              createAlertDialog(
+                                                      context, "SubCategory")
+                                                  .then((v) {
+                                                if (v == null) {
+                                                } else if (budget[categories[i]]
+                                                        ['${v}'] ==
+                                                    null) {
+                                                  budget[categories[i]]
+                                                      ['$v'] = {
+                                                    'contact': '',
+                                                    'quantity': 0,
+                                                    'rate': 0,
+                                                    'subtotal': 0,
+                                                    'use': true,
+                                                    'callSheet': 0
+                                                  };
+                                                  setState(() {});
+                                                } else {
+                                                  final snackbar = SnackBar(
+                                                    duration: new Duration(
+                                                        seconds: 3),
+                                                    content: Text(
+                                                      "${v} is already used or check the name!!",
+                                                      style: TextStyle(
+                                                          color: background),
+                                                    ),
+                                                    backgroundColor:
+                                                        background1,
+                                                  );
+                                                  _scaffoldKey.currentState
+                                                      .showSnackBar(snackbar);
+                                                }
+                                              });
+                                            },
+                                            child: Text(
+                                              "+Add Subcategory",
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 16),
+                                      child: Column(
+                                          children: List<Widget>.generate(
+                                              subCategories.length, (j) {
+                                        var subcategory = budget[categories[i]]
+                                            [subCategories[j]];
+                                        contactControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                    "${subcategory["contact"]}"));
+                                        quantityControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                    "${subcategory["quantity"]}"));
+                                        rateControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                    "${subcategory["rate"]}"));
+                                        callSheetControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                    "${subcategory["callSheet"]}"));
+                                        return Column(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      top: BorderSide(
+                                                          color: j != 0
+                                                              ? background1
+                                                              : background,
+                                                          width: 1))),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Transform.scale(
+                                                        scale: 1.1,
+                                                        child: Checkbox(
+                                                            value: budget[
+                                                                    categories[
+                                                                        i]][
+                                                                subCategories[
+                                                                    j]]["use"],
+                                                            activeColor: color,
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                budget[categories[
+                                                                            i]][
+                                                                        subCategories[
+                                                                            j]][
+                                                                    "use"] = value;
+                                                              });
+                                                            }),
+                                                      ),
+                                                      Text(
+                                                        "${subCategories[j].replaceAll("_", " ")}",
+                                                        style: subheading,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4),
+                                                          child: TextField(
+                                                            onChanged: (value) {
+                                                              budget[categories[
+                                                                          i]][
+                                                                      subCategories[
+                                                                          j]][
+                                                                  "contact"] = value;
+                                                            },
+                                                            controller:
+                                                                contactControllers
+                                                                    .last,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              background1)),
+                                                              labelText:
+                                                                  'Contact#',
+                                                              labelStyle: TextStyle(
+                                                                  color:
+                                                                      background1,
+                                                                  fontSize: 14),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(8),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              4,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4),
+                                                          child: TextField(
+                                                            onChanged: (value) {
+                                                              budget[categories[
+                                                                          i]][
+                                                                      subCategories[
+                                                                          j]][
+                                                                  "callSheet"] = value;
+                                                            },
+                                                            controller:
+                                                                callSheetControllers
+                                                                    .last,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              background1)),
+                                                              labelText:
+                                                                  'Call Sheet',
+                                                              labelStyle: TextStyle(
+                                                                  color:
+                                                                      background1,
+                                                                  fontSize: 14),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(8),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                            "Subtotal: ${budget[categories[i]][subCategories[j]]["subtotal"]}",
+                                                            style: subheading,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal: 4,
+                                                                  vertical: 8),
+                                                          child: TextField(
+                                                            onChanged: (a) {
+                                                              if (a.isEmpty) {
+                                                                a = '0';
+                                                              }
+                                                              setState(() {
+                                                                budget[categories[
+                                                                        i]][
+                                                                    subCategories[
+                                                                        j]]["quantity"] = int
+                                                                    .parse(a);
+                                                                budget[categories[i]]
+                                                                        [
+                                                                        subCategories[
+                                                                            j]][
+                                                                    "subtotal"] = int
+                                                                        .parse(
+                                                                            a) *
+                                                                    budget[categories[i]]
+                                                                            [subCategories[j]]
+                                                                        ["rate"];
+                                                              });
+                                                            },
+                                                            controller:
+                                                                quantityControllers
+                                                                    .last,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              background1)),
+                                                              labelText:
+                                                                  'Quantity',
+                                                              labelStyle: TextStyle(
+                                                                  color:
+                                                                      background1,
+                                                                  fontSize: 14),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(8),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal: 4,
+                                                                  vertical: 8),
+                                                          child: TextField(
+                                                            onChanged: (a) {
+                                                              if (a.isEmpty) {
+                                                                a = '0';
+                                                              }
+                                                              setState(() {
+                                                                budget[categories[
+                                                                        i]][
+                                                                    subCategories[
+                                                                        j]]["rate"] = int
+                                                                    .parse(a);
+                                                                budget[categories[i]]
+                                                                        [
+                                                                        subCategories[
+                                                                            j]][
+                                                                    "subtotal"] = int
+                                                                        .parse(
+                                                                            a) *
+                                                                    budget[categories[i]]
+                                                                            [subCategories[j]]
+                                                                        ["quantity"];
+                                                              });
+                                                            },
+                                                            controller:
+                                                                rateControllers
+                                                                    .last,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              background1)),
+                                                              labelText: 'Rate',
+                                                              labelStyle: TextStyle(
+                                                                  color:
+                                                                      background1,
+                                                                  fontSize: 14),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(8),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      })),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        controller: scrollController,
+                        child: Container(
+                          color: background,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(CupertinoIcons.back),
+                                      onPressed: prevDate,
+                                    ),
+                                    Text(
+                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(CupertinoIcons.forward),
+                                      onPressed: nextDate,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                thickness: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(CupertinoIcons.back),
+                            onPressed: prevDate,
+                          ),
+                          Text(
+                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            icon: Icon(CupertinoIcons.forward),
+                            onPressed: nextDate,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      thickness: 2,
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Text(
+                      "No Budget.",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        var now = DateTime.now();
+                        Map<String, dynamic> dailyBudget = {
+                          "day": date.day,
+                          "project_id": project.id,
+                          "month": date.month,
+                          "added_by": Utils.USER_ID,
+                          "budget": {},
+                          "id": id,
+                          "year": date.year,
+                          "last_edit_by": Utils.USER_ID,
+                          "last_edit_on": now.millisecondsSinceEpoch,
+                          "created": now.millisecondsSinceEpoch
+                        };
+                        var back = await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    AddDailyBudget(
+                                        project: project,
+                                        dailyBudget: dailyBudget),
+                                    Utils.DTU)) ??
+                            false;
+                        if (back) {
+                          getDailyBudgets();
+                        }
+                      },
+                      child: Text("+ Add Budget"),
+                      style: ElevatedButton.styleFrom(primary: color),
+                    )
+                  ],
+                ),
+        );
+      },
+    );
+  }
+}
+/*Scaffold(
       key: _scaffoldKey,
       backgroundColor: background,
-      appBar: AppBar(
-        backgroundColor: color,
-        iconTheme: IconThemeData(color: background1),
-        title: Text(
-          "Daily Budget",
-          style: TextStyle(color: background1),
-        ),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: background1,
-              ),
-              onPressed: () {
-                DialogAction(context);
-              })
-        ],
-      ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -1278,7 +1854,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                 "${categories[i].replaceAll("_", " ")}",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: categoryheading,
+                                style: categoryHeading,
                               ),
                             ),
                             InkWell(
@@ -1566,6 +2142,4 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
           ),
         ),
       ),
-    );
-  }
-}
+    );*/

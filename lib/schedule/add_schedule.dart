@@ -20,7 +20,8 @@ class AddSchedule extends StatefulWidget {
   final Map<dynamic, dynamic> schedule;
   final bool edit;
 
-  const AddSchedule({Key key, this.project, this.schedule, this.edit})
+  const AddSchedule(
+      {Key key, @required this.project, @required this.schedule, this.edit})
       : super(key: key);
 
   @override
@@ -37,7 +38,15 @@ class _AddScheduleState extends State<AddSchedule> {
   Color background, background1, color;
   bool loading = true;
   bool edit;
-  List<String> weeksDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  List<String> weeksDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ];
   List<Scene> selectedScenes = [];
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};

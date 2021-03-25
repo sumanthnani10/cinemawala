@@ -106,7 +106,7 @@ class _ProjectHome extends State<ProjectHome> {
         "title": "Daily Budget",
         "key": "budget",
         "image": "assets/images/dailybudget.png",
-        "onClick": DailyBudgets(),
+        "onClick": DailyBudgets(project: project),
         "color": Colors.green[100],
       },
     ];
