@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../utils.dart';
+
 class AddCompanyArtists extends StatefulWidget {
   final additionalArtists;
 
@@ -22,7 +24,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
   var categoryHeadingStyle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
-  var subCategoryStyle = TextStyle(fontSize: 16);
+  var fieldStyle = TextStyle(fontSize: 16);
 
   _AddCompanyArtists(this.additionalArtists);
 
@@ -36,6 +38,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
               'Male': 0,
               'Female': 0,
               'Kids': 0,
+              'Contact': '',
               'Notes': '',
             }
           ],
@@ -43,6 +46,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
             'Male': 0,
             'Female': 0,
             'Kids': 0,
+            'Contact': '',
             'Notes': '',
           },
           'addable': false
@@ -53,6 +57,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
               'Male': 0,
               'Female': 0,
               'Kids': 0,
+              'Contact': '',
               'Notes': '',
             }
           ],
@@ -60,18 +65,34 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
             'Male': 0,
             'Female': 0,
             'Kids': 0,
+            'Contact': '',
+            'Notes': '',
+          },
+          'addable': false
+        },
+        'Dancers/Fighters': {
+          'field_values': [
+            {
+              'Male': 0,
+              'Female': 0,
+              'Kids': 0,
+              'Contact': '',
+              'Notes': '',
+            }
+          ],
+          'fields': {
+            'Male': 0,
+            'Female': 0,
+            'Kids': 0,
+            'Contact': '',
             'Notes': '',
           },
           'addable': false
         },
         'Gang Members': {
-          'field_values': [
-            {
-              'Name': '',
-              'Contact': '',
-            }
-          ],
+          'field_values': [],
           'fields': {
+            'id': '',
             'Name': '',
             'Contact': '',
           },
@@ -79,12 +100,9 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
         },
         'Additional Artists': {
           'field_values': [
-            {
-              'Name': '',
-              'Contact': '',
-            }
           ],
           'fields': {
+            'id': '',
             'Name': '',
             'Contact': '',
           },
@@ -97,7 +115,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
   @override
   Widget build(BuildContext context) {
     List<String> categories = additionalArtists.keys.toList();
-    textFieldControllers = [];
+    textFieldControllers.clear();
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -105,7 +123,6 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
     } else {
       background1 = Colors.white;
     }
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pop();
@@ -169,8 +186,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                         List<Widget>.generate(additionalArtists.length, (i) {
                       Map<String, dynamic> category =
                           additionalArtists[categories[i]];
-                      List<String> subCategories =
-                          category['fields'].keys.toList();
+                      List<String> fields = category['fields'].keys.toList();
                       return Container(
                         width: MediaQuery.of(context).size.width - (24 * 2),
                         padding: const EdgeInsets.all(8.0),
@@ -188,11 +204,16 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                       if (category['addable'])
                                         InkWell(
                                             onTap: () {
+                                              var map = {};
+                                              category["fields"].forEach(
+                                                  (k, v) => map[k] = v);
+                                              map['id'] = Utils.generateId(
+                                                  "${categories[i].toLowerCase().substring(0, 4)}_");
                                               setState(() {
                                                 additionalArtists[
                                                             '${categories[i]}']
                                                         ['field_values']
-                                                    .add(category['fields']);
+                                                    .add(map);
                                               });
                                             },
                                             child: Icon(
@@ -212,18 +233,66 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                       ),
                                     )),
                                     child: Column(
-                                        children: List<Widget>.generate(
-                                                subCategories.length, (j) {
-                                              var subCategory =
+                                        children: <Widget>[
+                                              if (category['addable'])
+                                                const SizedBox(
+                                                  height: 2,
+                                                ),
+                                              if (category['addable'])
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        "${categories[i]} ${k + 1}"),
+                                                    Material(
+                                                      color: background,
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            additionalArtists[
+                                                                        '${categories[i]}']
+                                                                    [
+                                                                    'field_values']
+                                                                .removeAt(k);
+                                                          });
+                                                        },
+                                                        splashColor: background1
+                                                            .withOpacity(0.2),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(2),
+                                                          child: Text(
+                                                            "- Remove",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .indigo),
+                                                            textAlign:
+                                                                TextAlign.right,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                            ] +
+                                            List<Widget>.generate(fields.length,
+                                                (j) {
+                                              var field =
                                                   category['field_values'][k]
-                                                      ['${subCategories[j]}'];
+                                                      ['${fields[j]}'];
+
+                                              if (fields[j] == "id")
+                                                return Container();
+
+                                              // print(field);
 
                                               textFieldControllers.add(
                                                   new TextEditingController(
-                                                      text: '$subCategory'));
-
-                                              if (subCategory.runtimeType ==
-                                                  int) {
+                                                      text: '$field'));
+                                              if (field.runtimeType == int) {
                                                 return Padding(
                                                   padding: const EdgeInsets
                                                       .symmetric(vertical: 8),
@@ -234,11 +303,14 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                     children: [
                                                       Flexible(
                                                           child: Text(
-                                                              "${subCategories[j]}",
+                                                              "${fields[j]}",
                                                               style:
-                                                                  subCategoryStyle)),
+                                                                  fieldStyle)),
                                                       Flexible(
-                                                        child: TextFormField(
+                                                        child: TextField(
+                                                          textCapitalization:
+                                                              TextCapitalization
+                                                                  .words,
                                                           keyboardType:
                                                               TextInputType
                                                                   .number,
@@ -260,7 +332,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                                           [
                                                                           'field_values'][k]
                                                                       [
-                                                                      '${subCategories[j]}'] =
+                                                                      '${fields[j]}'] =
                                                                   int.parse(v);
                                                             } else {
                                                               additionalArtists[
@@ -268,7 +340,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                                       [
                                                                       'field_values'][k]
                                                                   [
-                                                                  '${subCategories[j]}'] = 0;
+                                                                  '${fields[j]}'] = 0;
                                                             }
                                                           },
                                                           textAlign:
@@ -302,6 +374,9 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                   padding: const EdgeInsets
                                                       .symmetric(vertical: 8.0),
                                                   child: TextField(
+                                                    textCapitalization:
+                                                        TextCapitalization
+                                                            .words,
                                                     controller:
                                                         textFieldControllers
                                                             .last,
@@ -312,8 +387,9 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                                   '${categories[i]}']
                                                               [
                                                               'field_values'][k]
-                                                          [
-                                                          '${subCategories[j]}'] = v;
+                                                          ['${fields[j]}'] = v;
+                                                      print(additionalArtists[
+                                                          'Gang Members']);
                                                     },
                                                     decoration: InputDecoration(
                                                       enabledBorder: OutlineInputBorder(
@@ -322,8 +398,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                                   background1)
                                                           //borderSide: const BorderSide(color: Colors.white)
                                                           ),
-                                                      labelText:
-                                                          '${subCategories[j]}',
+                                                      labelText: '${fields[j]}',
                                                       labelStyle: TextStyle(
                                                           color: background1,
                                                           fontSize: 14),
@@ -339,38 +414,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                   ),
                                                 );
                                               }
-                                            }) +
-                                            <Widget>[
-                                              if (k != 0)
-                                                Material(
-                                                  color: background,
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        additionalArtists[
-                                                                    '${categories[i]}']
-                                                                ['field_values']
-                                                            .removeAt(k);
-                                                      });
-                                                    },
-                                                    splashColor: background1
-                                                        .withOpacity(0.2),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2),
-                                                      child: Text(
-                                                        "- Remove",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.indigo),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                            ]),
+                                            })),
                                   );
                                 })),
                       );
@@ -407,7 +451,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
   var categoryHeadingStyle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
-  var subCategoryStyle = TextStyle(fontSize: 16);
+  var fieldStyle = TextStyle(fontSize: 16);
 
   _ViewCompanyArtists(this.additionalArtists);
 
@@ -473,8 +517,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                         List<Widget>.generate(additionalArtists.length, (i) {
                       Map<String, dynamic> category =
                           additionalArtists[categories[i]];
-                      List<String> subCategories =
-                          category['fields'].keys.toList();
+                      List<String> fields = category['fields'].keys.toList();
                       return Container(
                         width: MediaQuery.of(context).size.width - (24 * 2),
                         padding: const EdgeInsets.all(8.0),
@@ -489,49 +532,70 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                                     ),
                                   ),
                                 ] +
-                                List<Widget>.generate(
-                                    category['field_values'].length, (k) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                      bottom: BorderSide(
-                                        color: background1,
-                                      ),
-                                    )),
-                                    child: Column(
-                                        children: List<Widget>.generate(
-                                            subCategories.length, (j) {
-                                      var subCategory = category['field_values']
-                                          [k]['${subCategories[j]}'];
+                                (category['field_values'].length == 0
+                                    ? <Widget>[Text('\n No ${categories[i]}')]
+                                    : List<Widget>.generate(
+                                        category['field_values'].length, (k) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                            bottom: BorderSide(
+                                              color: background1,
+                                            ),
+                                          )),
+                                          child: Column(
+                                              children: <Widget>[
+                                                    if (category['addable'])
+                                                      const SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                    if (category['addable'])
+                                                      Text(
+                                                          "${categories[i]} ${k + 1}")
+                                                  ] +
+                                                  List<Widget>.generate(
+                                                      fields.length, (j) {
+                                                    var field =
+                                                        category['field_values']
+                                                            [k]['${fields[j]}'];
 
-                                      textFieldControllers.add(
-                                          new TextEditingController(
-                                              text:
-                                                  '${subCategory == "" ? " -" : subCategory}'));
+                                                    textFieldControllers.add(
+                                                        new TextEditingController(
+                                                            text:
+                                                                '${field == "" ? " -" : field}'));
 
-                                      if (subCategory.runtimeType == int) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                  child: Text(
-                                                      "${subCategories[j]}",
-                                                      style: subCategoryStyle)),
-                                              Flexible(
-                                                child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  controller:
-                                                      textFieldControllers.last,
-                                                  textInputAction:
-                                                      TextInputAction.next,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .allow(RegExp('[0-9]')),
+                                                    if (field.runtimeType ==
+                                                        int) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 8),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Flexible(
+                                                                child: Text(
+                                                                    "${fields[j]}",
+                                                                    style:
+                                                                        fieldStyle)),
+                                                            Flexible(
+                                                              child:
+                                                                  TextFormField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                controller:
+                                                                    textFieldControllers
+                                                                        .last,
+                                                                textInputAction:
+                                                                    TextInputAction
+                                                                        .next,
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter
+                                                                      .allow(RegExp('[0-9]')),
                                                   ],
                                                   textAlign: TextAlign.center,
                                                   decoration: InputDecoration(
@@ -559,32 +623,47 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8.0),
                                           child: TextField(
-                                            controller:
-                                                textFieldControllers.last,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            decoration: InputDecoration(
-                                              enabled: false,
-                                              disabledBorder:
-                                                  OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: background)),
-                                              labelText: '${subCategories[j]}',
-                                              labelStyle: TextStyle(
-                                                  color: background1,
-                                                  fontSize: 14),
-                                              contentPadding: EdgeInsets.all(8),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                          ),
+                                            textCapitalization:
+                                                              TextCapitalization
+                                                                  .words,
+                                                          controller:
+                                                              textFieldControllers
+                                                                  .last,
+                                                          textInputAction:
+                                                              TextInputAction
+                                                                  .done,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            enabled: false,
+                                                            disabledBorder:
+                                                                OutlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                            color:
+                                                                                background)),
+                                                            labelText:
+                                                                '${fields[j]}',
+                                                            labelStyle: TextStyle(
+                                                                color:
+                                                                    background1,
+                                                                fontSize: 14),
+                                                            contentPadding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  })),
                                         );
-                                      }
-                                    })),
-                                  );
-                                })),
+                                      }))),
                       );
                     }),
                   ),
@@ -616,13 +695,14 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                         children: [
                           Container(
                             margin: const EdgeInsets.all(16.0),
-                            child: Text("Male", style: subCategoryStyle),
+                            child: Text("Male", style: fieldStyle),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width / 2 - 54,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
@@ -650,7 +730,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                             margin: const EdgeInsets.all(16.0),
                             child: Text(
                               "Female",
-                              style: subCategoryStyle,
+                              style: fieldStyle,
                             ),
                           ),
                           Container(
@@ -658,6 +738,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
@@ -685,7 +766,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                             margin: const EdgeInsets.all(16.0),
                             child: Text(
                               "Kids",
-                              style: subCategoryStyle,
+                              style: fieldStyle,
                             ),
                           ),
                           Container(
@@ -693,6 +774,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
@@ -717,6 +799,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 8),
                         child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: background1)
@@ -754,6 +837,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
                         child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: background1)
@@ -773,6 +857,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
                         child: TextField(
+                                                          textCapitalization: TextCapitalization.words,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(

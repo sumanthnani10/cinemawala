@@ -1,7 +1,15 @@
 import 'package:flutter/foundation.dart';
 
 class Scene {
-  String project, id, addedBy, lastEditBy, makeUp, specialEquipment, location;
+  String project,
+      id,
+      addedBy,
+      lastEditBy,
+      makeUp,
+      specialEquipment,
+      location,
+      sfx,
+      vfx;
   DateTime created, lastEditOn;
   Map<String, dynamic> titles, gists, addlArtists;
   bool day, interior;
@@ -13,6 +21,8 @@ class Scene {
       @required this.addedBy,
       @required this.lastEditBy,
       @required this.makeUp,
+      @required this.sfx,
+      @required this.vfx,
       @required this.specialEquipment,
       @required this.created,
       @required this.lastEditOn,
@@ -44,7 +54,9 @@ class Scene {
         interior: i['interior'],
         artists: i['artists'],
         costumes: i['costumes'],
-        props: i['props']);
+        props: i['props'],
+        sfx: i['sfx'],
+        vfx: i['vfx']);
   }
 
   Map<dynamic, dynamic> toJson() {
@@ -63,6 +75,8 @@ class Scene {
       "addl_artists": this.addlArtists,
       "special_equipment": this.specialEquipment,
       "make_up": this.makeUp,
+      "sfx": this.sfx,
+      "vfx": this.vfx,
       "last_edit_by": this.lastEditBy,
       "last_edit_on": this.lastEditOn.millisecondsSinceEpoch,
       "created": this.created.millisecondsSinceEpoch

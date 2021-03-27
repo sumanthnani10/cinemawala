@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+
+import '../utils.dart';
 
 class AddDailyBudget extends StatefulWidget {
   final Project project;
@@ -35,6 +39,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
   Color background, background1, color;
   var categoryHeading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   var subheading = TextStyle(fontSize: 18);
+  bool loading = true;
 
   ScrollController scrollController = new ScrollController();
 
@@ -765,7 +770,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
             'callSheet': 0},
         },
         'Vfx': {
-          '': {'contact': '',
+          'Vfx': {'contact': '',
             'quantity': 0,
             'rate': 0,
             'subtotal': 0,
@@ -1008,9 +1013,9 @@ class _AddDailyBudget extends State<AddDailyBudget>
           FlatButton.icon(
             onPressed: () async {
               if (edit) {
-                // editBudget();
+                editDailyBudget();
               } else {
-                // addBudget();
+                addDailyBudget();
               }
             },
             color: color,
@@ -1033,7 +1038,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
         isAlwaysShown: true,
         child: SingleChildScrollView(
           controller: scrollController,
-          physics: BouncingScrollPhysics(),
           child: Column(
             children: <Widget>[
               Container(
@@ -1084,7 +1088,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                     ),
                   ),
                   TextButton(
-                      onPressed: () async {}, child: Text('View Schedule',
+                      onPressed: () async {}, child: Text('View Daily Budget',
                     style: TextStyle(
                         fontSize: 12,
                         color: Colors.indigo),)),
@@ -1116,8 +1120,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                           onTap: () {
                             createAlertDialog(context, "SubCategory")
                                 .then((v) {
-                              if (v == null) {} else
-                              if (budget[categories[i]]['$v'] ==
+                              if (v == null) {} else if (budget[categories[i]]['$v'] ==
                                   null) {
                                 budget[categories[i]]['$v'] = {
                                   'contact': '',
@@ -1199,10 +1202,14 @@ class _AddDailyBudget extends State<AddDailyBudget>
                                                 });
                                               }),
                                         ),
-                                        Text(
-                                          "${subCategories[j].replaceAll(
-                                              "_", " ")}",
-                                          style: subheading,
+                                        Flexible(
+                                          child: Text(
+                                            "${subCategories[j].replaceAll(
+                                                "_", " ")}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: subheading,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1424,6 +1431,90 @@ class _AddDailyBudget extends State<AddDailyBudget>
       ),
     );
   }
+
+  addDailyBudget() async {
+    Utils.showLoadingDialog(context, 'Adding Daily Budget');
+
+    var back = false;
+
+    try {
+      var resp = await http.post(Utils.ADD_DAILY_BUDGET,
+          body: jsonEncode(dailyBudget),
+          headers: {"Content-Type": "application/json"});
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          back = true;
+          await Utils.showSuccessDialog(
+              context,
+              'Daily Budget Added',
+              'Daily Budget has been added successfully.',
+              Colors.green,
+              background, () {
+            Navigator.pop(context);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      // debugPrint(e);
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+    Navigator.pop(context, back);
+  }
+
+  editDailyBudget() async {
+    Utils.showLoadingDialog(context, 'Editing Daily Budget');
+
+    var back = false;
+
+    try {
+      var resp = await http.post(Utils.EDIT_DAILY_BUDGET,
+          body: jsonEncode(dailyBudget),
+          headers: {"Content-Type": "application/json"});
+      // // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          back = true;
+          await Utils.showSuccessDialog(
+              context,
+              'Daily Budget Edited',
+              'Daily Budget has been edited successfully.',
+              Colors.green,
+              background, () {
+            Navigator.pop(context);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      // debugPrint(e);
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+    Navigator.pop(context, back);
+  }
+
 }
 
 /*

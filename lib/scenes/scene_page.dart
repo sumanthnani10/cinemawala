@@ -46,7 +46,10 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
       costumesImages = [];
   bool loading = true;
   ScrollController cardScrollController = new ScrollController();
-  TextEditingController specialEquipmentTextController, makeUpTextController;
+  TextEditingController specialEquipmentTextController,
+      makeUpTextController,
+      sfxTextController,
+      vfxTextController;
 
   @override
   void initState() {
@@ -78,7 +81,12 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     specialEquipmentTextController = new TextEditingController(
         text: scene.specialEquipment == "" ? " -" : scene.specialEquipment);
     makeUpTextController = new TextEditingController(
-        text: scene.makeUp != "" ? " -" : scene.makeUp);
+        text: scene.makeUp == "" ? " -" : scene.makeUp);
+
+    sfxTextController =
+        new TextEditingController(text: scene.sfx == "" ? " -" : scene.sfx);
+    vfxTextController =
+        new TextEditingController(text: scene.vfx == "" ? " -" : scene.vfx);
 
     super.initState();
   }
@@ -501,6 +509,60 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.newline,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene.sfx = v;
+                  },
+                  controller: sfxTextController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    enabled: false,
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background)),
+                    labelText: 'SFX',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Divider(
+                color: color,
+                thickness: 2,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.newline,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene.vfx = v;
+                  },
+                  controller: vfxTextController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    enabled: false,
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background)),
+                    labelText: 'VFX',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Divider(
+                color: color,
+                thickness: 2,
+              ),
               // Artists
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -753,7 +815,10 @@ class _ScenePopUp extends State<ScenePopUp>
       costumesImages = [];
   bool loading = true;
   ScrollController cardScrollController = new ScrollController();
-  TextEditingController specialEquipmentTextController, makeUpTextController;
+  TextEditingController specialEquipmentTextController,
+      makeUpTextController,
+      sfxTextController,
+      vfxTextController;
 
   @override
   void initState() {
@@ -785,7 +850,12 @@ class _ScenePopUp extends State<ScenePopUp>
     specialEquipmentTextController = new TextEditingController(
         text: scene.specialEquipment == "" ? " -" : scene.specialEquipment);
     makeUpTextController = new TextEditingController(
-        text: scene.makeUp != "" ? " -" : scene.makeUp);
+        text: scene.makeUp == "" ? " -" : scene.makeUp);
+
+    sfxTextController =
+        new TextEditingController(text: scene.sfx == "" ? " -" : scene.sfx);
+    vfxTextController =
+        new TextEditingController(text: scene.vfx == "" ? " -" : scene.vfx);
 
     super.initState();
   }
@@ -922,7 +992,7 @@ class _ScenePopUp extends State<ScenePopUp>
                       textAlign: TextAlign.center,
                     ),
                     Spacer(),
-                    FlatButton.icon(
+                    TextButton.icon(
                       onPressed: () async {
                         var back = await Navigator.push(
                                 context,
@@ -935,8 +1005,6 @@ class _ScenePopUp extends State<ScenePopUp>
                         // debugPrint("${location.toJson()}");
                         Navigator.pop(context, back);
                       },
-                      color: background,
-                      splashColor: background1.withOpacity(0.2),
                       label: Text(
                         "Edit",
                         style: TextStyle(color: Colors.indigo),
@@ -1262,6 +1330,64 @@ class _ScenePopUp extends State<ScenePopUp>
                               ),
                             ],
                           ),
+                        ),
+                        Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          child: TextField(
+                            textInputAction: TextInputAction.newline,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              scene.sfx = v;
+                            },
+                            controller: sfxTextController,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              enabled: false,
+                              disabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background)),
+                              labelText: 'SFX',
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: color,
+                          thickness: 2,
+                        ),
+                        Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          child: TextField(
+                            textInputAction: TextInputAction.newline,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              scene.vfx = v;
+                            },
+                            controller: vfxTextController,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              enabled: false,
+                              disabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background)),
+                              labelText: 'VFX',
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: color,
+                          thickness: 2,
                         ),
                         // Artists
                         Padding(

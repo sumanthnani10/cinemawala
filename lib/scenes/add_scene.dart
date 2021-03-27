@@ -48,7 +48,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       costumesImages = [];
   bool loading = true, edit = false;
   ScrollController cardScrollController = new ScrollController();
-  TextEditingController specialEquipmentTextController, makeUpTextController;
+  TextEditingController specialEquipmentTextController,
+      makeUpTextController,
+      sfxTextController,
+      vfxTextController;
 
   @override
   void initState() {
@@ -97,6 +100,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         },
         "special_equipment": "",
         "make_up": "",
+        "sfx": "",
+        "vfx": "",
         "titles": {},
         "gists": {},
       };
@@ -141,6 +146,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     specialEquipmentTextController =
         new TextEditingController(text: scene['special_equipment']);
     makeUpTextController = new TextEditingController(text: scene['make_up']);
+    sfxTextController = new TextEditingController(text: scene['sfx']);
+    vfxTextController = new TextEditingController(text: scene['vfx']);
 
     specialEquipments = [
       'Gimmy',
@@ -707,6 +714,50 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.newline,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene['sfx'] = v;
+                  },
+                  controller: sfxTextController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: 'SFX',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.newline,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene['vfx'] = v;
+                  },
+                  controller: vfxTextController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: 'VFX',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
               // Artists
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -785,6 +836,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: InkWell(
                   onTap: () async {
+                    // print(scene['addl_artists']);
                     var addlArtists = {
                       'Juniors': {
                         'field_values': [
@@ -792,6 +844,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                             'Male': 0,
                             'Female': 0,
                             'Kids': 0,
+                            'Contact': '',
                             'Notes': '',
                           }
                         ],
@@ -799,6 +852,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                           'Male': 0,
                           'Female': 0,
                           'Kids': 0,
+                          'Contact': '',
                           'Notes': '',
                         },
                         'addable': false
@@ -809,6 +863,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                             'Male': 0,
                             'Female': 0,
                             'Kids': 0,
+                            'Contact': '',
                             'Notes': '',
                           }
                         ],
@@ -816,18 +871,34 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                           'Male': 0,
                           'Female': 0,
                           'Kids': 0,
+                          'Contact': '',
+                          'Notes': '',
+                        },
+                        'addable': false
+                      },
+                      'Dancers/Fighters': {
+                        'field_values': [
+                          {
+                            'Male': 0,
+                            'Female': 0,
+                            'Kids': 0,
+                            'Contact': '',
+                            'Notes': '',
+                          }
+                        ],
+                        'fields': {
+                          'Male': 0,
+                          'Female': 0,
+                          'Kids': 0,
+                          'Contact': '',
                           'Notes': '',
                         },
                         'addable': false
                       },
                       'Gang Members': {
-                        'field_values': [
-                          {
-                            'Name': '',
-                            'Contact': '',
-                          }
-                        ],
+                        'field_values': [],
                         'fields': {
+                          'id': '',
                           'Name': '',
                           'Contact': '',
                         },
@@ -835,12 +906,9 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       },
                       'Additional Artists': {
                         'field_values': [
-                          {
-                            'Name': '',
-                            'Contact': '',
-                          }
                         ],
                         'fields': {
+                          'id': '',
                           'Name': '',
                           'Contact': '',
                         },
@@ -855,11 +923,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                         context,
                         PageRouteBuilder(
                             pageBuilder: (_, __, ___) => AddCompanyArtists(
-                                  additionalArtists: addlArtists,
+                              additionalArtists: edit ? null : null,
                                 ),
                             opaque: false));
                     if (selected != null) {
-                      for (var k in addlArtists.keys) {
+                      for (var k in selected.keys) {
                         scene['addl_artists']['$k'] =
                             selected['$k']['field_values'];
                       }

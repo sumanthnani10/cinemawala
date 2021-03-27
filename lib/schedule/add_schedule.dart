@@ -48,11 +48,16 @@ class _AddScheduleState extends State<AddSchedule> {
     "Saturday"
   ];
   List<Scene> selectedScenes = [];
+  List<dynamic> companyArtists = [];
+  List<dynamic> gangMembers = [];
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
-  Map<dynamic, dynamic> artistTimings = {};
+  Map<dynamic, dynamic> artistTimings = {},
+      companyTimings = {},
+      sfxTimings = {},
+      vfxTimings = {};
   DateTime selectedDate;
   int selectedSceneIndex = 0;
 
@@ -65,6 +70,9 @@ class _AddScheduleState extends State<AddSchedule> {
     selectedDate =
         DateTime(schedule['year'], schedule['month'], schedule['day']);
     artistTimings = schedule['artist_timings'];
+    companyTimings = schedule['comp_timings'];
+    sfxTimings = schedule['sfx_timings'];
+    vfxTimings = schedule['vfx_timings'];
     schedule['scenes'].forEach((s) {
       Scene scene = Utils.scenesMap[s];
       selectedScenes.add(scene);
@@ -255,6 +263,12 @@ class _AddScheduleState extends State<AddSchedule> {
                               (i) => InkWell(
                                 onTap: () async {
                                   selectedSceneIndex = i;
+                                  companyArtists =
+                                      selectedScenes[selectedSceneIndex]
+                                          .addlArtists['Additional Artists'];
+                                  gangMembers =
+                                      selectedScenes[selectedSceneIndex]
+                                          .addlArtists['Gang Members'];
                                   setState(() {});
                                 },
                                 child: Container(
