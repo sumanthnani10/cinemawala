@@ -6,8 +6,8 @@ class Schedule {
   int year, month, day;
   List<dynamic> scenes;
   Map<String, dynamic> artistTimings,
-      companyTimings,
-      gangTimings,
+      additionalTimings,
+      callSheetTimings,
       vfxTimings,
       sfxTimings;
 
@@ -23,7 +23,8 @@ class Schedule {
     @required this.day,
     @required this.scenes,
     @required this.artistTimings,
-    @required this.companyTimings,
+    @required this.additionalTimings,
+    @required this.callSheetTimings,
     @required this.vfxTimings,
     @required this.sfxTimings,
   });
@@ -35,7 +36,8 @@ class Schedule {
       lastEditBy: i['last_edit_by'],
       addedBy: i['added_by'],
       artistTimings: i['artist_timings'],
-      companyTimings: i['comp_timings'],
+      additionalTimings: i['addl_timings'],
+      callSheetTimings: i['call_timings'],
       sfxTimings: i['sfx_timings'],
       vfxTimings: i['vfx_timings'],
       created: DateTime.fromMillisecondsSinceEpoch(i['created']),
@@ -57,7 +59,8 @@ class Schedule {
       "id": this.id,
       "year": this.year,
       "artist_timings": this.artistTimings,
-      "comp_timings": this.companyTimings,
+      "addl_timings": this.additionalTimings,
+      "call_timings": this.callSheetTimings,
       "sfx_timings": this.sfxTimings,
       "vfx_timings": this.vfxTimings,
       "last_edit_by": this.lastEditBy,

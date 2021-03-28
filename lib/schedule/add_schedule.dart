@@ -33,29 +33,30 @@ class _AddScheduleState extends State<AddSchedule> {
   final Project project;
   Map<dynamic, dynamic> schedule;
 
+  Scene selectedScene;
+
   _AddScheduleState(this.project, this.schedule, this.edit);
 
   Color background, background1, color;
   bool loading = true;
   bool edit;
   List<String> weeksDays = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
+    "Sunday"
   ];
   List<Scene> selectedScenes = [];
-  List<dynamic> companyArtists = [];
-  List<dynamic> gangMembers = [];
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
   Map<dynamic, dynamic> artistTimings = {},
-      companyTimings = {},
+      addlTimings = {},
+      callSheetTimings = {},
       sfxTimings = {},
       vfxTimings = {};
   DateTime selectedDate;
@@ -63,6 +64,9 @@ class _AddScheduleState extends State<AddSchedule> {
 
   var bottomSheetHeadingStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  var bottomSheetSubheadingStyle =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  var addlKeys = Utils.addlKeys;
 
   @override
   void initState() {
@@ -70,7 +74,8 @@ class _AddScheduleState extends State<AddSchedule> {
     selectedDate =
         DateTime(schedule['year'], schedule['month'], schedule['day']);
     artistTimings = schedule['artist_timings'];
-    companyTimings = schedule['comp_timings'];
+    addlTimings = schedule['addl_timings'];
+    callSheetTimings = schedule['call_timings'];
     sfxTimings = schedule['sfx_timings'];
     vfxTimings = schedule['vfx_timings'];
     schedule['scenes'].forEach((s) {
@@ -89,7 +94,11 @@ class _AddScheduleState extends State<AddSchedule> {
       });
       selectedLocations.add(Utils.locationsMap[scene.location]);
     });
+
     selectedSceneIndex = 0;
+    if (selectedScenes.length > 0) {
+      selectedScene = selectedScenes.elementAt(selectedSceneIndex);
+    }
     super.initState();
   }
 
@@ -113,6 +122,12 @@ class _AddScheduleState extends State<AddSchedule> {
     } else {
       background1 = Colors.white;
     }
+
+    // print(schedule['call_timings']);
+    // print(schedule['vfx_timings']);
+    // print(schedule['sfx_timings']);
+    // print(schedule['addl_timings']);
+    // print("---------");
 
     return Scaffold(
       backgroundColor: background,
@@ -159,7 +174,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}-${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}-${selectedDate.year}, ${weeksDays[selectedDate.weekday]}",
+                      "${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}-${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}-${selectedDate.year}, ${weeksDays[selectedDate.weekday - 1]}",
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
@@ -194,12 +209,24 @@ class _AddScheduleState extends State<AddSchedule> {
                           selectedProps = {};
                           selectedLocations = {};
                           selectedCostumes = {};
-                          Map<String, dynamic> timings = {};
+                          Map<String, dynamic> timings = {},
+                              vTimings = {},
+                              sTimings = {},
+                              csTimings = {},
+                              aTimings = {};
+                          // print(addlTimings);
+                          // print(sfxTimings);
+                          // print(vfxTimings);
+                          // print(callSheetTimings);
 
                           selected.forEach((s) {
                             Scene scene = Utils.scenesMap[s];
                             selectedScenes.add(scene);
                             timings[s] = {};
+                            aTimings[s] = {};
+                            vTimings[s] = {};
+                            sTimings[s] = {};
+                            csTimings[s] = {};
                             scene.artists.forEach((a) {
                               selectedArtists.add(Utils.artistsMap[a]);
                               if (artistTimings.containsKey(s)) {
@@ -218,6 +245,98 @@ class _AddScheduleState extends State<AddSchedule> {
                                 };
                               }
                             });
+
+                            if (vfxTimings.containsKey(s)) {
+                              vTimings[s] = vfxTimings[s];
+                            } else {
+                              vTimings[s] = {
+                                "start": [8, 0, 0],
+                                "end": [9, 0, 1],
+                              };
+                            }
+
+                            if (sfxTimings.containsKey(s)) {
+                              sTimings[s] = sfxTimings[s];
+                            } else {
+                              sTimings[s] = {
+                                "start": [8, 0, 0],
+                                "end": [9, 0, 1],
+                              };
+                            }
+
+                            if (callSheetTimings.containsKey(s)) {
+                              csTimings[s] = callSheetTimings[s];
+                            } else {
+                              csTimings[s] = {
+                                "start": [8, 0, 0],
+                                "end": [9, 0, 1],
+                              };
+                            }
+
+                            scene.addlArtists.forEach((cat, value) {
+                              // print(cat);
+                              if (!Utils.additionalArtists[cat]['addable']) {
+                                // print('not addable');
+                                if (addlTimings.containsKey(s)) {
+                                  if (addlTimings[s].containsKey(cat)) {
+                                    aTimings[s][cat] = addlTimings[s][cat];
+                                  } else {
+                                    aTimings[s][cat] = {
+                                      "start": [8, 0, 0],
+                                      "end": [9, 0, 1],
+                                    };
+                                  }
+                                } else {
+                                  if (!aTimings.containsKey(s))
+                                    aTimings[s] = {};
+                                  aTimings[s][cat] = {
+                                    "start": [8, 0, 0],
+                                    "end": [9, 0, 1],
+                                  };
+                                }
+                              } else {
+                                // print('addable');
+                                if (addlTimings.containsKey(s)) {
+                                  if (addlTimings[s].containsKey(cat)) {
+                                    if (!aTimings[s].containsKey(cat))
+                                      aTimings[s][cat] = {};
+                                    for (var i in value) {
+                                      if (addlTimings[s][cat]
+                                          .containsKey(i['id'])) {
+                                        aTimings[s][cat][i['id']] =
+                                            addlTimings[s][cat][i['id']];
+                                      } else {
+                                        aTimings[s][cat][i['id']] = {
+                                          "start": [8, 0, 0],
+                                          "end": [9, 0, 1],
+                                        };
+                                      }
+                                    }
+                                  } else {
+                                    if (!aTimings[s].containsKey(cat))
+                                      aTimings[s][cat] = {};
+                                    for (var i in value) {
+                                      aTimings[s][cat][i['id']] = {
+                                        "start": [8, 0, 0],
+                                        "end": [9, 0, 1],
+                                      };
+                                    }
+                                  }
+                                } else {
+                                  if (!aTimings.containsKey(s))
+                                    aTimings[s] = {};
+                                  if (!aTimings[s].containsKey(cat))
+                                    aTimings[s][cat] = {};
+                                  for (var i in value) {
+                                    aTimings[s][cat][i['id']] = {
+                                      "start": [8, 0, 0],
+                                      "end": [9, 0, 1],
+                                    };
+                                  }
+                                }
+                              }
+                            });
+
                             for (var i in scene.costumes) {
                               for (var j in i['costumes']) {
                                 selectedCostumes.add(Utils.costumesMap[j]);
@@ -231,6 +350,25 @@ class _AddScheduleState extends State<AddSchedule> {
                           });
                           schedule["artist_timings"] = timings;
                           artistTimings = timings;
+                          addlTimings = aTimings;
+                          schedule['addl_timings'] = aTimings;
+                          sfxTimings = sTimings;
+                          schedule['sfx_timings'] = sTimings;
+                          vfxTimings = vTimings;
+                          schedule['vfx_timings'] = vTimings;
+                          callSheetTimings = csTimings;
+                          schedule['call_timings'] = csTimings;
+
+                          // print(addlTimings);
+                          // print(sfxTimings);
+                          // print(vfxTimings);
+                          // print(callSheetTimings);
+
+                          selectedSceneIndex = 0;
+                          if (selectedScenes.length > 0) {
+                            selectedScene =
+                                selectedScenes.elementAt(selectedSceneIndex);
+                          }
 
                           setState(() {});
                         }
@@ -263,12 +401,7 @@ class _AddScheduleState extends State<AddSchedule> {
                               (i) => InkWell(
                                 onTap: () async {
                                   selectedSceneIndex = i;
-                                  companyArtists =
-                                      selectedScenes[selectedSceneIndex]
-                                          .addlArtists['Additional Artists'];
-                                  gangMembers =
-                                      selectedScenes[selectedSceneIndex]
-                                          .addlArtists['Gang Members'];
+                                  selectedScene = selectedScenes.elementAt(i);
                                   setState(() {});
                                 },
                                 child: Container(
@@ -308,13 +441,25 @@ class _AddScheduleState extends State<AddSchedule> {
                                               selectedProps = {};
                                               selectedLocations = {};
                                               selectedCostumes = {};
-                                              Map<String, dynamic> timings = {};
+                                              Map<String, dynamic> timings = {},
+                                                  vTimings = {},
+                                                  sTimings = {},
+                                                  csTimings = {},
+                                                  aTimings = {};
+
+                                              // print(addlTimings);
+                                              // print(sfxTimings);
+                                              // print(vfxTimings);
+                                              // print(callSheetTimings);
 
                                               selectedScenes.forEach((scene) {
-                                                schedule['scenes']
-                                                    .add(scene.id);
-                                                var s = scene.id;
+                                                String s = scene.id;
+                                                schedule['scenes'].add(s);
                                                 timings[s] = {};
+                                                aTimings[s] = {};
+                                                vTimings[s] = {};
+                                                sTimings[s] = {};
+                                                csTimings[s] = {};
                                                 scene.artists.forEach((a) {
                                                   selectedArtists
                                                       .add(Utils.artistsMap[a]);
@@ -337,10 +482,122 @@ class _AddScheduleState extends State<AddSchedule> {
                                                     };
                                                   }
                                                 });
-                                                scene.artists.forEach((a) {
-                                                  selectedArtists
-                                                      .add(Utils.artistsMap[a]);
+
+                                                if (vfxTimings.containsKey(s)) {
+                                                  vTimings[s] = vfxTimings[s];
+                                                } else {
+                                                  vTimings[s] = {
+                                                    "start": [8, 0, 0],
+                                                    "end": [9, 0, 1],
+                                                  };
+                                                }
+
+                                                if (sfxTimings.containsKey(s)) {
+                                                  sTimings[s] = sfxTimings[s];
+                                                } else {
+                                                  sTimings[s] = {
+                                                    "start": [8, 0, 0],
+                                                    "end": [9, 0, 1],
+                                                  };
+                                                }
+
+                                                if (callSheetTimings
+                                                    .containsKey(s)) {
+                                                  csTimings[s] =
+                                                      callSheetTimings[s];
+                                                } else {
+                                                  csTimings[s] = {
+                                                    "start": [8, 0, 0],
+                                                    "end": [9, 0, 1],
+                                                  };
+                                                }
+
+                                                scene.addlArtists
+                                                    .forEach((cat, value) {
+                                                  // print(cat);
+                                                  if (!Utils.additionalArtists[
+                                                      cat]['addable']) {
+                                                    // print('not addable');
+                                                    if (addlTimings
+                                                        .containsKey(s)) {
+                                                      if (addlTimings[s]
+                                                          .containsKey(cat)) {
+                                                        aTimings[s][cat] =
+                                                            addlTimings[s][cat];
+                                                      } else {
+                                                        aTimings[s][cat] = {
+                                                          "start": [8, 0, 0],
+                                                          "end": [9, 0, 1],
+                                                        };
+                                                      }
+                                                    } else {
+                                                      if (!aTimings.containsKey(
+                                                          s)) aTimings[s] = {};
+                                                      aTimings[s][cat] = {
+                                                        "start": [8, 0, 0],
+                                                        "end": [9, 0, 1],
+                                                      };
+                                                    }
+                                                  } else {
+                                                    // print('addable');
+                                                    if (addlTimings
+                                                        .containsKey(s)) {
+                                                      if (addlTimings[s]
+                                                          .containsKey(cat)) {
+                                                        if (!aTimings[s]
+                                                            .containsKey(cat))
+                                                          aTimings[s][cat] = {};
+                                                        for (var i in value) {
+                                                          if (addlTimings[s]
+                                                                  [cat]
+                                                              .containsKey(
+                                                                  i['id'])) {
+                                                            aTimings[s][cat]
+                                                                    [i['id']] =
+                                                                addlTimings[s]
+                                                                        [cat]
+                                                                    [i['id']];
+                                                          } else {
+                                                            aTimings[s][cat]
+                                                                [i['id']] = {
+                                                              "start": [
+                                                                8,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "end": [9, 0, 1],
+                                                            };
+                                                          }
+                                                        }
+                                                      } else {
+                                                        if (!aTimings[s]
+                                                            .containsKey(cat))
+                                                          aTimings[s][cat] = {};
+                                                        for (var i in value) {
+                                                          aTimings[s][cat]
+                                                              [i['id']] = {
+                                                            "start": [8, 0, 0],
+                                                            "end": [9, 0, 1],
+                                                          };
+                                                        }
+                                                      }
+                                                    } else {
+                                                      if (!aTimings.containsKey(
+                                                          s)) aTimings[s] = {};
+                                                      if (!aTimings[s]
+                                                          .containsKey(cat))
+                                                        aTimings[s][cat] = {};
+                                                      for (var i in value) {
+                                                        aTimings[s][cat]
+                                                            [i['id']] = {
+                                                          "start": [8, 0, 0],
+                                                          "end": [9, 0, 1],
+                                                        };
+                                                      }
+                                                    }
+                                                  }
                                                 });
+
                                                 for (var i in scene.costumes) {
                                                   for (var j in i['costumes']) {
                                                     selectedCostumes.add(
@@ -358,6 +615,30 @@ class _AddScheduleState extends State<AddSchedule> {
                                               schedule["artist_timings"] =
                                                   timings;
                                               artistTimings = timings;
+                                              addlTimings = aTimings;
+                                              schedule['addl_timings'] =
+                                                  aTimings;
+                                              sfxTimings = sTimings;
+                                              schedule['sfx_timings'] =
+                                                  sTimings;
+                                              vfxTimings = vTimings;
+                                              schedule['vfx_timings'] =
+                                                  vTimings;
+                                              callSheetTimings = csTimings;
+                                              schedule['call_timings'] =
+                                                  csTimings;
+
+                                              // print(addlTimings);
+                                              // print(sfxTimings);
+                                              // print(vfxTimings);
+                                              // print(callSheetTimings);
+
+                                              selectedSceneIndex = 0;
+                                              if (selectedScenes.length > 0) {
+                                                selectedScene =
+                                                    selectedScenes.elementAt(
+                                                        selectedSceneIndex);
+                                              }
 
                                               setState(() {});
                                             })
@@ -369,6 +650,628 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
                 ),
               ),
+              // CALL SHEET TIMING
+              if (selectedScenes.length > 0)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Call Sheet Timing"),
+                      Builder(
+                        builder: (context) {
+                          var timings = callSheetTimings[selectedScene.id];
+                          return Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['start'][2] == 1
+                                                    ? timings['start'][0] + 12
+                                                    : timings['start'][0],
+                                                timings['start'][1])));
+                                    if (pickedTime != null) {
+                                      timings['start'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['start'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['start'][2] = 0;
+                                      } else {
+                                        timings['start'][2] = 1;
+                                      }
+
+                                      callSheetTimings[selectedScene.id] =
+                                          timings;
+                                      schedule['call_timings'] =
+                                          callSheetTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                              Text(
+                                " to ",
+                                style: TextStyle(color: background1),
+                              ),
+                              InkWell(
+                                  onTap: () async {
+                                    Scene selectedScene = selectedScenes
+                                        .elementAt(selectedSceneIndex);
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['end'][2] == 1
+                                                    ? timings['end'][0] + 12
+                                                    : timings['end'][0],
+                                                timings['end'][1])));
+                                    if (pickedTime != null) {
+                                      timings['end'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['end'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['end'][2] = 0;
+                                      } else {
+                                        timings['end'][2] = 1;
+                                      }
+
+                                      callSheetTimings[selectedScene.id] =
+                                          timings;
+                                      schedule['call_timings'] =
+                                          callSheetTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              // VFX TIMING
+              if (selectedScenes.length > 0)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("VFX Timing"),
+                      Builder(
+                        builder: (context) {
+                          var timings = vfxTimings[selectedScene.id];
+                          return Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['start'][2] == 1
+                                                    ? timings['start'][0] + 12
+                                                    : timings['start'][0],
+                                                timings['start'][1])));
+                                    if (pickedTime != null) {
+                                      timings['start'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['start'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['start'][2] = 0;
+                                      } else {
+                                        timings['start'][2] = 1;
+                                      }
+
+                                      vfxTimings[selectedScene.id] = timings;
+                                      schedule['vfx_timings'] = vfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                              Text(
+                                " to ",
+                                style: TextStyle(color: background1),
+                              ),
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['end'][2] == 1
+                                                    ? timings['end'][0] + 12
+                                                    : timings['end'][0],
+                                                timings['end'][1])));
+                                    if (pickedTime != null) {
+                                      timings['end'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['end'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['end'][2] = 0;
+                                      } else {
+                                        timings['end'][2] = 1;
+                                      }
+
+                                      vfxTimings[selectedScene.id] = timings;
+                                      schedule['vfx_timings'] = vfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              // SFX TIMING
+              if (selectedScenes.length > 0)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("SFX Timing"),
+                      Builder(
+                        builder: (context) {
+                          var timings = sfxTimings[selectedScene.id];
+                          return Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['start'][2] == 1
+                                                    ? timings['start'][0] + 12
+                                                    : timings['start'][0],
+                                                timings['start'][1])));
+                                    if (pickedTime != null) {
+                                      timings['start'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['start'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['start'][2] = 0;
+                                      } else {
+                                        timings['start'][2] = 1;
+                                      }
+
+                                      sfxTimings[selectedScene.id] = timings;
+                                      schedule['sfx_timings'] = sfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                              Text(
+                                " to ",
+                                style: TextStyle(color: background1),
+                              ),
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['end'][2] == 1
+                                                    ? timings['end'][0] + 12
+                                                    : timings['end'][0],
+                                                timings['end'][1])));
+                                    if (pickedTime != null) {
+                                      timings['end'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['end'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['end'][2] = 0;
+                                      } else {
+                                        timings['end'][2] = 1;
+                                      }
+
+                                      sfxTimings[selectedScene.id] = timings;
+                                      schedule['sfx_timings'] = sfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              // ADDITIONAL ARTISTS
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Additional Artists",
+                      style: bottomSheetHeadingStyle,
+                    )),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: selectedScenes.length == 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No Additional Artists'),
+                      )
+                    : Column(
+                        children:
+                            List<Widget>.generate(addlKeys.length, (keyj) {
+                          var key = addlKeys[keyj];
+                          if (!Utils.additionalArtists[key]['addable']) {
+                            var artist = {"Name": '$key'};
+                            var timings = addlTimings[selectedScene.id][key];
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${artist['Name']}",
+                                        style: bottomSheetSubheadingStyle,
+                                      ),
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                              onTap: () async {
+                                                TimeOfDay pickedTime = await showTimePicker(
+                                                    context: context,
+                                                    initialTime: TimeOfDay
+                                                        .fromDateTime(DateTime(
+                                                            selectedDate.year,
+                                                            selectedDate.month,
+                                                            selectedDate.day,
+                                                            timings['start']
+                                                                        [2] ==
+                                                                    1
+                                                                ? timings['start']
+                                                                        [0] +
+                                                                    12
+                                                                : timings[
+                                                                    'start'][0],
+                                                            timings['start']
+                                                                [1])));
+                                                if (pickedTime != null) {
+                                                  timings['start'][0] =
+                                                      pickedTime.hourOfPeriod;
+                                                  timings['start'][1] =
+                                                      pickedTime.minute;
+
+                                                  if (pickedTime.hourOfPeriod ==
+                                                      pickedTime.hour) {
+                                                    timings['start'][2] = 0;
+                                                  } else {
+                                                    timings['start'][2] = 1;
+                                                  }
+
+                                                  addlTimings[selectedScene.id]
+                                                      [key] = timings;
+                                                  schedule['addl_timings'] =
+                                                      addlTimings;
+
+                                                  setState(() {});
+                                                }
+                                              },
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                          Text(
+                                            " to ",
+                                            style:
+                                                TextStyle(color: background1),
+                                          ),
+                                          InkWell(
+                                              onTap: () async {
+                                                TimeOfDay pickedTime =
+                                                    await showTimePicker(
+                                                        context: context,
+                                                        initialTime: TimeOfDay
+                                                            .fromDateTime(DateTime(
+                                                                selectedDate
+                                                                    .year,
+                                                                selectedDate
+                                                                    .month,
+                                                                selectedDate
+                                                                    .day,
+                                                                timings['end'][
+                                                                            2] ==
+                                                                        1
+                                                                    ? timings['end']
+                                                                            [
+                                                                            0] +
+                                                                        12
+                                                                    : timings[
+                                                                            'end']
+                                                                        [0],
+                                                                timings['end']
+                                                                    [1])));
+                                                if (pickedTime != null) {
+                                                  timings['end'][0] =
+                                                      pickedTime.hourOfPeriod;
+                                                  timings['end'][1] =
+                                                      pickedTime.minute;
+
+                                                  if (pickedTime.hourOfPeriod ==
+                                                      pickedTime.hour) {
+                                                    timings['end'][2] = 0;
+                                                  } else {
+                                                    timings['end'][2] = 1;
+                                                  }
+
+                                                  addlTimings[selectedScene.id]
+                                                      [key] = timings;
+                                                  schedule['addl_timings'] =
+                                                      addlTimings;
+
+                                                  setState(() {});
+                                                }
+                                              },
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                if (keyj + 1 != addlKeys.length)
+                                  Divider(
+                                    thickness: 1,
+                                  ),
+                              ],
+                            );
+                          } else {
+                            return selectedScene.addlArtists['$key'].length == 0
+                                ? Container()
+                                : Column(
+                                    children: <Widget>[
+                                          Text(
+                                            "$key",
+                                            style: bottomSheetSubheadingStyle,
+                                          )
+                                        ] +
+                                        List<Widget>.generate(
+                                            selectedScene.addlArtists['$key']
+                                                .length, (ind) {
+                                          var artist = selectedScene
+                                              .addlArtists['$key'][ind];
+                                          var timings =
+                                              addlTimings[selectedScene.id]
+                                                  ["$key"][artist['id']];
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text("${artist['Name']}"),
+                                                Row(
+                                                  children: [
+                                                    InkWell(
+                                                        onTap: () async {
+                                                          TimeOfDay pickedTime = await showTimePicker(
+                                                              context: context,
+                                                              initialTime: TimeOfDay.fromDateTime(DateTime(
+                                                                  selectedDate
+                                                                      .year,
+                                                                  selectedDate
+                                                                      .month,
+                                                                  selectedDate
+                                                                      .day,
+                                                                  timings['start']
+                                                                              [
+                                                                              2] ==
+                                                                          1
+                                                                      ? timings['start']
+                                                                              [
+                                                                              0] +
+                                                                          12
+                                                                      : timings[
+                                                                              'start']
+                                                                          [0],
+                                                                  timings['start']
+                                                                      [1])));
+                                                          if (pickedTime !=
+                                                              null) {
+                                                            timings['start']
+                                                                    [0] =
+                                                                pickedTime
+                                                                    .hourOfPeriod;
+                                                            timings['start']
+                                                                    [1] =
+                                                                pickedTime
+                                                                    .minute;
+
+                                                            if (pickedTime
+                                                                    .hourOfPeriod ==
+                                                                pickedTime
+                                                                    .hour) {
+                                                              timings['start']
+                                                                  [2] = 0;
+                                                            } else {
+                                                              timings['start']
+                                                                  [2] = 1;
+                                                            }
+
+                                                            addlTimings[selectedScene
+                                                                            .id]
+                                                                        [key]
+                                                                    [
+                                                                    artist[
+                                                                        'id']] =
+                                                                timings;
+                                                            schedule[
+                                                                    'addl_timings'] =
+                                                                addlTimings;
+
+                                                            setState(() {});
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .indigo),
+                                                        )),
+                                                    Text(
+                                                      " to ",
+                                                      style: TextStyle(
+                                                          color: background1),
+                                                    ),
+                                                    InkWell(
+                                                        onTap: () async {
+                                                          TimeOfDay pickedTime = await showTimePicker(
+                                                              context: context,
+                                                              initialTime: TimeOfDay.fromDateTime(DateTime(
+                                                                  selectedDate
+                                                                      .year,
+                                                                  selectedDate
+                                                                      .month,
+                                                                  selectedDate
+                                                                      .day,
+                                                                  timings['end']
+                                                                              [
+                                                                              2] ==
+                                                                          1
+                                                                      ? timings['end']
+                                                                              [
+                                                                              0] +
+                                                                          12
+                                                                      : timings[
+                                                                              'end']
+                                                                          [0],
+                                                                  timings['end']
+                                                                      [1])));
+                                                          if (pickedTime !=
+                                                              null) {
+                                                            timings['end'][0] =
+                                                                pickedTime
+                                                                    .hourOfPeriod;
+                                                            timings['end'][1] =
+                                                                pickedTime
+                                                                    .minute;
+
+                                                            if (pickedTime
+                                                                    .hourOfPeriod ==
+                                                                pickedTime
+                                                                    .hour) {
+                                                              timings['end']
+                                                                  [2] = 0;
+                                                            } else {
+                                                              timings['end']
+                                                                  [2] = 1;
+                                                            }
+
+                                                            addlTimings[selectedScene
+                                                                            .id]
+                                                                        [key]
+                                                                    [
+                                                                    artist[
+                                                                        'id']] =
+                                                                timings;
+                                                            schedule[
+                                                                    'addl_timings'] =
+                                                                addlTimings;
+
+                                                            setState(() {});
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .indigo),
+                                                        )),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }) +
+                                        [
+                                          if (keyj + 1 != addlKeys.length)
+                                            Divider(
+                                              thickness: 1,
+                                            ),
+                                        ],
+                                  );
+                          }
+                        }),
+                      ),
+              ),
+              Divider(
+                thickness: 2,
+              ),
+              // ARTISTS
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Align(
@@ -930,3 +1833,61 @@ class _AddScheduleState extends State<AddSchedule> {
                 ),
               ),
               */
+
+/*schedule['scenes'] = [];
+                                              selectedArtists = {};
+                                              selectedProps = {};
+                                              selectedLocations = {};
+                                              selectedCostumes = {};
+                                              Map<String, dynamic> timings = {};
+
+                                              selectedScenes.forEach((scene) {
+                                                schedule['scenes']
+                                                    .add(scene.id);
+                                                var s = scene.id;
+                                                timings[s] = {};
+                                                scene.artists.forEach((a) {
+                                                  selectedArtists
+                                                      .add(Utils.artistsMap[a]);
+                                                  if (artistTimings
+                                                      .containsKey(s)) {
+                                                    if (artistTimings[s]
+                                                        .containsKey(a)) {
+                                                      timings[s][a] =
+                                                          artistTimings[s][a];
+                                                    } else {
+                                                      timings[s][a] = {
+                                                        "start": [8, 0, 0],
+                                                        "end": [9, 0, 1],
+                                                      };
+                                                    }
+                                                  } else {
+                                                    timings[s][a] = {
+                                                      "start": [8, 0, 0],
+                                                      "end": [9, 0, 1],
+                                                    };
+                                                  }
+                                                });
+                                                scene.artists.forEach((a) {
+                                                  selectedArtists
+                                                      .add(Utils.artistsMap[a]);
+                                                });
+                                                for (var i in scene.costumes) {
+                                                  for (var j in i['costumes']) {
+                                                    selectedCostumes.add(
+                                                        Utils.costumesMap[j]);
+                                                  }
+                                                }
+                                                scene.props.forEach((p) {
+                                                  selectedProps
+                                                      .add(Utils.propsMap[p]);
+                                                });
+                                                selectedLocations.add(
+                                                    Utils.locationsMap[
+                                                        scene.location]);
+                                              });
+                                              schedule["artist_timings"] =
+                                                  timings;
+                                              artistTimings = timings;
+
+                                              setState(() {});*/

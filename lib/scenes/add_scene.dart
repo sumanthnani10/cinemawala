@@ -85,18 +85,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               'Notes': '',
             }
           ],
-          'Gang Members': [
+          'Dancers/Fighters': [
             {
-              'Name': '',
-              'Contact': '',
+              'Male': 0,
+              'Female': 0,
+              'Kids': 0,
+              'Notes': '',
             }
           ],
-          'Additional Artists': [
-            {
-              'Name': '',
-              'Contact': '',
-            }
-          ],
+          'Gang Members': [],
+          'Additional Artists': [],
         },
         "special_equipment": "",
         "make_up": "",
@@ -261,6 +259,9 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     } else {
       background1 = Colors.white;
     }
+
+    print(scene['addl_artists']);
+
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
@@ -837,84 +838,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 child: InkWell(
                   onTap: () async {
                     // print(scene['addl_artists']);
-                    var addlArtists = {
-                      'Juniors': {
-                        'field_values': [
-                          {
-                            'Male': 0,
-                            'Female': 0,
-                            'Kids': 0,
-                            'Contact': '',
-                            'Notes': '',
-                          }
-                        ],
-                        'fields': {
-                          'Male': 0,
-                          'Female': 0,
-                          'Kids': 0,
-                          'Contact': '',
-                          'Notes': '',
-                        },
-                        'addable': false
-                      },
-                      'Models': {
-                        'field_values': [
-                          {
-                            'Male': 0,
-                            'Female': 0,
-                            'Kids': 0,
-                            'Contact': '',
-                            'Notes': '',
-                          }
-                        ],
-                        'fields': {
-                          'Male': 0,
-                          'Female': 0,
-                          'Kids': 0,
-                          'Contact': '',
-                          'Notes': '',
-                        },
-                        'addable': false
-                      },
-                      'Dancers/Fighters': {
-                        'field_values': [
-                          {
-                            'Male': 0,
-                            'Female': 0,
-                            'Kids': 0,
-                            'Contact': '',
-                            'Notes': '',
-                          }
-                        ],
-                        'fields': {
-                          'Male': 0,
-                          'Female': 0,
-                          'Kids': 0,
-                          'Contact': '',
-                          'Notes': '',
-                        },
-                        'addable': false
-                      },
-                      'Gang Members': {
-                        'field_values': [],
-                        'fields': {
-                          'id': '',
-                          'Name': '',
-                          'Contact': '',
-                        },
-                        'addable': true
-                      },
-                      'Additional Artists': {
-                        'field_values': [
-                        ],
-                        'fields': {
-                          'id': '',
-                          'Name': '',
-                          'Contact': '',
-                        },
-                        'addable': true
-                      },
-                    };
+                    var addlArtists = Utils.additionalArtists;
                     for (var k in addlArtists.keys) {
                       addlArtists['$k']['field_values'] =
                           scene['addl_artists']['$k'];
@@ -923,7 +847,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                         context,
                         PageRouteBuilder(
                             pageBuilder: (_, __, ___) => AddCompanyArtists(
-                              additionalArtists: edit ? null : null,
+                                  additionalArtists: addlArtists,
                                 ),
                             opaque: false));
                     if (selected != null) {

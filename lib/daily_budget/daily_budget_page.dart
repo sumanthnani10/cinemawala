@@ -65,7 +65,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
 
   var pickedDate, startTime, endTime;
   var formattedTimeOfDay;
-  List<String> weeksDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
   TimeOfDay _timeOfDay = TimeOfDay.now();
 
@@ -1010,7 +1010,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                     onPressed: () {},
                                   ),
                                   Text(
-                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   IconButton(
@@ -1469,7 +1469,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                       onPressed: prevDate,
                                     ),
                                     Text(
-                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                                       style: TextStyle(fontSize: 18),
                                     ),
                                     IconButton(
@@ -1503,7 +1503,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                             onPressed: prevDate,
                           ),
                           Text(
-                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                             style: TextStyle(fontSize: 18),
                           ),
                           IconButton(

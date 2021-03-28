@@ -17,14 +17,12 @@ class SchedulePage extends StatefulWidget {
   final Project project;
   final Schedule schedule;
   final DateTime date;
-  final Map artistTimings;
   final String id;
   final VoidCallback nextDate, prevDate, getAll;
 
   const SchedulePage(
       {Key key,
       @required this.project,
-      @required this.artistTimings,
       @required this.schedule,
       @required this.date,
       @required this.id,
@@ -39,7 +37,6 @@ class SchedulePage extends StatefulWidget {
       this.prevDate,
       this.project,
       this.schedule,
-      this.artistTimings,
       this.date,
       this.id,
       this.getAll);
@@ -53,22 +50,32 @@ class _SchedulePageState extends State<SchedulePage>
   final Project project;
   Schedule schedule;
   final DateTime date;
-  Map artistTimings;
   final VoidCallback nextDate, prevDate, getAll;
 
   _SchedulePageState(this.nextDate, this.prevDate, this.project, this.schedule,
-      this.artistTimings, this.date, this.id, this.getAll);
+      this.date, this.id, this.getAll);
 
-  List<String> weeksDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   List<Scene> selectedScenes = [];
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
+
+  Map<dynamic, dynamic> artistTimings = {},
+      addlTimings = {},
+      callSheetTimings = {},
+      sfxTimings = {},
+      vfxTimings = {};
+
   ScrollPhysics scroll = AlwaysScrollableScrollPhysics(),
       noScroll = NeverScrollableScrollPhysics();
   var bottomSheetHeadingStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  var bottomSheetSubheadingStyle =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  var addlKeys = Utils.addlKeys;
+
   BorderSide selectedIndicator = BorderSide(width: 3),
       unselectedIndicator = BorderSide(width: 3);
   int selectedSceneIndex = 0;
@@ -79,6 +86,11 @@ class _SchedulePageState extends State<SchedulePage>
   @override
   void initState() {
     if (schedule != null) {
+      addlTimings = schedule.additionalTimings;
+      artistTimings = schedule.artistTimings;
+      callSheetTimings = schedule.callSheetTimings;
+      sfxTimings = schedule.sfxTimings;
+      vfxTimings = schedule.vfxTimings;
       schedule.scenes.forEach((s) {
         Scene scene = Utils.scenesMap[s];
         selectedScenes.add(scene);
@@ -169,7 +181,7 @@ class _SchedulePageState extends State<SchedulePage>
                                     onPressed: () {},
                                   ),
                                   Text(
-                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   IconButton(
@@ -243,6 +255,293 @@ class _SchedulePageState extends State<SchedulePage>
                                   ),
                                 ),
                               ),
+                            ),
+                            // CALL SHEET TIMING
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Call Sheet Timing"),
+                                  Builder(
+                                    builder: (context) {
+                                      var timings =
+                                          callSheetTimings[selectedScene.id];
+                                      return Row(
+                                        children: [
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                          Text(
+                                            " to ",
+                                            style:
+                                                TextStyle(color: background1),
+                                          ),
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                            // VFX TIMING
+                            if (selectedScenes.length > 0)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("VFX Timing"),
+                                    Builder(
+                                      builder: (context) {
+                                        var timings =
+                                            vfxTimings[selectedScene.id];
+                                        return Row(
+                                          children: [
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                            Text(
+                                              " to ",
+                                              style:
+                                                  TextStyle(color: background1),
+                                            ),
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                          ],
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            // SFX TIMING
+                            if (selectedScenes.length > 0)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("SFX Timing"),
+                                    Builder(
+                                      builder: (context) {
+                                        var timings =
+                                            sfxTimings[selectedScene.id];
+                                        return Row(
+                                          children: [
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                            Text(
+                                              " to ",
+                                              style:
+                                                  TextStyle(color: background1),
+                                            ),
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                          ],
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            // ADDITIONAL ARTISTS
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Additional Artists",
+                                    style: bottomSheetHeadingStyle,
+                                  )),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: selectedScenes.length == 0
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('No Additional Artists'),
+                                    )
+                                  : Column(
+                                      children: List<Widget>.generate(
+                                          selectedScene.addlArtists.length,
+                                          (keyj) {
+                                        var key = addlKeys[keyj];
+                                        if (!Utils.additionalArtists[key]
+                                            ['addable']) {
+                                          var artist = {"Name": '$key'};
+                                          var timings =
+                                              addlTimings[selectedScene.id]
+                                                  [key];
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "${artist['Name']}",
+                                                      style:
+                                                          bottomSheetSubheadingStyle,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        InkWell(
+                                                            onTap: () async {},
+                                                            child: Text(
+                                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .indigo),
+                                                            )),
+                                                        Text(
+                                                          " to ",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  background1),
+                                                        ),
+                                                        InkWell(
+                                                            onTap: () async {},
+                                                            child: Text(
+                                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .indigo),
+                                                            )),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              if (keyj + 1 != addlKeys.length)
+                                                Divider(
+                                                  thickness: 1,
+                                                ),
+                                            ],
+                                          );
+                                        } else {
+                                          return selectedScene
+                                                      .addlArtists['$key']
+                                                      .length ==
+                                                  0
+                                              ? Container()
+                                              : Column(
+                                                  children: <Widget>[
+                                                        Text(
+                                                          "$key",
+                                                          style:
+                                                              bottomSheetSubheadingStyle,
+                                                        )
+                                                      ] +
+                                                      List<Widget>.generate(
+                                                          selectedScene
+                                                              .addlArtists[
+                                                                  '$key']
+                                                              .length, (ind) {
+                                                        var artist =
+                                                            selectedScene
+                                                                    .addlArtists[
+                                                                '$key'][ind];
+                                                        var timings = addlTimings[
+                                                                selectedScene
+                                                                    .id]["$key"]
+                                                            [artist['id']];
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                  "${artist['Name']}"),
+                                                              Row(
+                                                                children: [
+                                                                  InkWell(
+                                                                      onTap:
+                                                                          () async {},
+                                                                      child:
+                                                                          Text(
+                                                                        "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.indigo),
+                                                                      )),
+                                                                  Text(
+                                                                    " to ",
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            background1),
+                                                                  ),
+                                                                  InkWell(
+                                                                      onTap:
+                                                                          () async {},
+                                                                      child:
+                                                                          Text(
+                                                                        "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.indigo),
+                                                                      )),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }) +
+                                                      [
+                                                        if (keyj + 1 !=
+                                                            addlKeys.length)
+                                                          Divider(
+                                                            thickness: 1,
+                                                          ),
+                                                      ],
+                                                );
+                                        }
+                                      }),
+                                    ),
+                            ),
+                            Divider(
+                              thickness: 2,
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
@@ -456,7 +755,7 @@ class _SchedulePageState extends State<SchedulePage>
                                       onPressed: prevDate,
                                     ),
                                     Text(
-                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                                       style: TextStyle(fontSize: 18),
                                     ),
                                     IconButton(
@@ -578,7 +877,7 @@ class _SchedulePageState extends State<SchedulePage>
                             onPressed: prevDate,
                           ),
                           Text(
-                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
                             style: TextStyle(fontSize: 18),
                           ),
                           IconButton(
@@ -690,7 +989,7 @@ class _SchedulePageState extends State<SchedulePage>
                                 onPressed: prevDate,
                               ),
                               Text(
-                                "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday]}",
+                                "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday-1]}",
                                 style: TextStyle(fontSize: 18),
                               ),
                               IconButton(

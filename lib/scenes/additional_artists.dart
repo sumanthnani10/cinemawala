@@ -31,84 +31,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
   void initState() {
     super.initState();
     if (additionalArtists == null) {
-      additionalArtists = {
-        'Juniors': {
-          'field_values': [
-            {
-              'Male': 0,
-              'Female': 0,
-              'Kids': 0,
-              'Contact': '',
-              'Notes': '',
-            }
-          ],
-          'fields': {
-            'Male': 0,
-            'Female': 0,
-            'Kids': 0,
-            'Contact': '',
-            'Notes': '',
-          },
-          'addable': false
-        },
-        'Models': {
-          'field_values': [
-            {
-              'Male': 0,
-              'Female': 0,
-              'Kids': 0,
-              'Contact': '',
-              'Notes': '',
-            }
-          ],
-          'fields': {
-            'Male': 0,
-            'Female': 0,
-            'Kids': 0,
-            'Contact': '',
-            'Notes': '',
-          },
-          'addable': false
-        },
-        'Dancers/Fighters': {
-          'field_values': [
-            {
-              'Male': 0,
-              'Female': 0,
-              'Kids': 0,
-              'Contact': '',
-              'Notes': '',
-            }
-          ],
-          'fields': {
-            'Male': 0,
-            'Female': 0,
-            'Kids': 0,
-            'Contact': '',
-            'Notes': '',
-          },
-          'addable': false
-        },
-        'Gang Members': {
-          'field_values': [],
-          'fields': {
-            'id': '',
-            'Name': '',
-            'Contact': '',
-          },
-          'addable': true
-        },
-        'Additional Artists': {
-          'field_values': [
-          ],
-          'fields': {
-            'id': '',
-            'Name': '',
-            'Contact': '',
-          },
-          'addable': true
-        },
-      };
+      additionalArtists = Utils.additionalArtists;
     }
   }
 
@@ -558,6 +481,10 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                                                     var field =
                                                         category['field_values']
                                                             [k]['${fields[j]}'];
+
+                                                    if (fields[j] == "id") {
+                                                      return Container();
+                                                    }
 
                                                     textFieldControllers.add(
                                                         new TextEditingController(

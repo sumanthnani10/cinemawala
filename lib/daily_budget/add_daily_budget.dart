@@ -55,13 +55,13 @@ class _AddDailyBudget extends State<AddDailyBudget>
   int viewCats = 3;
   DateTime selectedDate;
   List<String> weeksDays = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
+    "Sunday"
   ];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
   TimeOfDay _timeOfDay = TimeOfDay.now();
@@ -1051,7 +1051,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                           : "0${selectedDate.day}"}-${selectedDate.month > 9
                           ? selectedDate.month
                           : "0${selectedDate.month}"}-${selectedDate
-                          .year}, ${weeksDays[selectedDate.weekday]}",
+                          .year}, ${weeksDays[selectedDate.weekday - 1]}",
                       style: TextStyle(fontSize: 18),
                     ),
                   ],

@@ -607,68 +607,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: InkWell(
                   onTap: () async {
-                    var addlArtists = {
-                      'Juniors': {
-                        'field_values': [
-                          {
-                            'Male': 0,
-                            'Female': 0,
-                            'Kids': 0,
-                            'Notes': '',
-                          }
-                        ],
-                        'fields': {
-                          'Male': 0,
-                          'Female': 0,
-                          'Kids': 0,
-                          'Notes': '',
-                        },
-                        'addable': false
-                      },
-                      'Models': {
-                        'field_values': [
-                          {
-                            'Male': 0,
-                            'Female': 0,
-                            'Kids': 0,
-                            'Notes': '',
-                          }
-                        ],
-                        'fields': {
-                          'Male': 0,
-                          'Female': 0,
-                          'Kids': 0,
-                          'Notes': '',
-                        },
-                        'addable': false
-                      },
-                      'Gang Members': {
-                        'field_values': [
-                          {
-                            'Name': '',
-                            'Contact': '',
-                          }
-                        ],
-                        'fields': {
-                          'Name': '',
-                          'Contact': '',
-                        },
-                        'addable': true
-                      },
-                      'Additional Artists': {
-                        'field_values': [
-                          {
-                            'Name': '',
-                            'Contact': '',
-                          }
-                        ],
-                        'fields': {
-                          'Name': '',
-                          'Contact': '',
-                        },
-                        'addable': true
-                      },
-                    };
+                    var addlArtists = Utils.additionalArtists;
                     for (var k in addlArtists.keys) {
                       addlArtists['$k']['field_values'] =
                           scene.addlArtists['$k'];
