@@ -37,11 +37,18 @@ class _DailyBudgetsState extends State<DailyBudgets>
   @override
   void initState() {
     final date = DateTime.now();
+    dailyBudgets = Utils.dailyBudgetsMap;
     selectedDate = date;
     loading = true;
     selectedDateId =
         "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
     selectedDailyBudget = dailyBudgets[selectedDateId];
+
+    dailyBudgets.forEach((k, v) {
+      print(k);
+      calenderDailyBudget[DateTime(v.year, v.month, v.day)] = [1];
+    });
+
     calendarController = new CalendarController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // getDailyBudgets();
@@ -57,9 +64,6 @@ class _DailyBudgetsState extends State<DailyBudgets>
     }
     dailyBudgets = Utils.dailyBudgetsMap ?? {};
 
-    dailyBudgets.forEach((k, v) {
-      calenderDailyBudget[DateTime(v.year, v.month, v.day)] = v.scenes;
-    });
     selectedDailyBudget = dailyBudgets[selectedDateId];
     Navigator.pop(context);
     setState(() {

@@ -1,7 +1,6 @@
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
-import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
@@ -58,8 +57,6 @@ class _SchedulePageState extends State<SchedulePage>
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   List<Scene> selectedScenes = [];
   Set<Actor> selectedArtists = {};
-  Set<Prop> selectedProps = {};
-  Set<Location> selectedLocations = {};
   Set<Costume> selectedCostumes = {};
 
   Map<dynamic, dynamic> artistTimings = {},
@@ -97,19 +94,16 @@ class _SchedulePageState extends State<SchedulePage>
         scene.artists.forEach((a) {
           selectedArtists.add(Utils.artistsMap[a]);
         });
-        for (var i in scene.costumes) {
-          for (var j in i['costumes']) {
-            selectedCostumes.add(Utils.costumesMap[j]);
-          }
-        }
-        scene.props.forEach((p) {
-          selectedProps.add(Utils.propsMap[p]);
-        });
-        selectedLocations.add(Utils.locationsMap[scene.location]);
       });
       if (schedule.scenes.length != 0) {
         selectedScene = selectedScenes[0];
         selectedSceneIndex = 0;
+        selectedCostumes.clear();
+        for (var i in selectedScene.costumes) {
+          for (var j in i['costumes']) {
+            selectedCostumes.add(Utils.costumesMap[j]);
+          }
+        }
       } else {
         schedule = null;
       }
@@ -564,6 +558,7 @@ class _SchedulePageState extends State<SchedulePage>
                                           selectedScene.artists.length, (j) {
                                         Actor artist = Utils.artistsMap[
                                             selectedScene.artists[j]];
+
                                         var timings =
                                             artistTimings[selectedScene.id]
                                                 [selectedScene.artists[j]];
@@ -607,19 +602,10 @@ class _SchedulePageState extends State<SchedulePage>
                               padding: const EdgeInsets.all(8.0),
                               child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: RichText(
-                                    text: TextSpan(
-                                        text: "Costumes ",
-                                        style: bottomSheetHeadingStyle.copyWith(
-                                            color: background1),
-                                        children: [
-                                          TextSpan(
-                                              text: "(All Scenes)",
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight:
-                                                      FontWeight.normal))
-                                        ]),
+                                  child: Text(
+                                    "Costumes",
+                                    style: bottomSheetHeadingStyle.copyWith(
+                                        color: background1),
                                   )),
                             ),
                             Padding(
@@ -627,12 +613,14 @@ class _SchedulePageState extends State<SchedulePage>
                                   const EdgeInsets.symmetric(horizontal: 8),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: selectedCostumes.length == 0
+                                child: selectedScene.costumes.length == 0
                                     ? Text('No Costumes')
                                     : Wrap(
                                         direction: Axis.horizontal,
                                         children: List<Widget>.generate(
                                             selectedCostumes.length, (i) {
+                                          Costume costume =
+                                              selectedCostumes.elementAt(i);
                                           return InkWell(
                                             onLongPress: () {
                                               Navigator.push(
@@ -641,18 +629,15 @@ class _SchedulePageState extends State<SchedulePage>
                                                       pageBuilder: (_, __,
                                                               ___) =>
                                                           CostumesPage(
-                                                            costume:
-                                                                selectedCostumes
-                                                                    .elementAt(
-                                                                        i),
+                                                            costume: costume,
                                                             project: project,
                                                           ),
-                                                      opaque: false));
-                                            },
-                                            splashColor:
-                                                background1.withOpacity(0.2),
-                                            child: Container(
-                                              margin: EdgeInsets.all(2),
+                                                opaque: false));
+                                      },
+                                      splashColor:
+                                      background1.withOpacity(0.2),
+                                      child: Container(
+                                        margin: EdgeInsets.all(2),
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 8, vertical: 2),
                                               decoration: BoxDecoration(
@@ -660,10 +645,9 @@ class _SchedulePageState extends State<SchedulePage>
                                                 borderRadius:
                                                     BorderRadius.circular(300),
                                               ),
-                                              child: Text(
-                                                  "${selectedCostumes.elementAt(i).title}"),
+                                              child: Text("${costume.title}"),
                                             ),
-                                          );
+                                    );
                                         }),
                                       ),
                               ),
@@ -675,19 +659,10 @@ class _SchedulePageState extends State<SchedulePage>
                               padding: const EdgeInsets.all(8.0),
                               child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: RichText(
-                                    text: TextSpan(
-                                        text: "Props ",
-                                        style: bottomSheetHeadingStyle.copyWith(
-                                            color: background1),
-                                        children: [
-                                          TextSpan(
-                                              text: "(All Scenes)",
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight:
-                                                      FontWeight.normal))
-                                        ]),
+                                  child: Text(
+                                    "Props",
+                                    style: bottomSheetHeadingStyle.copyWith(
+                                        color: background1),
                                   )),
                             ),
                             Padding(
@@ -695,12 +670,14 @@ class _SchedulePageState extends State<SchedulePage>
                                   const EdgeInsets.symmetric(horizontal: 8),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: selectedProps.length == 0
+                                child: selectedScene.props.length == 0
                                     ? Text('No Props')
                                     : Wrap(
                                         direction: Axis.horizontal,
                                         children: List<Widget>.generate(
-                                            selectedProps.length, (i) {
+                                            selectedScene.props.length, (i) {
+                                          Prop prop = Utils
+                                              .propsMap[selectedScene.props[i]];
                                           return InkWell(
                                             onLongPress: () {
                                               Navigator.push(
@@ -709,8 +686,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                       pageBuilder: (_, __,
                                                               ___) =>
                                                           PropPage(
-                                                            prop: selectedProps
-                                                                .elementAt(i),
+                                                            prop: prop,
                                                             project: project,
                                                           ),
                                                       opaque: false));
@@ -726,8 +702,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                 borderRadius:
                                                     BorderRadius.circular(300),
                                               ),
-                                              child: Text(
-                                                  "${selectedProps.elementAt(i).title}"),
+                                              child: Text("${prop.title}"),
                                             ),
                                           );
                                         }),
@@ -821,6 +796,14 @@ class _SchedulePageState extends State<SchedulePage>
                                           onTap: () async {
                                             selectedSceneIndex = i;
                                             selectedScene = selectedScenes[i];
+                                            selectedCostumes.clear();
+                                            for (var i
+                                                in selectedScene.costumes) {
+                                              for (var j in i['costumes']) {
+                                                selectedCostumes
+                                                    .add(Utils.costumesMap[j]);
+                                              }
+                                            }
                                             setState(() {});
                                           },
                                           child: Container(
