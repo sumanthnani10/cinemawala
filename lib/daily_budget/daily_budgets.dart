@@ -38,6 +38,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
   void initState() {
     final date = DateTime.now();
     dailyBudgets = Utils.dailyBudgetsMap;
+    print(dailyBudgets);
     selectedDate = date;
     loading = true;
     selectedDateId =

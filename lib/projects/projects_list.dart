@@ -66,6 +66,7 @@ class _ProjectsList extends State<ProjectsList> {
     await Utils.getLocations(context, proj.id);
     await Utils.getScenes(context, proj.id);
     await Utils.getSchedules(context, proj.id);
+    await Utils.getDailyBudgets(context, proj.id);
     Navigator.pop(context);
     setState(() {
       loading = false;

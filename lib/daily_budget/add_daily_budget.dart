@@ -64,7 +64,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
     "Sunday"
   ];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
-  TimeOfDay _timeOfDay = TimeOfDay.now();
 
   @override
   void initState() {
@@ -1064,9 +1063,11 @@ class _AddDailyBudget extends State<AddDailyBudget>
     var l = s.split(" ");
     String r = "";
     l.forEach((f) {
-      r += (f.substring(0, 1).toUpperCase());
-      r += (f.substring(1));
-      r += " ";
+      if (f.length > 0) {
+        r += (f.substring(0, 1).toUpperCase());
+        r += (f.substring(1));
+        r += " ";
+      }
     });
     return r;
   }
@@ -1123,98 +1124,8 @@ class _AddDailyBudget extends State<AddDailyBudget>
         });
   }
 
-  DialogAction(BuildContext context) {
-    TextEditingController controller = new TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Select"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    child: FlatButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.done),
-                      label: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Save',
-                            style: dialogActionHeading,
-                          )),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: Icon(Icons.picture_as_pdf_rounded),
-                      label: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Generate Call Sheet',
-                            style: dialogActionHeading,
-                          )),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: Icon(Icons.picture_as_pdf_rounded),
-                      label: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Generate Daily Report',
-                            style: dialogActionHeading,
-                          )),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              MaterialButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Cancel"),
-                ),
-              )
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
-    print(dailyBudget);
     var budget = dailyBudget['budget'];
     final localizations = MaterialLocalizations.of(context);
     formattedTimeOfDay = localizations.formatTimeOfDay(TimeOfDay.now());
