@@ -7,7 +7,7 @@ import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
@@ -229,14 +229,18 @@ class PdfGenerator {
       propsNames += Utils.propsMap[p].title;
       if (p != scene.props.last) propsNames += ", ";
     }
-    ;
 
     DateTime now = DateTime.now();
+    Widget footer =
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text("Cinemawala", style: TextStyle(fontSize: 10)),
+      Text("Generated On ${now}", style: TextStyle(fontSize: 10))
+    ]);
 
     pdf.addPage(
       Page(
           margin: const EdgeInsets.all(16),
-          pageFormat: PdfPageFormat(600, double.infinity),
+          pageFormat: PdfPageFormat(595.2, double.infinity),
           build: (context) {
             return Container(
               child: Column(
@@ -244,44 +248,47 @@ class PdfGenerator {
                   Table(
                     border: TableBorder.all(),
                     children: [
-                      TableRow(children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(2),
-                          child: Text("Production"),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
+                      TableRow(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    TextSpan(text: 'Date: ', style: labelStyle),
-                                    TextSpan(
-                                        text: '${date}', style: valueStyle),
-                                  ],
-                                ),
-                              ),
+                              padding: EdgeInsets.all(2),
+                              child: Text("Production"),
                             ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Padding(
+                                  padding: headingPadding,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: 'Date: ', style: labelStyle),
+                                        TextSpan(
+                                            text: '${date}', style: valueStyle),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                             Divider(
                               height: 1,
                               color: PdfColors.black,
                             ),
                             Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Working Day: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${10}', style: valueStyle),
-                                    ],
-                                  ),
-                                )),
+                                padding: headingPadding,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: 'Working Day: ',
+                                              style: labelStyle),
+                                          TextSpan(
+                                              text: '${10}', style: valueStyle),
+                                        ],
+                                      ),
+                                    )),
                           ],
                         ),
                         Column(
@@ -300,28 +307,31 @@ class PdfGenerator {
                               child: Text("Director"),
                             ),
                             Divider(
-                              height: 1,
-                              color: PdfColors.black,
+                                  height: 1,
+                                  color: PdfColors.black,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4),
+                                  child: Text("D.O.P"),
+                                )
+                              ],
                             ),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: Text("D.O.P"),
-                            )
-                          ],
-                        ),
-                      ]),
-                      TableRow(children: [
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: 'Location: ', style: labelStyle),
-                                  TextSpan(
-                                      text: '${location.shootLocation}',
-                                      style: valueStyle),
-                                ],
+                          ]),
+                      TableRow(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: 'Location: ',
+                                          style: labelStyle),
+                                      TextSpan(
+                                          text: '${location.shootLocation}',
+                                          style: valueStyle),
+                                    ],
                               ),
                             )),
                         Column(
@@ -380,15 +390,11 @@ class PdfGenerator {
                               child: RichText(
                                 text: TextSpan(
                                   children: <TextSpan>[
-                                    TextSpan(
-                                        text: 'Ext/Int: ', style: labelStyle),
-                                    TextSpan(
-                                        text:
-                                            '${scene.interior ? "Interior" : "Exterior"}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16)),
-                                  ],
+                                        TextSpan(
+                                            text:
+                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
+                                            style: valueStyle),
+                                      ],
                                 ),
                               ),
                             ),
@@ -404,18 +410,21 @@ class PdfGenerator {
                         right: BorderSide(color: PdfColors.black),
                         bottom: BorderSide(color: PdfColors.black)),
                     children: [
-                      TableRow(children: [
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: 'Scene Title: ', style: labelStyle),
-                                  TextSpan(
-                                      text: '${scene.titles['$language']}',
-                                      style: valueStyle),
-                                ],
+                      TableRow(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: 'Scene Title: ',
+                                          style: labelStyle),
+                                      TextSpan(
+                                          text: '${scene.titles['$language']}',
+                                          style: valueStyle),
+                                    ],
                               ),
                             )),
                       ]),
@@ -429,6 +438,7 @@ class PdfGenerator {
                     ),
                     children: [
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 4),
@@ -452,18 +462,22 @@ class PdfGenerator {
                   Table(
                     border: TableBorder.all(),
                     children: <TableRow>[
-                          TableRow(children: [
-                            Padding(
-                              padding: headingPadding,
-                              child: Center(
-                                child: Text("Artists", style: tableHeader),
-                              ),
-                            ),
-                            Padding(
-                              padding: headingPadding,
-                              child: Center(
-                                  child: Text("On Shoot", style: tableHeader)),
-                            ),
+                          TableRow(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Center(
+                                    child: Text("Artists", style: tableHeader),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Center(
+                                      child:
+                                          Text("On Shoot", style: tableHeader)),
+                                ),
                             Padding(
                               padding: headingPadding,
                               child: Center(
@@ -518,6 +532,8 @@ class PdfGenerator {
                             border: TableBorder.all(),
                             children: [
                               TableRow(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                                 children: [
                                   Padding(
                                     padding: headingPadding,
@@ -534,6 +550,8 @@ class PdfGenerator {
                             border: TableBorder.all(),
                             children: [
                               TableRow(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                                 children: [
                                   Padding(
                                       padding: rowPadding,
@@ -568,18 +586,22 @@ class PdfGenerator {
                                 Table(
                                     border: TableBorder.all(),
                                     children: [
-                                          TableRow(children: [
-                                            Padding(
-                                                padding: headingPadding,
-                                                child: Center(
-                                                    child: Text(
-                                                  "$key",
-                                                  style: tableHeader,
-                                                ))),
-                                            Padding(
-                                                padding: headingPadding,
-                                                child: Center(
-                                                    child: Text(
+                                          TableRow(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              children: [
+                                                Padding(
+                                                    padding: headingPadding,
+                                                    child: Center(
+                                                        child: Text(
+                                                      "$key",
+                                                      style: tableHeader,
+                                                    ))),
+                                                Padding(
+                                                    padding: headingPadding,
+                                                    child: Center(
+                                                        child: Text(
                                                   "From",
                                                   style: tableHeader,
                                                 ))),
@@ -635,6 +657,7 @@ class PdfGenerator {
                     border: TableBorder.all(),
                     children: [
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: headingPadding,
@@ -646,6 +669,7 @@ class PdfGenerator {
                         ],
                       ),
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: rowPadding,
@@ -664,6 +688,7 @@ class PdfGenerator {
                     border: TableBorder.all(),
                     children: [
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: headingPadding,
@@ -675,6 +700,7 @@ class PdfGenerator {
                         ],
                       ),
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: rowPadding,
@@ -693,6 +719,7 @@ class PdfGenerator {
                     border: TableBorder.all(),
                     children: [
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: headingPadding,
@@ -711,6 +738,7 @@ class PdfGenerator {
                         ],
                       ),
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: headingPadding,
@@ -736,6 +764,7 @@ class PdfGenerator {
                     border: TableBorder.all(),
                     children: [
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: headingPadding,
@@ -747,6 +776,7 @@ class PdfGenerator {
                         ],
                       ),
                       TableRow(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
                             padding: rowPadding,
@@ -760,7 +790,7 @@ class PdfGenerator {
                     ],
                   ),
                   Padding(padding: headingPadding),
-                  Text("Generated On ${now}", style: TextStyle(fontSize: 10)),
+                  footer,
                 ],
               ),
             );
@@ -774,7 +804,6 @@ class PdfGenerator {
         Costume costume = Utils.costumesMap[d];
         r.add(await getImageBytes(costume.referenceImage));
       }
-      ;
       actorCostumes.add(
           {"id": c['id'], "costumes_images": r, "costumes": c['costumes']});
     }
@@ -782,7 +811,7 @@ class PdfGenerator {
     pdf.addPage(
       Page(
           margin: const EdgeInsets.all(16),
-          pageFormat: PdfPageFormat(600, double.infinity),
+          pageFormat: PdfPageFormat(595.2, double.infinity),
           build: (context) {
             return Container(
               child: Column(
@@ -798,28 +827,37 @@ class PdfGenerator {
                       return Padding(
                           padding: headingPadding,
                           child: Table(children: [
-                            TableRow(children: [
-                              Padding(
-                                  padding: headingPadding,
-                                  child: Text("${artist.names[language]}",
-                                      style: tableHeader)),
-                            ]),
                             TableRow(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                children: [
+                                  Padding(
+                                      padding: headingPadding,
+                                      child: Text("${artist.names[language]}",
+                                          style: tableHeader)),
+                                ]),
+                            TableRow(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
                                 children: List<Widget>.generate(
                                     costumesImages.length, (j) {
-                              Costume costume = Utils.costumesMap[costumes[j]];
-                              return Padding(
-                                  padding: rowPadding,
-                                  child: Image(MemoryImage(costumesImages[j]),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover));
-                            })),
+                                  Costume costume =
+                                      Utils.costumesMap[costumes[j]];
+                                  return Padding(
+                                      padding: rowPadding,
+                                      child: Column(children: [
+                                        Image(
+                                          MemoryImage(costumesImages[j]),
+                                          width: 100,
+                                          height: 100,
+                                        ),
+                                        Text('${costume.title}')
+                                      ]));
+                                })),
                           ]));
                     }) +
                     [
-                      Text("Generated On ${now}",
-                          style: TextStyle(fontSize: 10)),
+                      footer,
                     ],
               ),
             );
@@ -829,14 +867,17 @@ class PdfGenerator {
     List propsImages = [];
     for (var c in scene.props) {
       Prop prop = Utils.propsMap[c];
-      propsImages.add(await getImageBytes(prop.referenceImage));
+      propsImages.add({
+        "image": await getImageBytes(prop.referenceImage),
+        "title": prop.title
+      });
     }
-    ;
 
     pdf.addPage(
       Page(
           margin: const EdgeInsets.all(16),
-          pageFormat: PdfPageFormat(600, double.infinity),
+          pageFormat: PdfPageFormat(595.2, double.infinity),
+          orientation: PageOrientation.portrait,
           build: (context) {
             return Container(
               child: Column(
@@ -850,131 +891,29 @@ class PdfGenerator {
                           propsImages.length,
                           (i) => Padding(
                               padding: const EdgeInsets.all(8),
-                              child: Image(MemoryImage(propsImages[i]),
-                                  width: 80, height: 80, fit: BoxFit.cover)))),
+                              child: Column(children: [
+                                Image(
+                                  MemoryImage(propsImages[i]['image']),
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                Text('${propsImages[i]['title']}')
+                              ])))),
                   SizedBox(height: 16),
-                  Text("Generated On ${now}", style: TextStyle(fontSize: 10)),
+                  footer,
                 ],
               ),
             );
           }),
     );
 
-    /*pdf.addPage(Page(
-        margin: EdgeInsets.all(16),
-        pageFormat: PdfPageFormat.a4,
-        build: (context) {
-          return Column(
-              children: List.generate(actorsList1.length, (i) {
-            lst1 = artistCostumes[actorsList1[i]].keys.toList();
-            Actor actor = Utils.artistsMap[actorsList1[i]];
-            return Column(children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text("${actor.names["English"]}"),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Wrap(
-                    direction: Axis.horizontal,
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: List.generate(lst1.length, (j) {
-                      return SizedBox(
-                        height: 80,
-                        child: AspectRatio(
-                          aspectRatio: 4 / 3,
-                          child: Image(
-                            MemoryImage(
-                                artistCostumes[actorsList1[i]][lst1[j]]),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    })),
-              ),
-            ]);
-          })
-              /*children: List.generate(actorCostumes.length, (i){
-                lst1 = actorCostumes[lst[i]].keys.toList();
-                return Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child:Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text("${lst[i]}"),),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                            direction: Axis.horizontal,
-                            spacing: 8,
-                            runSpacing: 4,
-                            children: List.generate(lst1.length, (i){
-                              return SizedBox(
-                                height: 80,
-                                child: AspectRatio(
-                                  aspectRatio: 4/3,
-                                  child: Image(MemoryImage(imageLink[i]),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            })
-                        ),
-                      ),
-                    ]
-                );
-              })*/
-              );
-        }));
-    pdf.addPage(Page(
-        margin: EdgeInsets.all(16),
-        pageFormat: PdfPageFormat.a4,
-        build: (context) {
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: Text("Properties",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              Wrap(
-                  direction: Axis.horizontal,
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: List.generate(properties.length, (i) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 80,
-                          child: AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: Image(
-                              MemoryImage(imageLink[i]),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text("${properties[i]}"),
-                        ),
-                      ],
-                    );
-                  })),
-            ],
-          );
-        }));*/
-    Directory documentDirectory = await getExternalStorageDirectory();
+    Directory documentDirectory = await path.getExternalStorageDirectory();
     String documentPath = documentDirectory.path;
-    // File file = File("$documentPath/${schedule.id}_${DateTime.now().millisecondsSinceEpoch}.pdf");
+    // print(documentPath);
+    // File file = File("$documentPath/${schedule.id}_${now.millisecondsSinceEpoch}.pdf");
     File file = File("$documentPath/${schedule.id}.pdf");
     file.writeAsBytesSync(await pdf.save());
+    return;
   }
 
   static String oneDigitToTwo(int i) {

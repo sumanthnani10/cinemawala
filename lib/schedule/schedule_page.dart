@@ -13,6 +13,7 @@ import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../utils.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -802,9 +803,11 @@ class _SchedulePageState extends State<SchedulePage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
+                                        Utils.showLoadingDialog(
+                                            context, "Generating PDF");
                                         var d =
                                             "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                        PdfGenerator.sceneCallSheet(
+                                        await PdfGenerator.sceneCallSheet(
                                             project,
                                             context,
                                             selectedScene,
@@ -812,6 +815,7 @@ class _SchedulePageState extends State<SchedulePage>
                                             d,
                                             "English",
                                             selectedArtists);
+                                        Navigator.pop(context);
                                       },
                                       label: Text("Call Sheet"),
                                       icon: Icon(Icons.picture_as_pdf_outlined,
