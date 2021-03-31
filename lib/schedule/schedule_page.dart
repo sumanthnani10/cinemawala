@@ -23,14 +23,15 @@ class SchedulePage extends StatefulWidget {
   final String id;
   final VoidCallback nextDate, prevDate, getAll;
 
-  const SchedulePage({Key key,
-    @required this.project,
-    @required this.schedule,
-    @required this.date,
-    @required this.id,
-    @required this.getAll,
-    @required this.nextDate,
-    @required this.prevDate})
+  const SchedulePage(
+      {Key key,
+      @required this.project,
+      @required this.schedule,
+      @required this.date,
+      @required this.id,
+      @required this.getAll,
+      @required this.nextDate,
+      @required this.prevDate})
       : super(key: key);
 
   @override
@@ -61,15 +62,14 @@ class _SchedulePageState extends State<SchedulePage>
   List<Scene> selectedScenes = [];
   Set<Actor> selectedArtists = {};
   Set<Costume> selectedCostumes = {};
-
+  Actor selectedArtist;
+  Actor setIterator;
   Map<dynamic, dynamic> artistTimings = {},
       addlTimings = {},
       callSheetTimings = {},
       sfxTimings = {},
       vfxTimings = {};
-
   bool shouldUpdate = false;
-
   ScrollPhysics scroll = AlwaysScrollableScrollPhysics(),
       noScroll = NeverScrollableScrollPhysics();
   var bottomSheetHeadingStyle =
@@ -77,13 +77,55 @@ class _SchedulePageState extends State<SchedulePage>
   var bottomSheetSubheadingStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
   var addlKeys = Utils.addlKeys;
-
   BorderSide selectedIndicator = BorderSide(width: 3),
       unselectedIndicator = BorderSide(width: 3);
   int selectedSceneIndex = 0;
   Scene selectedScene;
-
+  String check;
   Color background, background1, color;
+
+  Future<String> createAlertDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Select Actor"),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(selectedArtists.length, (i) {
+                  print(selectedArtists.length);
+                  setIterator = selectedArtists.elementAt(i);
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: FlatButton(
+                      onPressed: () async {
+                        selectedArtist = selectedArtists.elementAt(i);
+                        Navigator.of(context).pop();
+                        /*Utils.showLoadingDialog(
+                          context, "Generating PDF");*/
+                        var d =
+                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
+                        await PdfGenerator.artistCallSheet(
+                          project,
+                          context,
+                          selectedScene,
+                          schedule,
+                          d,
+                          "English",
+                          selectedArtist,
+                        );
+                      },
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("${setIterator.names["English"]}"),
+                      ),
+                    ),
+                  );
+                })),
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -163,323 +205,323 @@ class _SchedulePageState extends State<SchedulePage>
               ]),
           child: schedule != null
               ? NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (OverscrollIndicatorNotification overscroll) {
-              overscroll.disallowGlow();
-              return;
-            },
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                  onNotification: (OverscrollIndicatorNotification overscroll) {
+                    overscroll.disallowGlow();
+                    return;
+                  },
+                  child: Stack(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                      SingleChildScrollView(
+                        controller: scrollController,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              icon: Icon(CupertinoIcons.back),
-                              onPressed: () {},
-                            ),
-                            Text(
-                              "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            IconButton(
-                              icon: Icon(CupertinoIcons.forward),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Scenes',
-                              style: bottomSheetHeadingStyle,
-                            ),
-                            TextButton.icon(
-                              onPressed: () async {},
-                              label: Text("Edit"),
-                              icon: Icon(
-                                Icons.edit,
-                                size: 14,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          color: color.withOpacity(0.2),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            padding:
-                            const EdgeInsets.fromLTRB(8, 0, 0, 8),
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: List<Widget>.generate(
-                                selectedScenes.length,
-                                    (i) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom:
-                                            selectedSceneIndex == i
-                                                ? BorderSide(
-                                                color: color,
-                                                width: 3)
-                                                : BorderSide(
-                                                color: background,
-                                                width: 3))),
-                                    child: Text(
-                                      '${selectedScenes[i].titles['English']}',
-                                      style: selectedSceneIndex == i
-                                          ? TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: background1)
-                                          : TextStyle(color: background1),
-                                    )),
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(CupertinoIcons.back),
+                                    onPressed: () {},
+                                  ),
+                                  Text(
+                                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(CupertinoIcons.forward),
+                                    onPressed: () {},
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                      // CALL SHEET TIMING
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Call Sheet Timing"),
-                            Builder(
-                              builder: (context) {
-                                var timings =
-                                callSheetTimings[selectedScene.id];
-                                return Row(
-                                  children: [
-                                    InkWell(
-                                        onTap: () async {},
-                                        child: Text(
-                                          "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                          style: TextStyle(
-                                              color: Colors.indigo),
-                                        )),
-                                    Text(
-                                      " to ",
-                                      style:
-                                      TextStyle(color: background1),
+                            Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Scenes',
+                                    style: bottomSheetHeadingStyle,
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () async {},
+                                    label: Text("Edit"),
+                                    icon: Icon(
+                                      Icons.edit,
+                                      size: 14,
                                     ),
-                                    InkWell(
-                                        onTap: () async {},
-                                        child: Text(
-                                          "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                          style: TextStyle(
-                                              color: Colors.indigo),
-                                        )),
-                                  ],
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                      // VFX TIMING
-                      if (selectedScenes.length > 0)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("VFX Timing"),
-                              Builder(
-                                builder: (context) {
-                                  var timings =
-                                  vfxTimings[selectedScene.id];
-                                  return Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () async {},
+                                  )
+                                ],
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                color: color.withOpacity(0.2),
+                                width: MediaQuery.of(context).size.width,
+                                child: SingleChildScrollView(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: List<Widget>.generate(
+                                      selectedScenes.length,
+                                      (i) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom:
+                                                      selectedSceneIndex == i
+                                                          ? BorderSide(
+                                                              color: color,
+                                                              width: 3)
+                                                          : BorderSide(
+                                                              color: background,
+                                                              width: 3))),
                                           child: Text(
-                                            "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                            style: TextStyle(
-                                                color: Colors.indigo),
+                                            '${selectedScenes[i].titles['English']}',
+                                            style: selectedSceneIndex == i
+                                                ? TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: background1)
+                                                : TextStyle(color: background1),
                                           )),
-                                      Text(
-                                        " to ",
-                                        style:
-                                        TextStyle(color: background1),
-                                      ),
-                                      InkWell(
-                                          onTap: () async {},
-                                          child: Text(
-                                            "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                            style: TextStyle(
-                                                color: Colors.indigo),
-                                          )),
-                                    ],
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                      // SFX TIMING
-                      if (selectedScenes.length > 0)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("SFX Timing"),
-                              Builder(
-                                builder: (context) {
-                                  var timings =
-                                  sfxTimings[selectedScene.id];
-                                  return Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () async {},
-                                          child: Text(
-                                            "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                            style: TextStyle(
-                                                color: Colors.indigo),
-                                          )),
-                                      Text(
-                                        " to ",
-                                        style:
-                                        TextStyle(color: background1),
-                                      ),
-                                      InkWell(
-                                          onTap: () async {},
-                                          child: Text(
-                                            "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                            style: TextStyle(
-                                                color: Colors.indigo),
-                                          )),
-                                    ],
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                      // ADDITIONAL ARTISTS
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Additional Artists",
-                              style: bottomSheetHeadingStyle,
-                            )),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: selectedScenes.length == 0
-                            ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('No Additional Artists'),
-                        )
-                            : Column(
-                          children: List<Widget>.generate(
-                              selectedScene.addlArtists.length,
-                                  (keyj) {
-                                var key = addlKeys[keyj];
-                                if (!Utils.additionalArtists[key]
-                                ['addable']) {
-                                  var artist = {"Name": '$key'};
-                                  var timings =
-                                  addlTimings[selectedScene.id]
-                                  [key];
-                                  return Column(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // CALL SHEET TIMING
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Call Sheet Timing"),
+                                  Builder(
+                                    builder: (context) {
+                                      var timings =
+                                          callSheetTimings[selectedScene.id];
+                                      return Row(
+                                        children: [
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                          Text(
+                                            " to ",
+                                            style:
+                                                TextStyle(color: background1),
+                                          ),
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              )),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                            // VFX TIMING
+                            if (selectedScenes.length > 0)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("VFX Timing"),
+                                    Builder(
+                                      builder: (context) {
+                                        var timings =
+                                            vfxTimings[selectedScene.id];
+                                        return Row(
                                           children: [
-                                            Text(
-                                              "${artist['Name']}",
-                                              style:
-                                              bottomSheetSubheadingStyle,
-                                            ),
-                                            Row(
-                                              children: [
-                                                InkWell(
-                                                    onTap: () async {},
-                                                    child: Text(
-                                                      "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .indigo),
-                                                    )),
-                                                Text(
-                                                  " to ",
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
                                                   style: TextStyle(
-                                                      color:
-                                                      background1),
-                                                ),
-                                                InkWell(
-                                                    onTap: () async {},
-                                                    child: Text(
-                                                      "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .indigo),
-                                                    )),
-                                              ],
-                                            )
+                                                      color: Colors.indigo),
+                                                )),
+                                            Text(
+                                              " to ",
+                                              style:
+                                                  TextStyle(color: background1),
+                                            ),
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
                                           ],
-                                        ),
-                                      ),
-                                      if (keyj + 1 != addlKeys.length)
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                    ],
-                                  );
-                                } else {
-                                  return selectedScene
-                                      .addlArtists['$key']
-                                      .length ==
-                                      0
-                                      ? Container()
-                                      : Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "$key",
-                                        style:
-                                        bottomSheetSubheadingStyle,
-                                      )
-                                    ] +
-                                        List<Widget>.generate(
-                                            selectedScene
-                                                .addlArtists[
-                                            '$key']
-                                                .length, (ind) {
-                                          var artist =
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            // SFX TIMING
+                            if (selectedScenes.length > 0)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("SFX Timing"),
+                                    Builder(
+                                      builder: (context) {
+                                        var timings =
+                                            sfxTimings[selectedScene.id];
+                                        return Row(
+                                          children: [
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                            Text(
+                                              " to ",
+                                              style:
+                                                  TextStyle(color: background1),
+                                            ),
+                                            InkWell(
+                                                onTap: () async {},
+                                                child: Text(
+                                                  "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                  style: TextStyle(
+                                                      color: Colors.indigo),
+                                                )),
+                                          ],
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            // ADDITIONAL ARTISTS
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Additional Artists",
+                                    style: bottomSheetHeadingStyle,
+                                  )),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: selectedScenes.length == 0
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('No Additional Artists'),
+                                    )
+                                  : Column(
+                                      children: List<Widget>.generate(
+                                          selectedScene.addlArtists.length,
+                                          (keyj) {
+                                        var key = addlKeys[keyj];
+                                        if (!Utils.additionalArtists[key]
+                                            ['addable']) {
+                                          var artist = {"Name": '$key'};
+                                          var timings =
+                                              addlTimings[selectedScene.id]
+                                                  [key];
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "${artist['Name']}",
+                                                      style:
+                                                          bottomSheetSubheadingStyle,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        InkWell(
+                                                            onTap: () async {},
+                                                            child: Text(
+                                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .indigo),
+                                                            )),
+                                                        Text(
+                                                          " to ",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  background1),
+                                                        ),
+                                                        InkWell(
+                                                            onTap: () async {},
+                                                            child: Text(
+                                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .indigo),
+                                                            )),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              if (keyj + 1 != addlKeys.length)
+                                                Divider(
+                                                  thickness: 1,
+                                                ),
+                                            ],
+                                          );
+                                        } else {
+                                          return selectedScene
+                                                      .addlArtists['$key']
+                                                      .length ==
+                                                  0
+                                              ? Container()
+                                              : Column(
+                                                  children: <Widget>[
+                                                        Text(
+                                                          "$key",
+                                                          style:
+                                                              bottomSheetSubheadingStyle,
+                                                        )
+                                                      ] +
+                                                      List<Widget>.generate(
+                                                          selectedScene
+                                                              .addlArtists[
+                                                                  '$key']
+                                                              .length, (ind) {
+                                                        var artist =
                                                             selectedScene
                                                                     .addlArtists[
                                                                 '$key'][ind];
@@ -515,81 +557,95 @@ class _SchedulePageState extends State<SchedulePage>
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Text(
-                                                    "${artist['Name']}"),
-                                                Row(
-                                                  children: [
-                                                    InkWell(
-                                                        onTap:
-                                                            () async {},
-                                                        child:
-                                                        Text(
-                                                          "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                                          style: TextStyle(
-                                                              color:
-                                                              Colors.indigo),
-                                                        )),
-                                                    Text(
-                                                      " to ",
-                                                      style: TextStyle(
-                                                          color:
-                                                          background1),
-                                                    ),
-                                                    InkWell(
-                                                        onTap:
-                                                            () async {},
-                                                        child:
-                                                        Text(
-                                                          "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                                          style: TextStyle(
-                                                              color:
-                                                              Colors.indigo),
-                                                        )),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }) +
-                                        [
-                                          if (keyj + 1 !=
-                                              addlKeys.length)
-                                            Divider(
-                                              thickness: 1,
-                                            ),
-                                        ],
-                                  );
-                                }
-                              }),
-                        ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Artists",
-                              style: bottomSheetHeadingStyle,
-                            )),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: selectedArtists.length == 0
-                            ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('No Artists'),
-                        )
-                            : Column(
-                          children: List<Widget>.generate(
-                              selectedScene.artists.length, (j) {
-                            Actor artist = Utils.artistsMap[
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                  "${artist['Name']}"),
+                                                              Row(
+                                                                children: [
+                                                                  InkWell(
+                                                                      onTap:
+                                                                          () async {},
+                                                                      child:
+                                                                          Text(
+                                                                        "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.indigo),
+                                                                      )),
+                                                                  Text(
+                                                                    " to ",
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            background1),
+                                                                  ),
+                                                                  InkWell(
+                                                                      onTap:
+                                                                          () async {},
+                                                                      child:
+                                                                          Text(
+                                                                        "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.indigo),
+                                                                      )),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }) +
+                                                      [
+                                                        if (keyj + 1 !=
+                                                            addlKeys.length)
+                                                          Divider(
+                                                            thickness: 1,
+                                                          ),
+                                                      ],
+                                                );
+                                        }
+                                      }),
+                                    ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Artists",
+                                        style: bottomSheetHeadingStyle,
+                                      ),
+                                      Spacer(),
+                                      TextButton.icon(
+                                        onPressed: () async {
+                                          createAlertDialog(context);
+                                        },
+                                        label: Text("Call Sheet"),
+                                        icon: Icon(
+                                            Icons.picture_as_pdf_outlined,
+                                            size: 14),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: selectedArtists.length == 0
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('No Artists'),
+                                    )
+                                  : Column(
+                                      children: List<Widget>.generate(
+                                          selectedScene.artists.length, (j) {
+                                        Actor artist = Utils.artistsMap[
                                             selectedScene.artists[j]];
-
                                         if (artistTimings[selectedScene.id]
                                                 [selectedScene.artists[j]] ==
                                             null) {
@@ -605,7 +661,6 @@ class _SchedulePageState extends State<SchedulePage>
                                           };
                                           shouldUpdate = true;
                                         }
-
                                         var timings =
                                             artistTimings[selectedScene.id]
                                                 [selectedScene.artists[j]];
@@ -620,183 +675,244 @@ class _SchedulePageState extends State<SchedulePage>
                                               Row(
                                                 children: [
                                                   Text(
-                                        "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                        style: TextStyle(
-                                            color: Colors.indigo),
-                                      ),
-                                      Text(
-                                        " to ",
-                                        style: TextStyle(
+                                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
+                                                  Text(
+                                                    " to ",
+                                                    style: TextStyle(
+                                                        color: background1),
+                                                  ),
+                                                  Text(
+                                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Costumes",
+                                        style: bottomSheetHeadingStyle.copyWith(
                                             color: background1),
-                                      ),
-                                      Text(
-                                        "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                        style: TextStyle(
-                                            color: Colors.indigo),
-                                      ),
-                                    ],
-                                  )
+                                      )),
+                                  Spacer(),
+                                  TextButton.icon(
+                                    onPressed: () async {
+                                      Utils.showLoadingDialog(
+                                          context, "Generating PDF");
+                                      var d =
+                                          "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
+                                      print(selectedArtists
+                                          .last.names["English"]);
+                                      print(selectedArtists.runtimeType);
+                                      await PdfGenerator.costumeCallSheet(
+                                        project,
+                                        context,
+                                        selectedScene,
+                                        schedule,
+                                        d,
+                                        "English",
+                                        selectedArtists,
+                                        //{selectedArtists.elementAt(0)},
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    label: Text("Call Sheet"),
+                                    icon: Icon(Icons.picture_as_pdf_outlined,
+                                        size: 14),
+                                  ),
                                 ],
                               ),
-                            );
-                          }),
-                        ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Costumes",
-                              style: bottomSheetHeadingStyle.copyWith(
-                                  color: background1),
-                            )),
-                      ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 8),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: selectedScene.costumes.length == 0
-                              ? Text('No Costumes')
-                              : Wrap(
-                            direction: Axis.horizontal,
-                            children: List<Widget>.generate(
-                                selectedCostumes.length, (i) {
-                              Costume costume =
-                              selectedCostumes.elementAt(i);
-                              return InkWell(
-                                onLongPress: () {
-                                  Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (_, __,
-                                              ___) =>
-                                              CostumesPage(
-                                                costume: costume,
-                                                project: project,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: selectedScene.costumes.length == 0
+                                    ? Text('No Costumes')
+                                    : Wrap(
+                                        direction: Axis.horizontal,
+                                        children: List<Widget>.generate(
+                                            selectedCostumes.length, (i) {
+                                          Costume costume =
+                                              selectedCostumes.elementAt(i);
+                                          return InkWell(
+                                            onLongPress: () {
+                                              Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                      pageBuilder: (_, __,
+                                                              ___) =>
+                                                          CostumesPage(
+                                                            costume: costume,
+                                                            project: project,
+                                                          ),
+                                                      opaque: false));
+                                            },
+                                            splashColor:
+                                                background1.withOpacity(0.2),
+                                            child: Container(
+                                              margin: EdgeInsets.all(2),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: color,
+                                                borderRadius:
+                                                    BorderRadius.circular(300),
                                               ),
-                                          opaque: false));
-                                },
-                                splashColor:
-                                background1.withOpacity(0.2),
-                                child: Container(
-                                  margin: EdgeInsets.all(2),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    borderRadius:
-                                    BorderRadius.circular(300),
+                                              child: Text("${costume.title}"),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                              ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Props",
+                                        style: bottomSheetHeadingStyle.copyWith(
+                                            color: background1),
+                                      )),
+                                  Spacer(),
+                                  TextButton.icon(
+                                    onPressed: () async {
+                                      Utils.showLoadingDialog(
+                                          context, "Generating PDF");
+                                      var d =
+                                          "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
+                                      print(selectedArtists
+                                          .last.names["English"]);
+                                      print(selectedArtists.runtimeType);
+                                      await PdfGenerator.propertiesCallSheet(
+                                        project,
+                                        context,
+                                        selectedScene,
+                                        schedule,
+                                        d,
+                                        "English",
+                                        selectedArtists,
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    label: Text("Call Sheet"),
+                                    icon: Icon(Icons.picture_as_pdf_outlined,
+                                        size: 14),
                                   ),
-                                  child: Text("${costume.title}"),
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Props",
-                              style: bottomSheetHeadingStyle.copyWith(
-                                  color: background1),
-                            )),
-                      ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 8),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: selectedScene.props.length == 0
-                              ? Text('No Props')
-                              : Wrap(
-                            direction: Axis.horizontal,
-                            children: List<Widget>.generate(
-                                selectedScene.props.length, (i) {
-                              Prop prop = Utils
-                                  .propsMap[selectedScene.props[i]];
-                              return InkWell(
-                                onLongPress: () {
-                                  Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (_, __,
-                                              ___) =>
-                                              PropPage(
-                                                prop: prop,
-                                                project: project,
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: selectedScene.props.length == 0
+                                    ? Text('No Props')
+                                    : Wrap(
+                                        direction: Axis.horizontal,
+                                        children: List<Widget>.generate(
+                                            selectedScene.props.length, (i) {
+                                          Prop prop = Utils
+                                              .propsMap[selectedScene.props[i]];
+                                          return InkWell(
+                                            onLongPress: () {
+                                              Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                      pageBuilder: (_, __,
+                                                              ___) =>
+                                                          PropPage(
+                                                            prop: prop,
+                                                            project: project,
+                                                          ),
+                                                      opaque: false));
+                                            },
+                                            splashColor:
+                                                background1.withOpacity(0.2),
+                                            child: Container(
+                                              margin: EdgeInsets.all(2),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: color,
+                                                borderRadius:
+                                                    BorderRadius.circular(300),
                                               ),
-                                          opaque: false));
-                                },
-                                splashColor:
-                                background1.withOpacity(0.2),
-                                child: Container(
-                                  margin: EdgeInsets.all(2),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    borderRadius:
-                                    BorderRadius.circular(300),
-                                  ),
-                                  child: Text("${prop.title}"),
-                                ),
-                              );
-                            }),
-                          ),
+                                              child: Text("${prop.title}"),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                SingleChildScrollView(
-                  controller: scrollController,
-                  child: Container(
-                    color: background,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                      SingleChildScrollView(
+                        controller: scrollController,
+                        child: Container(
+                          color: background,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
-                                icon: Icon(CupertinoIcons.back),
-                                onPressed: prevDate,
+                              Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(CupertinoIcons.back),
+                                      onPressed: prevDate,
+                                    ),
+                                    Text(
+                                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(CupertinoIcons.forward),
+                                      onPressed: nextDate,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(
-                                "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                                style: TextStyle(fontSize: 18),
+                              Divider(
+                                thickness: 2,
                               ),
-                              IconButton(
-                                icon: Icon(CupertinoIcons.forward),
-                                onPressed: nextDate,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(
-                          thickness: 2,
-                        ),
-                        Padding(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
                                     Text(
                                       'Scenes',
                                       style: bottomSheetHeadingStyle,
@@ -807,14 +923,19 @@ class _SchedulePageState extends State<SchedulePage>
                                             context, "Generating PDF");
                                         var d =
                                             "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
+                                        print(selectedArtists
+                                            .last.names["English"]);
+                                        print(selectedArtists.runtimeType);
                                         await PdfGenerator.sceneCallSheet(
-                                            project,
-                                            context,
-                                            selectedScene,
-                                            schedule,
-                                            d,
-                                            "English",
-                                            selectedArtists);
+                                          project,
+                                          context,
+                                          selectedScene,
+                                          schedule,
+                                          d,
+                                          "English",
+                                          selectedArtists,
+                                          //{selectedArtists.elementAt(0)},
+                                        );
                                         Navigator.pop(context);
                                       },
                                       label: Text("Call Sheet"),
@@ -823,7 +944,7 @@ class _SchedulePageState extends State<SchedulePage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
-                                        PdfGenerator.sceneCallSheet;
+                                        //PdfGenerator.sceneCallSheet;
                                         /*var back = await Navigator.push(
                                                 context,
                                                 Utils.createRoute(
@@ -843,115 +964,115 @@ class _SchedulePageState extends State<SchedulePage>
                                       icon: Icon(Icons.edit, size: 14),
                                     ),
                                   ],
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            color: color.withOpacity(0.2),
-                            width: MediaQuery.of(context).size.width,
-                            child: SingleChildScrollView(
-                              padding:
-                              const EdgeInsets.fromLTRB(8, 0, 0, 8),
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: List<Widget>.generate(
-                                  selectedScenes.length,
-                                      (i) => InkWell(
-                                    onTap: () async {
-                                      selectedSceneIndex = i;
-                                      selectedScene = selectedScenes[i];
-                                      selectedCostumes.clear();
-                                      for (var i
-                                      in selectedScene.costumes) {
-                                        for (var j in i['costumes']) {
-                                          selectedCostumes
-                                              .add(Utils.costumesMap[j]);
-                                        }
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 8),
-                                        decoration: BoxDecoration(
-                                            border: Border(
-                                                bottom:
-                                                selectedSceneIndex ==
-                                                    i
-                                                    ? BorderSide(
-                                                    color: color,
-                                                    width: 3)
-                                                    : BorderSide(
-                                                    color:
-                                                    background,
-                                                    width: 3))),
-                                        child: Text(
-                                          '${selectedScenes[i].titles['English']}',
-                                          style: selectedSceneIndex == i
-                                              ? TextStyle(
-                                              fontWeight:
-                                              FontWeight.bold,
-                                              color: background1)
-                                              : TextStyle(
-                                              color: background1),
-                                        )),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  color: color.withOpacity(0.2),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: SingleChildScrollView(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: List<Widget>.generate(
+                                        selectedScenes.length,
+                                        (i) => InkWell(
+                                          onTap: () async {
+                                            selectedSceneIndex = i;
+                                            selectedScene = selectedScenes[i];
+                                            selectedCostumes.clear();
+                                            for (var i
+                                                in selectedScene.costumes) {
+                                              for (var j in i['costumes']) {
+                                                selectedCostumes
+                                                    .add(Utils.costumesMap[j]);
+                                              }
+                                            }
+                                            setState(() {});
+                                          },
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8,
+                                                      horizontal: 8),
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      bottom:
+                                                          selectedSceneIndex ==
+                                                                  i
+                                                              ? BorderSide(
+                                                                  color: color,
+                                                                  width: 3)
+                                                              : BorderSide(
+                                                                  color:
+                                                                      background,
+                                                                  width: 3))),
+                                              child: Text(
+                                                '${selectedScenes[i].titles['English']}',
+                                                style: selectedSceneIndex == i
+                                                    ? TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: background1)
+                                                    : TextStyle(
+                                                        color: background1),
+                                              )),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          )
+                )
               : Column(
-            children: [
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: Icon(CupertinoIcons.back),
-                      onPressed: prevDate,
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(CupertinoIcons.back),
+                            onPressed: prevDate,
+                          ),
+                          Text(
+                            "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            icon: Icon(CupertinoIcons.forward),
+                            onPressed: nextDate,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      thickness: 2,
+                    ),
+                    SizedBox(
+                      height: 50,
                     ),
                     Text(
-                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                      style: TextStyle(fontSize: 18),
+                      "No Schedule.",
+                      style: TextStyle(fontSize: 20),
                     ),
-                    IconButton(
-                      icon: Icon(CupertinoIcons.forward),
-                      onPressed: nextDate,
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Text(
-                "No Schedule.",
-                style: TextStyle(fontSize: 20),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  var now = DateTime.now();
-                  Map<String, dynamic> schedule = {
+                    ElevatedButton(
+                      onPressed: () async {
+                        var now = DateTime.now();
+                        Map<String, dynamic> schedule = {
                           "day": date.day,
                           "project_id": project.id,
                           "scenes": [],
@@ -968,17 +1089,17 @@ class _SchedulePageState extends State<SchedulePage>
                           "last_edit_on": now.millisecondsSinceEpoch,
                           "created": now.millisecondsSinceEpoch
                         };
-                  var back = await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddSchedule(
-                              schedule: schedule, project: project),
-                          Utils.DTU)) ??
-                      false;
-                  if (back) {
-                    getAll();
-                  }
-                },
+                        var back = await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    AddSchedule(
+                                        schedule: schedule, project: project),
+                                    Utils.DTU)) ??
+                            false;
+                        if (back) {
+                          getAll();
+                        }
+                      },
                       child: Text("+ Add Schedule"),
                       style: ElevatedButton.styleFrom(primary: color),
                     )
