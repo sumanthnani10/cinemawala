@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
@@ -9,10 +8,8 @@ import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
 import 'daily_budget/daily_budget.dart';
 import 'props/prop.dart';
-
 class Utils {
   static const String USER_ID = 'kjfvnok';
   static List<Actor> artists;
@@ -22,7 +19,6 @@ class Utils {
   static List<Scene> scenes;
   static List<Schedule> schedules;
   static List<DailyBudget> dailyBudgets;
-
   static Map<String, Actor> artistsMap;
   static Map<String, Costume> costumesMap;
   static Map<String, Prop> propsMap;
@@ -616,12 +612,11 @@ class Utils {
       'addable': true
     },
   };
-
   static final addlKeys = [
+    'Gang Members',
+    'Additional Artists',
     'Juniors',
     'Models',
-    'Dancers/Fighters',
-    'Gang Members',
-    'Additional Artists'
+    'Dancers/Fighters'
   ];
 }
