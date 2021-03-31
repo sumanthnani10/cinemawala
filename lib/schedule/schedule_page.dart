@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:pdf/pdf.dart';
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
@@ -823,7 +823,8 @@ class _SchedulePageState extends State<SchedulePage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
-                                        var back = await Navigator.push(
+                                        PdfGenerator.sceneCallSheet;
+                                        /*var back = await Navigator.push(
                                                 context,
                                                 Utils.createRoute(
                                                     AddSchedule(
@@ -836,7 +837,7 @@ class _SchedulePageState extends State<SchedulePage>
                                             false;
                                         if (back) {
                                           getAll();
-                                        }
+                                        }*/
                                       },
                                       label: Text("Edit"),
                                       icon: Icon(Icons.edit, size: 14),

@@ -399,7 +399,7 @@ class Utils {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext context){
         return WillPopScope(
           onWillPop: () {
             return;

@@ -1,18 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/daily_budget/daily_budgets.dart';
+import 'package:cinemawala/login.dart';
 import 'package:cinemawala/projects/projects_list.dart';
 import 'package:cinemawala/props/props_list.dart';
+import 'package:cinemawala/register.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'casting/actors_list.dart';
 import 'costumes/costumes_list.dart';
 import 'projects/project.dart';
-
-Future<void> main() async {
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
     await Firebase.initializeApp();
@@ -38,27 +38,23 @@ class Cinemawala extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ProjectsList(),
+      home: //Register(),
+      ProjectsList(),
     );
   }
 }
-
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
   final String title;
-
   @override
   _HomeState createState() => _HomeState();
 }
-
 class _HomeState extends State<Home> {
   Project project;
-
   @override
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,7 +235,8 @@ class _HomeState extends State<Home> {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ScenesList()));
+                    //MaterialPageRoute(builder: (context) => ScenesList()));
+                    MaterialPageRoute(builder: (context) => Login()));
               },
               child: Container(
                 margin: EdgeInsets.all(8.0),
