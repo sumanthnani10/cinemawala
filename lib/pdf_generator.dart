@@ -296,8 +296,8 @@ class PdfGenerator {
                                 Padding(
                                   padding: headingPadding,
                                   child: Center(
-                                      child:
-                                          Text("On Shoot", style: tableHeader)),
+                                      child: Text("On Location",
+                                          style: tableHeader)),
                                 ),
                             Padding(
                               padding: headingPadding,
