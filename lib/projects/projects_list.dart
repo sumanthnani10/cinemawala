@@ -9,8 +9,7 @@ import 'package:http/http.dart' as http;
 import '../utils.dart';
 
 class ProjectsList extends StatefulWidget {
-  ProjectsList({Key key, this.title}) : super(key: key);
-  final String title;
+  ProjectsList({Key key}) : super(key: key);
 
   @override
   _ProjectsList createState() => _ProjectsList();
@@ -56,9 +55,9 @@ class _ProjectsList extends State<ProjectsList> {
     Navigator.pop(context);
   }
 
-  getProject(proj) async {
+  getProject(Project proj) async {
     loading = true;
-    Utils.showLoadingDialog(context, 'Getting Project');
+    Utils.showLoadingDialog(context, 'Getting ${proj.name}');
     project = await Utils.getProject(context, proj.id);
     await Utils.getArtists(context, proj.id);
     await Utils.getCostumes(context, proj.id);

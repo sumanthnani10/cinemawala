@@ -1,32 +1,24 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/daily_budget/daily_budgets.dart';
-import 'package:cinemawala/login.dart';
-import 'package:cinemawala/projects/projects_list.dart';
-import 'package:cinemawala/props/props_list.dart';
-import 'package:cinemawala/register.dart';
-import 'package:cinemawala/scenes/scenes_list.dart';
+import 'package:cinemawala/user/login.dart';
+import 'package:cinemawala/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'casting/actors_list.dart';
-import 'costumes/costumes_list.dart';
-import 'projects/project.dart';
-Future<void> main() async{
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
     await Firebase.initializeApp();
   }
-  if (!kIsWeb) {
-    if (FirebaseAuth.instance.currentUser == null) {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: 'test@gmail.com', password: 'test1234');
-    }
-  }
   runApp(Cinemawala());
 }
 
-class Cinemawala extends StatelessWidget {
+class Cinemawala extends StatefulWidget {
+  @override
+  _CinemawalaState createState() => _CinemawalaState();
+}
+
+class _CinemawalaState extends State<Cinemawala> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,12 +30,51 @@ class Cinemawala extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: //Register(),
-      ProjectsList(),
+      home: SplashScreen(),
     );
   }
 }
-class Home extends StatefulWidget {
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      check();
+    });
+  }
+
+  check() async {
+    if (!kIsWeb) {
+      if (FirebaseAuth.instance.currentUser == null) {
+        Navigator.pushReplacement(
+            context, Utils.createRoute(Login(), Utils.LTR));
+        /*await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: 'test@gmail.com', password: 'test1234');*/
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Image(image: AssetImage('assets/images/logo.png')),
+        ),
+      ),
+    );
+  }
+}
+
+/*class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
   final String title;
   @override
@@ -581,4 +612,4 @@ class _HomeState extends State<Home> {
           ],
         ));
   }
-}
+}*/
