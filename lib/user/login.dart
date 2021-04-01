@@ -30,7 +30,8 @@ class _LoginState extends State<Login> {
       try {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password)
-            .then((value) {
+            .then((value) async {
+          await Utils.getUser(context, value.user.uid);
           Navigator.pop(context);
           Navigator.pushReplacement(
               context, Utils.createRoute(ProjectsList(), Utils.RTL));

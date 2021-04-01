@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:pdf/pdf.dart';
+
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
@@ -94,7 +94,7 @@ class _SchedulePageState extends State<SchedulePage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(selectedArtists.length, (i) {
-                  print(selectedArtists.length);
+                  //print(selectedArtists.length);
                   setIterator = selectedArtists.elementAt(i);
                   return Container(
                     width: MediaQuery.of(context).size.width,
@@ -102,8 +102,7 @@ class _SchedulePageState extends State<SchedulePage>
                       onPressed: () async {
                         selectedArtist = selectedArtists.elementAt(i);
                         Navigator.of(context).pop();
-                        /*Utils.showLoadingDialog(
-                          context, "Generating PDF");*/
+                        Utils.showLoadingDialog(context, "Generating PDF");
                         var d =
                             "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
                         await PdfGenerator.artistCallSheet(
@@ -115,6 +114,7 @@ class _SchedulePageState extends State<SchedulePage>
                           "English",
                           selectedArtist,
                         );
+                        Navigator.pop(context);
                       },
                       child: Align(
                         alignment: Alignment.topLeft,
@@ -719,9 +719,8 @@ class _SchedulePageState extends State<SchedulePage>
                                           context, "Generating PDF");
                                       var d =
                                           "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                      print(selectedArtists
-                                          .last.names["English"]);
-                                      print(selectedArtists.runtimeType);
+                                      //print(selectedArtists.last.names["English"]);
+                                      //print(selectedArtists.runtimeType);
                                       await PdfGenerator.costumeCallSheet(
                                         project,
                                         context,
@@ -807,9 +806,8 @@ class _SchedulePageState extends State<SchedulePage>
                                           context, "Generating PDF");
                                       var d =
                                           "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                      print(selectedArtists
-                                          .last.names["English"]);
-                                      print(selectedArtists.runtimeType);
+                                      //print(selectedArtists.last.names["English"]);
+                                      //print(selectedArtists.runtimeType);
                                       await PdfGenerator.propertiesCallSheet(
                                         project,
                                         context,
@@ -923,9 +921,8 @@ class _SchedulePageState extends State<SchedulePage>
                                             context, "Generating PDF");
                                         var d =
                                             "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                        print(selectedArtists
-                                            .last.names["English"]);
-                                        print(selectedArtists.runtimeType);
+                                        //print(selectedArtists.last.names["English"]);
+                                        //print(selectedArtists.runtimeType);
                                         await PdfGenerator.sceneCallSheet(
                                           project,
                                           context,
@@ -944,8 +941,7 @@ class _SchedulePageState extends State<SchedulePage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
-                                        //PdfGenerator.sceneCallSheet;
-                                        /*var back = await Navigator.push(
+                                        var back = await Navigator.push(
                                                 context,
                                                 Utils.createRoute(
                                                     AddSchedule(
@@ -958,7 +954,7 @@ class _SchedulePageState extends State<SchedulePage>
                                             false;
                                         if (back) {
                                           getAll();
-                                        }*/
+                                        }
                                       },
                                       label: Text("Edit"),
                                       icon: Icon(Icons.edit, size: 14),

@@ -1,17 +1,21 @@
 import 'dart:convert';
+
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
+import 'package:cinemawala/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+
 import 'daily_budget/daily_budget.dart';
 import 'props/prop.dart';
 class Utils {
-  static const String USER_ID = 'kjfvnok';
+  static String USER_ID;
+  static User user;
   static List<Actor> artists;
   static List<Costume> costumes;
   static List<Prop> props;
@@ -28,6 +32,25 @@ class Utils {
   static Map<String, DailyBudget> dailyBudgetsMap;
 
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
+
+  static getUser(context, userId) async {
+    var resp = await http.post(Utils.GET_USER, body: {"id": "${userId}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        // print(r['user']);
+        user = User.fromJson(r['user']);
+        USER_ID = user.id;
+        return user;
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
 
   static getProject(context, projectId) async {
     var resp = await http.post(Utils.GET_PROJECT,
@@ -215,6 +238,9 @@ class Utils {
   static const String DOMAIN =
       "us-central1-cinemawala-2021b.cloudfunctions.net";
   static const String URL_PATH = "/cinemawala";
+
+  static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
+  static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
 
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');

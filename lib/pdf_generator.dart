@@ -25,6 +25,194 @@ class PdfGenerator {
     return response;
   }
 
+  static Widget sceneDetails(
+    Project project,
+    Scene scene,
+    Schedule schedule,
+    String date,
+  ) {
+    TextStyle labelStyle = TextStyle(fontSize: 12),
+        valueStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        callSheetTimeStyle =
+            TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+    EdgeInsets headingPadding = const EdgeInsets.all(4);
+    Location location = Utils.locationsMap['${scene.location}'];
+
+    return Table(
+      border: TableBorder.all(),
+      children: [
+        TableRow(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(2),
+                child: Text("Production"),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: headingPadding,
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(text: 'Date: ', style: labelStyle),
+                          TextSpan(text: '${date}', style: valueStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    color: PdfColors.black,
+                  ),
+                  Padding(
+                      padding: headingPadding,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(text: 'Working Day: ', style: labelStyle),
+                            TextSpan(text: '${10}', style: valueStyle),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(text: 'Project Name: ', style: labelStyle),
+                          TextSpan(text: '${project.name}', style: valueStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    color: PdfColors.black,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(text: 'Director: ', style: labelStyle),
+                          TextSpan(
+                              text: '${project.director}', style: valueStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    color: PdfColors.black,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(text: 'DOP: ', style: labelStyle),
+                          TextSpan(text: '${project.dop}', style: valueStyle),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ]),
+        TableRow(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(text: 'Location: ', style: labelStyle),
+                        TextSpan(
+                            text: '${location.shootLocation}',
+                            style: valueStyle),
+                      ],
+                    ),
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'Start Time (Call Sheet): ',
+                                style: labelStyle),
+                            TextSpan(
+                                text:
+                                    '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
+                                style: callSheetTimeStyle),
+                          ],
+                        ),
+                      )),
+                  Divider(
+                    height: 1,
+                    color: PdfColors.black,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'End Time (Call sheet): ',
+                                style: labelStyle),
+                            TextSpan(
+                                text:
+                                    '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
+                                style: callSheetTimeStyle),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: Text("Choreographer"),
+                  ),
+                  Divider(
+                    height: 1,
+                    color: PdfColors.black,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                              text:
+                                  '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
+                              style: valueStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
+      ],
+    );
+  }
+
   static sceneCallSheet(
       Project project,
       context,
@@ -36,11 +224,14 @@ class PdfGenerator {
     TextStyle labelStyle = TextStyle(fontSize: 12),
         valueStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         tableHeader = TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        tableRow = TextStyle(fontSize: 12);
+        tableRow = TextStyle(fontSize: 12),
+        callSheetTimeStyle =
+            TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+
     EdgeInsets headingPadding = const EdgeInsets.all(4),
-        rowPadding = const EdgeInsets.all(2);
-    var callSheetTimeStyle =
-        TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+        rowPadding = const EdgeInsets.all(2),
+        gapPadding = const EdgeInsets.symmetric(vertical: 4);
+
     Document pdf = Document();
     Location location = Utils.locationsMap['${scene.location}'];
     Map<dynamic, dynamic> addlTimings = schedule.additionalTimings,
@@ -65,179 +256,15 @@ class PdfGenerator {
             return Container(
               child: Column(
                 children: <Widget>[
+                  sceneDetails(project, scene, schedule, date),
                   Table(
                     border: TableBorder.all(),
                     children: [
                       TableRow(
                           verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text("Production"),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Date: ', style: labelStyle),
-                                        TextSpan(
-                                            text: '${date}', style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding: headingPadding,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Working Day: ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text: '${10}', style: valueStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Project Name: ${project.name}"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text(
-                                      "Director dfnadfjdsfjlbglsjgblsjbvgslfjgbfsljgvsfblsjfbglsb"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("D.O.P"),
-                                )
-                              ],
-                            ),
-                          ]),
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
                           children: [
                             Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Location: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${location.shootLocation}',
-                                          style: valueStyle),
-                                    ],
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Start Time (Call Sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'End Time (Call sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Choreographer"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
-                                            style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ],
-                  ),
-                  Table(
-                    //border: TableBorder.all(),
-                    border: TableBorder(
-                        left: BorderSide(color: PdfColors.black),
-                        right: BorderSide(color: PdfColors.black),
-                        bottom: BorderSide(color: PdfColors.black)),
-                    children: [
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                padding: headingPadding,
                                 child: RichText(
                                   text: TextSpan(
                                     children: <TextSpan>[
@@ -251,20 +278,11 @@ class PdfGenerator {
                                   ),
                                 )),
                           ]),
-                    ],
-                  ),
-                  Table(
-                    border: TableBorder(
-                      left: BorderSide(color: PdfColors.black),
-                      right: BorderSide(color: PdfColors.black),
-                      bottom: BorderSide(color: PdfColors.black),
-                    ),
-                    children: [
                       TableRow(
                         verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
+                            padding: headingPadding,
                             child: RichText(
                               text: TextSpan(
                                 children: <TextSpan>[
@@ -280,65 +298,68 @@ class PdfGenerator {
                       ),
                     ],
                   ),
-                  Padding(padding: const EdgeInsets.all(4)),
+                  SizedBox(height: 4),
                   // Artists
-                  Table(
-                    border: TableBorder.all(),
-                    children: <TableRow>[
-                          TableRow(
-                              verticalAlignment:
-                                  TableCellVerticalAlignment.middle,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: Center(
-                                    child: Text("Artists", style: tableHeader),
+                  Padding(
+                      padding: gapPadding,
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: <TableRow>[
+                              TableRow(
+                                  verticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  children: [
+                                    Padding(
+                                      padding: headingPadding,
+                                      child: Center(
+                                        child:
+                                            Text("Artists", style: tableHeader),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: headingPadding,
+                                      child: Center(
+                                          child: Text("On Shoot Loc",
+                                              style: tableHeader)),
+                                    ),
+                                    Padding(
+                                      padding: headingPadding,
+                                      child: Center(
+                                          child: Text("On Set",
+                                              style: tableHeader)),
+                                    ),
+                                  ]),
+                            ] +
+                            List<TableRow>.generate((artists.length), (i) {
+                              Actor actor = artists.elementAt(i);
+                              var timings =
+                                  schedule.artistTimings[scene.id][actor.id];
+                              return TableRow(children: [
+                                Center(
+                                  child: Padding(
+                                    padding: rowPadding,
+                                    child: Text("${actor.names["$language"]}",
+                                        style: tableRow),
                                   ),
                                 ),
-                                Padding(
-                                  padding: headingPadding,
-                                  child: Center(
-                                      child: Text("On Shoot Loc",
-                                          style: tableHeader)),
+                                Center(
+                                  child: Padding(
+                                      padding: rowPadding,
+                                      child: Text(
+                                          "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                          style: tableRow)),
                                 ),
-                                Padding(
-                                  padding: headingPadding,
-                                  child: Center(
-                                      child:
-                                          Text("On Set", style: tableHeader)),
+                                Center(
+                                  child: Padding(
+                                      padding: rowPadding,
+                                      child: Text(
+                                          "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                          style: tableRow)),
                                 ),
-                              ]),
-                        ] +
-                        List<TableRow>.generate((artists.length), (i) {
-                          Actor actor = artists.elementAt(i);
-                          var timings =
-                              schedule.artistTimings[scene.id][actor.id];
-                          return TableRow(children: [
-                            Center(
-                              child: Padding(
-                                padding: rowPadding,
-                                child: Text("${actor.names["$language"]}",
-                                    style: tableRow),
-                              ),
-                            ),
-                            Center(
-                              child: Padding(
-                                  padding: rowPadding,
-                                  child: Text(
-                                      "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                      style: tableRow)),
-                            ),
-                            Center(
-                              child: Padding(
-                                  padding: rowPadding,
-                                  child: Text(
-                                      "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                      style: tableRow)),
-                            ),
-                          ]);
-                        }),
-                  ),
-                  Padding(padding: const EdgeInsets.all(4)),
+                              ]);
+                            }),
+                      )),
+                  SizedBox(height: 4),
                   // Company Artists
                   Column(
                     children:
@@ -491,105 +512,131 @@ class PdfGenerator {
                     }),
                   ),
                   // VFX
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "VFX:",
-                              style: tableHeader,
+                  Padding(
+                      padding: gapPadding,
+                      child: Column(children: [
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            TableRow(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "VFX:",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "${oneDigitToTwo(vfxTimings['start'][0])}:${vfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['start'][1])} ${vfxTimings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "${oneDigitToTwo(vfxTimings['end'][0])}:${vfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['end'][1])} ${vfxTimings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "${oneDigitToTwo(vfxTimings['start'][0])}:${vfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['start'][1])} ${vfxTimings['start'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
+                          ],
+                        ),
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            TableRow(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                Padding(
+                                  padding: rowPadding,
+                                  child: Text(
+                                    "${scene.vfx}",
+                                    style: tableRow,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: headingPadding,
-                            child: Text("${oneDigitToTwo(vfxTimings['end'][0])}:${vfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['end'][1])} ${vfxTimings['end'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.vfx}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(padding: headingPadding),
+                          ],
+                        )
+                      ])),
                   // SFX
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "SFX:", style: tableHeader,
+                  Padding(
+                      padding: gapPadding,
+                      child: Column(children: [
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            TableRow(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "SFX:",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "${oneDigitToTwo(sfxTimings['start'][0])}:${sfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['start'][1])} ${sfxTimings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: headingPadding,
+                                  child: Text(
+                                    "${oneDigitToTwo(sfxTimings['end'][0])}:${sfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['end'][1])} ${sfxTimings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: tableHeader,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "${oneDigitToTwo(sfxTimings['start'][0])}:${sfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['start'][1])} ${sfxTimings['start'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
+                          ],
+                        ),
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            TableRow(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                Padding(
+                                  padding: rowPadding,
+                                  child: Text(
+                                    "${scene.sfx}",
+                                    style: tableRow,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: headingPadding,
-                            child: Text("${oneDigitToTwo(sfxTimings['end'][0])}:${sfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['end'][1])} ${sfxTimings['end'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.sfx}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(padding: headingPadding),
+                          ],
+                        )
+                      ])),
                   // Special Equipments & Hair and Make Up
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
+                  Padding(
+                      padding: gapPadding,
+                      child: Table(
+                        border: TableBorder.all(),
                         children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "Special Equipments",
-                              style: tableHeader,
-                            ),
+                          TableRow(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              Padding(
+                                padding: headingPadding,
+                                child: Text(
+                                  "Special Equipments",
+                                  style: tableHeader,
+                                ),
                           ),
                           Padding(
                             padding: rowPadding,
@@ -610,76 +657,78 @@ class PdfGenerator {
                               style: tableHeader,
                             ),
                           ),
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.makeUp}",
-                              style: tableRow,
-                            ),
+                              Padding(
+                                padding: rowPadding,
+                                child: Text(
+                                  "${scene.makeUp}",
+                                  style: tableRow,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                  Padding(padding: headingPadding),
+                      )),
                   // Props
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
+                  Padding(
+                      padding: gapPadding,
+                      child: Table(
+                        border: TableBorder.all(),
                         children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "Properties",
-                              style: tableHeader,
-                            ),
+                          TableRow(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              Padding(
+                                padding: headingPadding,
+                                child: Text(
+                                  "Properties",
+                                  style: tableHeader,
+                                ),
                           ),
                         ],
                       ),
                       TableRow(
                         verticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "$propsNames",
-                              style: tableRow,
-                            ),
+                              Padding(
+                                padding: rowPadding,
+                                child: Text(
+                                  "$propsNames",
+                                  style: tableRow,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                  Padding(padding: headingPadding),
-                  Table(border: TableBorder.all(), children: [
-                    TableRow(
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                      children: [
-                        Padding(
-                          padding: headingPadding,
-                          child: Text(
-                            "Approved By:",
-                            style: tableHeader,
-                          ),
-                        ),
-                      ],
+                      )),
+                  Padding(
+                      padding: gapPadding,
+                      child: Table(border: TableBorder.all(), children: [
+                        TableRow(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          children: [
+                            Padding(
+                              padding: headingPadding,
+                              child: Text(
+                                "Approved By:",
+                                style: tableHeader,
+                              ),
+                            ),
+                          ],
                     ),
                     TableRow(
                       verticalAlignment: TableCellVerticalAlignment.middle,
-                      children: [
-                        Padding(
-                          padding: headingPadding,
-                          child: Text(
-                            "Ramesh Chand",
-                            style: tableHeader,
-                          ),
+                          children: [
+                            Padding(
+                              padding: headingPadding,
+                              child: Text(
+                                "Ramesh Chand",
+                                style: tableHeader,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ]),
-                  Padding(padding: headingPadding),
+                      ])),
                   footer,
                 ],
               ),
@@ -848,166 +897,7 @@ class PdfGenerator {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text("Production"),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Date: ', style: labelStyle),
-                                        TextSpan(
-                                            text: '${date}', style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding: headingPadding,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Working Day: ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text: '${10}', style: valueStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Project Name: ${project.name}"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Director"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("D.O.P"),
-                                )
-                              ],
-                            ),
-                          ]),
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Location: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${location.shootLocation}',
-                                          style: valueStyle),
-                                    ],
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Start Time (Call Sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'End Time (Call sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Choreographer"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
-                                            style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ],
-                  ),
+                  sceneDetails(project, scene, schedule, date),
                   Table(
                     //border: TableBorder.all(),
                     border: TableBorder(
@@ -1092,7 +982,6 @@ class PdfGenerator {
                               ]),
                         ] +
                         List<TableRow>.generate((1), (i) {
-                          print(artists.names['English']);
                           var timings =
                               schedule.artistTimings[scene.id][artists.id];
                           return TableRow(children: [
@@ -1142,51 +1031,52 @@ class PdfGenerator {
                   Padding(padding: headingPadding),
                   Container(
                     child: Column(
-                      children: <Widget>[
-                            Text("Costumes",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                          ] +
-                          List.generate(actorCostumes.length, (i) {
-                            Actor artist =
-                                Utils.artistsMap[actorCostumes[i]['id']];
-                            var costumes = actorCostumes[i]['costumes'];
-                            var costumesImages =
-                                actorCostumes[i]['costumes_images'];
-                            return Padding(
-                                padding: headingPadding,
-                                child: Table(children: [
-                                  TableRow(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      children: [
-                                        Padding(
-                                            padding: headingPadding,
-                                            child: Text(
-                                                "${artist.names[language]}",
-                                                style: tableHeader)),
-                                      ]),
-                                  TableRow(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      children: List<Widget>.generate(
-                                          costumesImages.length, (j) {
-                                        Costume costume =
-                                            Utils.costumesMap[costumes[j]];
-                                        return Padding(
-                                            padding: rowPadding,
-                                            child: Column(children: [
-                                              Image(
-                                                MemoryImage(costumesImages[j]),
-                                                width: 100,
-                                                height: 100,
-                                              ),
-                                              Text('${costume.title}')
-                                            ]));
-                                      })),
-                                ]));
-                          })
-                    ),
+                        children: <Widget>[
+                              Text("Costumes",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ] +
+                            List.generate(actorCostumes.length, (i) {
+                              Actor artist =
+                                  Utils.artistsMap[actorCostumes[i]['id']];
+                              var costumes = actorCostumes[i]['costumes'];
+                              var costumesImages =
+                                  actorCostumes[i]['costumes_images'];
+                              return Padding(
+                                  padding: headingPadding,
+                                  child: Table(children: [
+                                    TableRow(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        children: [
+                                          Padding(
+                                              padding: headingPadding,
+                                              child: Text(
+                                                  "${artist.names[language]}",
+                                                  style: tableHeader)),
+                                        ]),
+                                    TableRow(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        children: List<Widget>.generate(
+                                            costumesImages.length, (j) {
+                                          Costume costume =
+                                              Utils.costumesMap[costumes[j]];
+                                          return Padding(
+                                              padding: rowPadding,
+                                              child: Column(children: [
+                                                Image(
+                                                  MemoryImage(
+                                                      costumesImages[j]),
+                                                  width: 100,
+                                                  height: 100,
+                                                ),
+                                                Text('${costume.title}')
+                                              ]));
+                                        })),
+                                  ]));
+                            })),
                   ),
                   Padding(padding: headingPadding),
                   footer,
@@ -1238,167 +1128,7 @@ class PdfGenerator {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text("Production"),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Date: ', style: labelStyle),
-                                        TextSpan(
-                                            text: '${date}', style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding: headingPadding,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Working Day: ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text: '${10}', style: valueStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Project Name: ${project.name}"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text(
-                                      "Director"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("D.O.P"),
-                                )
-                              ],
-                            ),
-                          ]),
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Location: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${location.shootLocation}',
-                                          style: valueStyle),
-                                    ],
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Start Time (Call Sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'End Time (Call sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Choreographer"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
-                                            style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ],
-                  ),
+                  sceneDetails(project, scene, schedule, date),
                   Padding(padding: const EdgeInsets.all(4)),
                   // Artists
                   Table(
@@ -1481,7 +1211,8 @@ class PdfGenerator {
                                   Padding(
                                     padding: headingPadding,
                                     child: Text(
-                                      "${artist['Name']} ", style: tableHeader,
+                                      "${artist['Name']} ",
+                                      style: tableHeader,
                                     ),
                                   ),
                                   Padding(
@@ -1493,7 +1224,8 @@ class PdfGenerator {
                                   ),
                                   Padding(
                                     padding: headingPadding,
-                                    child: Text(" ${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    child: Text(
+                                      " ${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
                                       style: tableHeader,
                                     ),
                                   ),
@@ -1883,166 +1615,7 @@ class PdfGenerator {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text("Production"),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Date: ', style: labelStyle),
-                                        TextSpan(
-                                            text: '${date}', style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding: headingPadding,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Working Day: ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text: '${10}', style: valueStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Project Name: ${project.name}"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Director"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("D.O.P"),
-                                )
-                              ],
-                            ),
-                          ]),
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Location: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${location.shootLocation}',
-                                          style: valueStyle),
-                                    ],
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Start Time (Call Sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'End Time (Call sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Choreographer"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
-                                            style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ],
-                  ),
+                  sceneDetails(project, scene, schedule, date),
                   Padding(padding: const EdgeInsets.all(4)),
                   // Artists
                   Table(
@@ -2359,166 +1932,7 @@ class PdfGenerator {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text("Production"),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: headingPadding,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Date: ', style: labelStyle),
-                                        TextSpan(
-                                            text: '${date}', style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding: headingPadding,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Working Day: ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text: '${10}', style: valueStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Project Name: ${project.name}"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Director"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("D.O.P"),
-                                )
-                              ],
-                            ),
-                          ]),
-                      TableRow(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Location: ',
-                                          style: labelStyle),
-                                      TextSpan(
-                                          text: '${location.shootLocation}',
-                                          style: valueStyle),
-                                    ],
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'Start Time (Call Sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["start"][1])} ${schedule.callSheetTimings[scene.id]["start"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: 'End Time (Call sheet): ',
-                                              style: labelStyle),
-                                          TextSpan(
-                                              text:
-                                                  '${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][0])}:${oneDigitToTwo(schedule.callSheetTimings[scene.id]["end"][1])} ${schedule.callSheetTimings[scene.id]["end"][2] == 0 ? "AM" : "PM"}',
-                                              style: callSheetTimeStyle),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text("Choreographer"),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: PdfColors.black,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                                '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
-                                            style: valueStyle),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ],
-                  ),
+                  sceneDetails(project, scene, schedule, date),
                   Table(
                     //border: TableBorder.all(),
                     border: TableBorder(

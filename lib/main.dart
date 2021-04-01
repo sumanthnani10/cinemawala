@@ -1,3 +1,4 @@
+import 'package:cinemawala/projects/projects_list.dart';
 import 'package:cinemawala/user/login.dart';
 import 'package:cinemawala/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,6 +57,10 @@ class _SplashScreenState extends State<SplashScreen> {
             context, Utils.createRoute(Login(), Utils.LTR));
         /*await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: 'test@gmail.com', password: 'test1234');*/
+      } else {
+        await Utils.getUser(context, FirebaseAuth.instance.currentUser.uid);
+        Navigator.pushReplacement(
+            context, Utils.createRoute(ProjectsList(), Utils.RTL));
       }
     }
   }
