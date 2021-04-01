@@ -1,7 +1,5 @@
-import 'package:cinemawala/projects/add_project1.dart';
 import 'package:cinemawala/projects/projects_list.dart';
 import 'package:cinemawala/user/login.dart';
-import 'package:cinemawala/user/register.dart';
 import 'package:cinemawala/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,8 +31,7 @@ class _CinemawalaState extends State<Cinemawala> {
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AddProject1(),
-      //SplashScreen(),
+      home: SplashScreen(),
     );
   }
 }

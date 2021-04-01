@@ -115,9 +115,9 @@ class _AddActorState extends State<AddActor>
                     Positioned(
                         child: InkWell(
                       onTap: () async {
-                        String image_path = await Utils.askSource(context);
-                        if (image_path != null) {
-                          actorImage = File(image_path);
+                        String imagePath = await Utils.askSource(context);
+                        if (imagePath != null) {
+                          actorImage = File(imagePath);
                         } else {
                           actorImage = null;
                         }
@@ -197,9 +197,9 @@ class _AddActorState extends State<AddActor>
                       right: 10,
                       child: InkWell(
                         onTap: () async {
-                          String image_path = await Utils.askSource(context);
-                          if (image_path != null) {
-                            actorImage = File(image_path);
+                          String imagePath = await Utils.askSource(context);
+                          if (imagePath != null) {
+                            actorImage = File(imagePath);
                           } else {
                             actorImage = null;
                           }
@@ -609,7 +609,7 @@ class _AddActorState extends State<AddActor>
       ),
     );
     // debugPrint("request: " + req.toString());
-    var res = await req.send();
+    // var res = await req.send();
     // debugPrint("${res}");
     // debugPrint("${res.statusCode}");
   }

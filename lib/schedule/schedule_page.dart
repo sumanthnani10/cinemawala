@@ -347,6 +347,34 @@ class _SchedulePageState extends State<SchedulePage>
                                 ],
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Spacer(),
+                                  Text(
+                                    "On Shoot",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                  SizedBox(
+                                    width: 18,
+                                  ),
+                                  Text(
+                                    "On Set",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
                             // VFX TIMING
                             if (selectedScenes.length > 0)
                               Padding(
@@ -370,7 +398,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                       color: Colors.indigo),
                                                 )),
                                             Text(
-                                              " to ",
+                                              "    ",
                                               style:
                                                   TextStyle(color: background1),
                                             ),
@@ -411,7 +439,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                       color: Colors.indigo),
                                                 )),
                                             Text(
-                                              " to ",
+                                              "    ",
                                               style:
                                                   TextStyle(color: background1),
                                             ),
@@ -483,7 +511,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                                       .indigo),
                                                             )),
                                                         Text(
-                                                          " to ",
+                                                          "    ",
                                                           style: TextStyle(
                                                               color:
                                                                   background1),
@@ -579,7 +607,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                                                 Colors.indigo),
                                                                       )),
                                                                   Text(
-                                                                    " to ",
+                                                                    "    ",
                                                                     style: TextStyle(
                                                                         color:
                                                                             background1),
@@ -685,7 +713,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                         color: Colors.indigo),
                                                   ),
                                                   Text(
-                                                    " to ",
+                                                    "    ",
                                                     style: TextStyle(
                                                         color: background1),
                                                   ),

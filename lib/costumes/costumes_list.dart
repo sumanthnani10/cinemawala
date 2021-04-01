@@ -120,7 +120,7 @@ class _CostumesListState extends State<CostumesList>
               return ListTile(
                 title: Text('${scene.titles['English']}'),
                 subtitle: Text(
-                  '${count} ${count == 1 ? "Costume" : "Costumes"}',
+                  '$count ${count == 1 ? "Costume" : "Costumes"}',
                 ),
                 onTap: () async {
                   var back = await Navigator.push(

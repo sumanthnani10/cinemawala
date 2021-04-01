@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/locations/add_location.dart';
 import 'package:cinemawala/locations/location.dart';
+import 'package:cinemawala/locations/location_page.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -161,6 +162,18 @@ class _SelectLocation extends State<SelectLocation>
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).pop(location);
+                            },
+                            onLongPress: () async {
+                              await Navigator.push(
+                                  context,
+                                  Utils.createRoute(
+                                      LocationPage(
+                                        project: project,
+                                        location: location,
+                                      ),
+                                      Utils.DTU));
+                              locations = Utils.locations;
+                              setState(() {});
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(vertical: 4),

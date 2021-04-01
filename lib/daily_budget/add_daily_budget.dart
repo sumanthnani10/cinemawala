@@ -1204,7 +1204,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                             createAlertDialog(context, "Category").then((v) {
                               if (v == null) {
                               } else if (budget['$v'] == null) {
-                                var key = formatKey(v);
+                                v = formatKey(v);
                                 dailyBudget['budget']['$v'] = {};
                                 budget['$v'] = {};
                                 setState(() {});

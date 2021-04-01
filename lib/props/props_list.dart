@@ -65,7 +65,7 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
     }
     return DefaultTabController(
       length: 2,
-      initialIndex: 0,
+      initialIndex: 1,
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
@@ -92,10 +92,10 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
             indicatorColor: background1,
             tabs: <Widget>[
               Tab(
-                text: 'Property Wise',
+                text: 'Scene Wise',
               ),
               Tab(
-                text: 'Scene Wise',
+                text: 'Property Wise',
               ),
             ],
           ),
@@ -107,6 +107,27 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
         ),
         body: TabBarView(
           children: <Widget>[
+            SingleChildScrollView(
+                child: Column(
+                    children: List<Widget>.generate(scenes.length, (i) {
+              Scene scene = scenes[i];
+              return ListTile(
+                title: Text('${scene.titles['English']}'),
+                subtitle: Text(
+                    '${scene.props.length} ${scene.props.length == 1 ? "Prop" : "Props"}'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => SelectedProps(
+                              project: project,
+                              selectedProps: List<Prop>.generate(
+                                  scene.props.length,
+                                  (p) => Utils.propsMap[scene.props[p]])),
+                          opaque: false));
+                },
+              );
+            }))),
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -196,27 +217,6 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                 }),
               ),
             ),
-            SingleChildScrollView(
-                child: Column(
-                    children: List<Widget>.generate(scenes.length, (i) {
-              Scene scene = scenes[i];
-              return ListTile(
-                title: Text('${scene.titles['English']}'),
-                subtitle: Text(
-                    '${scene.props.length} ${scene.props.length == 1 ? "Prop" : "Props"}'),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => SelectedProps(
-                              project: project,
-                              selectedProps: List<Prop>.generate(
-                                  scene.props.length,
-                                  (p) => Utils.propsMap[scene.props[p]])),
-                          opaque: false));
-                },
-              );
-            }))),
           ],
         ),
         floatingActionButton: FloatingActionButton(

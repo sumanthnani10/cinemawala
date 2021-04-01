@@ -99,9 +99,9 @@ class _AddCostume extends State<AddCostume>
                     children: [
                       InkWell(
                         onTap: () async {
-                          String image_path = await Utils.askSource(context);
-                          if (image_path != null) {
-                            costumeImage = File(image_path);
+                          var imagePath = await Utils.askSource(context);
+                          if (imagePath != null) {
+                            costumeImage = File(imagePath);
                           } else {
                             costumeImage = null;
                           }
@@ -189,10 +189,10 @@ class _AddCostume extends State<AddCostume>
                                 size: 20,
                               ),
                               onPressed: () async {
-                                String image_path =
+                                String imagePath =
                                     await Utils.askSource(context);
-                                if (image_path != null) {
-                                  costumeImage = File(image_path);
+                                if (imagePath != null) {
+                                  costumeImage = File(imagePath);
                                 } else {
                                   costumeImage = null;
                                 }
