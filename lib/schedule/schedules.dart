@@ -121,12 +121,10 @@ class _SchedulesState extends State<Schedules>
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               getAll();
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Reload",
               style: TextStyle(color: Colors.indigo),
@@ -205,7 +203,7 @@ class _SchedulesState extends State<Schedules>
                 controller: _textController,
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       if (_textController.text.isEmpty) return;
                       setState(() {

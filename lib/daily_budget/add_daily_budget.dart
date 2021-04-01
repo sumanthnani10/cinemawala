@@ -1094,7 +1094,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                       .of(context)
                       .size
                       .width,
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -1156,7 +1156,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
             style: TextStyle(color: background1),
           ),
           actions: [
-            FlatButton.icon(
+            TextButton.icon(
               onPressed: () async {
                 if (edit) {
                   editDailyBudget();
@@ -1164,8 +1164,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
                   addDailyBudget();
                 }
               },
-              color: color,
-              splashColor: background1.withOpacity(0.2),
               label: Text(
                 edit ? "Edit" : "Add",
                 style: TextStyle(color: Colors.indigo),

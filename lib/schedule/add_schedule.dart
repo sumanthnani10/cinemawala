@@ -139,7 +139,7 @@ class _AddScheduleState extends State<AddSchedule> {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               if (edit) {
                 editSchedule();
@@ -147,8 +147,6 @@ class _AddScheduleState extends State<AddSchedule> {
                 addSchedule();
               }
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               edit ? "Edit" : "Add",
               style: TextStyle(color: Colors.indigo),

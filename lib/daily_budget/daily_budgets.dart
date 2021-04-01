@@ -38,7 +38,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
   void initState() {
     final date = DateTime.now();
     dailyBudgets = Utils.dailyBudgetsMap;
-    print(dailyBudgets);
+    // print(dailyBudgets);
     selectedDate = date;
     loading = true;
     selectedDateId =
@@ -46,7 +46,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
     selectedDailyBudget = dailyBudgets[selectedDateId];
 
     dailyBudgets.forEach((k, v) {
-      print(k);
+      // print(k);
       calenderDailyBudget[DateTime(v.year, v.month, v.day)] = [1];
     });
 
@@ -175,7 +175,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
                 controller: _textController,
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       if (_textController.text.isEmpty) return;
                       setState(() {

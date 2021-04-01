@@ -311,8 +311,6 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                               [
                                                               'field_values'][k]
                                                           ['${fields[j]}'] = v;
-                                                      print(additionalArtists[
-                                                          'Gang Members']);
                                                     },
                                                     decoration: InputDecoration(
                                                       enabledBorder: OutlineInputBorder(

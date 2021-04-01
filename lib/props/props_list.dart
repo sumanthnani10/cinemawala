@@ -71,12 +71,10 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           backgroundColor: color,
           actions: [
-            FlatButton.icon(
+            TextButton.icon(
               onPressed: () {
                 getProps();
               },
-              color: color,
-              splashColor: background1.withOpacity(0.2),
               label: Text(
                 "Reload",
                 style: TextStyle(color: Colors.indigo),

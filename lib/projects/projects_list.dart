@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cinemawala/projects/add_project.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_home.dart';
 import 'package:flutter/material.dart';
@@ -90,12 +89,10 @@ class _ProjectsList extends State<ProjectsList> {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               getProjects();
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Reload",
               style: TextStyle(color: Colors.indigo),
@@ -153,7 +150,7 @@ class _ProjectsList extends State<ProjectsList> {
           : Center(
               child: Text(loading ? '' : 'No Projects.'),
             ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         backgroundColor: color,
         onPressed: () {
           Navigator.push(
@@ -164,7 +161,7 @@ class _ProjectsList extends State<ProjectsList> {
           color: background1,
           size: 32,
         ),
-      ),
+      ),*/
     );
   }
 }

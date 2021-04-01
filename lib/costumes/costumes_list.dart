@@ -73,12 +73,10 @@ class _CostumesListState extends State<CostumesList>
         appBar: AppBar(
           backgroundColor: color,
           actions: [
-            FlatButton.icon(
+            TextButton.icon(
               onPressed: () {
                 getCostumes();
               },
-              color: color,
-              splashColor: background1.withOpacity(0.2),
               label: Text(
                 "Reload",
                 style: TextStyle(color: Colors.indigo),

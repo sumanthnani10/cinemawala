@@ -118,7 +118,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               if (edit) {
                 editRole();
@@ -126,8 +126,6 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                 addRole();
               }
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               edit ? "Edit" : "Add",
               style: TextStyle(color: Colors.indigo),

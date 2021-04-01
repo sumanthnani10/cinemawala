@@ -99,7 +99,13 @@ class _ProjectHome extends State<ProjectHome> {
         "title": "Daily Reports",
         "key": "report",
         "image": "assets/images/dailyreport.png",
-        "onClick": /*PropsList(project: project,)*/ null,
+        "onClick": /*PropsList(project: project,)*/ Center(
+          child: Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(16),
+            child: Text("Yet to be added."),
+          ),
+        ),
         "color": Colors.cyanAccent[100],
       },
       {

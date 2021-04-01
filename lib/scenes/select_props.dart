@@ -91,7 +91,7 @@ class _SelectProps extends State<SelectProps> {
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
-                      FlatButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           List<dynamic> selected = [];
                           for (Prop a in selectedProps) {
@@ -99,8 +99,6 @@ class _SelectProps extends State<SelectProps> {
                           }
                           Navigator.pop(context, [selected, selectedProps]);
                         },
-                        color: background,
-                        splashColor: background1.withOpacity(0.2),
                         label: Text(
                           "Done",
                           style: TextStyle(color: Colors.indigo),

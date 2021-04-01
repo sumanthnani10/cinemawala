@@ -101,7 +101,7 @@ class _SelectCostume extends State<SelectCostume>
                         textAlign: TextAlign.left,
                       ),
                       Spacer(),
-                      FlatButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           List<dynamic> selectedCosts = [];
                           selectedCostumes.forEach((c) {
@@ -109,8 +109,6 @@ class _SelectCostume extends State<SelectCostume>
                           });
                           Navigator.pop(context, selectedCosts);
                         },
-                        color: background,
-                        splashColor: background1.withOpacity(0.2),
                         label: Text(
                           "Done",
                           style: TextStyle(color: Colors.indigo),
@@ -161,7 +159,7 @@ class _SelectCostume extends State<SelectCostume>
                             borderSide: BorderSide(color: Colors.black)),
                         fillColor: Colors.white),
                   ),
-                  FlatButton.icon(
+                  TextButton.icon(
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -170,8 +168,6 @@ class _SelectCostume extends State<SelectCostume>
                                     project: project,
                                   )));
                     },
-                    color: background,
-                    splashColor: background1.withOpacity(0.2),
                     label: Text(
                       "Add Costume",
                       style: TextStyle(color: Colors.indigo),

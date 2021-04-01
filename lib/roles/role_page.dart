@@ -54,7 +54,7 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               var back = await Navigator.push(
                   context,
@@ -70,8 +70,6 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
                 }
               }
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Edit",
               style: TextStyle(color: Colors.indigo),

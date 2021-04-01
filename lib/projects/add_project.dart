@@ -40,7 +40,7 @@ class _AddProject extends State<AddProject> {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 addProject();
               },

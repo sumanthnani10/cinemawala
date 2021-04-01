@@ -51,7 +51,9 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   TextEditingController specialEquipmentTextController,
       makeUpTextController,
       sfxTextController,
-      vfxTextController;
+      vfxTextController,
+      choreographerTextController,
+      fighterTextController;
 
   @override
   void initState() {
@@ -144,8 +146,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     specialEquipmentTextController =
         new TextEditingController(text: scene['special_equipment']);
     makeUpTextController = new TextEditingController(text: scene['make_up']);
-    sfxTextController = new TextEditingController(text: scene['sfx']);
     vfxTextController = new TextEditingController(text: scene['vfx']);
+    sfxTextController = new TextEditingController(text: scene['sfx']);
+    choreographerTextController =
+        new TextEditingController(text: scene['choreographer']);
+    fighterTextController = new TextEditingController(text: scene['fighter']);
 
     specialEquipments = [
       'Gimmy',
@@ -260,8 +265,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       background1 = Colors.white;
     }
 
-    print(scene['addl_artists']);
-
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
@@ -273,40 +276,45 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: List<Widget>.generate(languages.length, (i) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedLanguage = i;
-                          cardScrollController.animateTo(
-                              MediaQuery.of(context).size.width * i,
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.decelerate);
-                        });
-                      },
-                      color: i == selectedLanguage ? Colors.white : color,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32)),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '${languages[i]}',
-                                style: TextStyle(
-                                    color: background1,
-                                    fontSize: 14,
-                                    fontFamily: 'Poppins')),
-                            TextSpan(
-                                text: '\n${langsInEnglish[i]}',
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontFamily: 'Poppins',
-                                    color: background1)),
-                          ],
-                        ),
-                      )),
+                return Container(
+                  decoration: BoxDecoration(
+                    color: i == selectedLanguage ? Colors.white : color,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedLanguage = i;
+                        cardScrollController.animateTo(
+                            MediaQuery.of(context).size.width * i,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.decelerate);
+                      });
+                    },
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: '${languages[i]}',
+                              style: TextStyle(
+                                  color: background1,
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins')),
+                          TextSpan(
+                              text: '\n${langsInEnglish[i]}',
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: 'Poppins',
+                                  color: background1)),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               }),
             ),
@@ -318,7 +326,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           style: TextStyle(color: background1),
         ),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               if (edit) {
                 editScene();
@@ -326,8 +334,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 addScene();
               }
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               edit ? "Edit" : "Add",
               style: TextStyle(color: Colors.indigo),
@@ -492,6 +498,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
+              // Day/Night
               Container(
                 decoration: BoxDecoration(
                   color: color,
@@ -559,6 +566,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+              // Interior/Exterior
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration: BoxDecoration(
@@ -618,6 +626,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+              // Makeup & Hair
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: TextField(
@@ -640,6 +649,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
+              // Spl Equipments
               Container(
                 margin: EdgeInsets.symmetric(vertical: 4),
                 decoration: BoxDecoration(
@@ -715,6 +725,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+              // SFX
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: TextField(
@@ -737,6 +748,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
+              // VFX
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: TextField(
@@ -751,6 +763,52 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: background1)),
                     labelText: 'VFX',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              // Choreographer
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene['choreographer'] = v;
+                  },
+                  controller: choreographerTextController,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: 'Choreographer',
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              // Fighter
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.done,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    scene['fighter'] = v;
+                  },
+                  controller: fighterTextController,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: 'Fighter',
                     labelStyle: TextStyle(color: background1, fontSize: 14),
                     contentPadding: EdgeInsets.all(8),
                     border: OutlineInputBorder(

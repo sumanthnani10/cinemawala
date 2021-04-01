@@ -310,6 +310,7 @@ class Utils {
   static Route createRoute(dest, Offset dir) {
     return PageRouteBuilder(
       transitionDuration: Duration(milliseconds: 500),
+      opaque: false,
       pageBuilder: (context, animation, secondaryAnimation) => dest,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = dir;
@@ -380,7 +381,7 @@ class Utils {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: FlatButton.icon(
+                  child: TextButton.icon(
                     onPressed: () async {
                       String s = await openCamera();
                       Navigator.of(context).pop(s);
@@ -391,7 +392,7 @@ class Utils {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: FlatButton.icon(
+                  child: TextButton.icon(
                     onPressed: () async {
                       String s = await openGallery();
                       Navigator.of(context).pop(s);
@@ -461,13 +462,13 @@ class Utils {
           title: Text(title),
           content: Text(message),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop(true);
@@ -491,13 +492,13 @@ class Utils {
             title: Text(title),
             content: Text(message),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text("Close"),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Ok"),
                 onPressed: () {
                   Navigator.of(context).pop(true);
@@ -527,7 +528,7 @@ class Utils {
             style: TextStyle(fontSize: 14),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("Ok"),
               onPressed: onOkPressed,
             ),
@@ -549,7 +550,7 @@ class Utils {
           ),
           content: Text(message),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop(true);

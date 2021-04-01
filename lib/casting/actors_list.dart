@@ -67,12 +67,10 @@ class _ActorsListState extends State<ActorsList>
         ),
         iconTheme: IconThemeData(color: background1),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () {
               getArtists();
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Reload",
               style: TextStyle(color: Colors.indigo),

@@ -183,8 +183,6 @@ class _AddLocation extends State<AddLocation>
                                       locationImages[i] = null;
                                       setState(() {});
                                     },
-                                    color: background,
-                                    splashColor: background1.withOpacity(0.2),
                                     icon: Icon(
                                       Icons.close,
                                       size: 14,
@@ -206,8 +204,6 @@ class _AddLocation extends State<AddLocation>
                                     }
                                     setState(() {});
                                   },
-                                  color: background,
-                                  splashColor: background1.withOpacity(0.2),
                                   icon: Icon(
                                     Icons.edit,
                                     size: 14,
@@ -323,27 +319,33 @@ class _AddLocation extends State<AddLocation>
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                        child: FlatButton(
+                      InkWell(
+                        onTap: () {
+                          if (edit) {
+                            editLocation();
+                          } else {
+                            addLocation();
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: color,
-                            splashColor: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            onPressed: () async {
-                              if (edit) {
-                                editLocation();
-                              } else {
-                                addLocation();
-                              }
-                            },
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Center(
                             child: Text(
                               'Save',
                               style: TextStyle(
                                   color: background1,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16),
-                            )),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),

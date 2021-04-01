@@ -90,7 +90,7 @@ class _SelectScenes extends State<SelectScenes>
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
-                      FlatButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           List<dynamic> selected = [];
                           for (Scene a in selectedScenes) {
@@ -98,8 +98,6 @@ class _SelectScenes extends State<SelectScenes>
                           }
                           Navigator.pop(context, selected);
                         },
-                        color: background,
-                        splashColor: background1.withOpacity(0.2),
                         label: Text(
                           "Done",
                           style: TextStyle(color: Colors.indigo),
@@ -196,13 +194,13 @@ class _SelectScenes extends State<SelectScenes>
                                   onLongPress: () {
                                     Navigator.push(
                                         context,
-                                        PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                ScenePopUp(
-                                                  project: project,
-                                                  scene: scene,
-                                                ),
-                                            opaque: false));
+                                        Utils.createRoute(
+                                            ScenePage(
+                                              project: project,
+                                              scene: scene,
+                                              popUp: true,
+                                            ),
+                                            Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
                                   child: Container(

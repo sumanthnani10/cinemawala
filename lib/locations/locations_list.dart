@@ -71,12 +71,10 @@ class _LocationsList extends State<LocationsList>
         appBar: AppBar(
           backgroundColor: color,
           actions: [
-            FlatButton.icon(
+            TextButton.icon(
               onPressed: () {
                 getLocations();
               },
-              color: color,
-              splashColor: background1.withOpacity(0.2),
               label: Text(
                 "Reload",
                 style: TextStyle(color: Colors.indigo),

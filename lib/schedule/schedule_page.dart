@@ -8,6 +8,7 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:cinemawala/scenes/scene.dart';
+import 'package:cinemawala/scenes/scene_page.dart';
 import 'package:cinemawala/schedule/add_schedule.dart';
 import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,7 +99,7 @@ class _SchedulePageState extends State<SchedulePage>
                   setIterator = selectedArtists.elementAt(i);
                   return Container(
                     width: MediaQuery.of(context).size.width,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () async {
                         selectedArtist = selectedArtists.elementAt(i);
                         Navigator.of(context).pop();
@@ -129,6 +130,12 @@ class _SchedulePageState extends State<SchedulePage>
 
   @override
   void initState() {
+    setContent();
+    super.initState();
+    animationController = AnimationController(vsync: this);
+  }
+
+  setContent() async {
     if (schedule != null) {
       addlTimings = schedule.additionalTimings;
       artistTimings = schedule.artistTimings;
@@ -155,8 +162,6 @@ class _SchedulePageState extends State<SchedulePage>
         schedule = null;
       }
     }
-    super.initState();
-    animationController = AnimationController(vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (shouldUpdate) {
         editSchedule();
@@ -870,6 +875,9 @@ class _SchedulePageState extends State<SchedulePage>
                                       ),
                               ),
                             ),
+                            SizedBox(
+                              height: 16,
+                            )
                           ],
                         ),
                       ),
@@ -978,6 +986,22 @@ class _SchedulePageState extends State<SchedulePage>
                                       children: List<Widget>.generate(
                                         selectedScenes.length,
                                         (i) => InkWell(
+                                          onLongPress: () async {
+                                            var back = await Navigator.push(
+                                                    context,
+                                                    Utils.createRoute(
+                                                        ScenePage(
+                                                          project: project,
+                                                          popUp: true,
+                                                          scene: selectedScenes
+                                                              .elementAt(i),
+                                                        ),
+                                                        Utils.DTU)) ??
+                                                false;
+                                            if (back) {
+                                              getAll();
+                                            }
+                                          },
                                           onTap: () async {
                                             selectedSceneIndex = i;
                                             selectedScene = selectedScenes[i];
@@ -993,30 +1017,30 @@ class _SchedulePageState extends State<SchedulePage>
                                           },
                                           child: Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                      horizontal: 8),
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                  horizontal: 8),
                                               decoration: BoxDecoration(
                                                   border: Border(
                                                       bottom:
-                                                          selectedSceneIndex ==
-                                                                  i
-                                                              ? BorderSide(
-                                                                  color: color,
-                                                                  width: 3)
-                                                              : BorderSide(
-                                                                  color:
-                                                                      background,
-                                                                  width: 3))),
+                                                      selectedSceneIndex ==
+                                                          i
+                                                          ? BorderSide(
+                                                          color: color,
+                                                          width: 3)
+                                                          : BorderSide(
+                                                          color:
+                                                          background,
+                                                          width: 3))),
                                               child: Text(
                                                 '${selectedScenes[i].titles['English']}',
                                                 style: selectedSceneIndex == i
                                                     ? TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: background1)
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: background1)
                                                     : TextStyle(
-                                                        color: background1),
+                                                    color: background1),
                                               )),
                                         ),
                                       ),

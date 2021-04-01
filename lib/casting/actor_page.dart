@@ -71,7 +71,7 @@ class _ActorPage extends State<ActorPage> {
         ),
         iconTheme: IconThemeData(color: background1),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               var back = await Navigator.push(
                       context,
@@ -84,8 +84,6 @@ class _ActorPage extends State<ActorPage> {
                   false;
               Navigator.pop(context, back);
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Edit",
               style: TextStyle(color: Colors.indigo),
@@ -183,11 +181,19 @@ class _ActorPage extends State<ActorPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children:
                                   List<Widget>.generate(languages.length, (i) {
-                                return Padding(
-                                  padding:
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: i == selectedLanguage
+                                        ? color
+                                        : color.withOpacity(10 / 16),
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  margin:
                                       const EdgeInsets.symmetric(horizontal: 4),
-                                  child: FlatButton(
-                                      onPressed: () {
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 2),
+                                  child: InkWell(
+                                      onTap: () {
                                         setState(() {
                                           selectedLanguage = i;
                                           cardScrollController.animateTo(
@@ -200,12 +206,6 @@ class _ActorPage extends State<ActorPage> {
                                               curve: Curves.decelerate);
                                         });
                                       },
-                                      color: i == selectedLanguage
-                                          ? color
-                                          : color.withOpacity(10 / 16),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32)),
                                       child: RichText(
                                         textAlign: TextAlign.center,
                                         text: TextSpan(
@@ -635,51 +635,54 @@ class _ActorPopUpState extends State<ActorPopUp> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: List<Widget>.generate(
                                         languages.length, (i) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: i == selectedLanguage
+                                              ? color
+                                              : color.withOpacity(10 / 16),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        margin: const EdgeInsets.symmetric(
                                             horizontal: 4),
-                                        child: FlatButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                selectedLanguage = i;
-                                                cardScrollController.animateTo(
-                                                    (MediaQuery.of(context)
-                                                                .size
-                                                                .width -
-                                                            48) *
-                                                        i,
-                                                    duration: Duration(
-                                                        milliseconds: 400),
-                                                    curve: Curves.decelerate);
-                                              });
-                                            },
-                                            color: i == selectedLanguage
-                                                ? color
-                                                : color.withOpacity(10 / 16),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(32)),
-                                            child: RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: '${languages[i]}',
-                                                      style: TextStyle(
-                                                          color: background1,
-                                                          fontSize: 14,
-                                                          fontFamily:
-                                                              'Poppins')),
-                                                  TextSpan(
-                                                      text:
-                                                          '\n${langsInEnglish[i]}',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          fontFamily: 'Poppins',
-                                                          color: background1)),
-                                                ],
-                                              ),
-                                            )),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 2),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedLanguage = i;
+                                              cardScrollController.animateTo(
+                                                  (MediaQuery.of(context)
+                                                              .size
+                                                              .width -
+                                                          48) *
+                                                      i,
+                                                  duration: Duration(
+                                                      milliseconds: 400),
+                                                  curve: Curves.decelerate);
+                                            });
+                                          },
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: '${languages[i]}',
+                                                    style: TextStyle(
+                                                        color: background1,
+                                                        fontSize: 14,
+                                                        fontFamily: 'Poppins')),
+                                                TextSpan(
+                                                    text:
+                                                        '\n${langsInEnglish[i]}',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontFamily: 'Poppins',
+                                                        color: background1)),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       );
                                     }),
                                   ),

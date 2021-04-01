@@ -148,7 +148,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
               overscroll.disallowGlow();
                     Timer(Duration(milliseconds: 500), () {
                       viewCats += 3;
-                      print(viewCats);
+                      // print(viewCats);
                       setState(() {});
                     });
                     return;

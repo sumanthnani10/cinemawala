@@ -193,12 +193,10 @@ class _ScenesList extends State<ScenesList>
         iconTheme: IconThemeData(color: background1),
         backgroundColor: color,
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () {
               getAll();
             },
-            color: color,
-            splashColor: background1.withOpacity(0.2),
             label: Text(
               "Reload",
               style: TextStyle(color: Colors.indigo),
@@ -224,7 +222,7 @@ class _ScenesList extends State<ScenesList>
                             context,
                             Utils.createRoute(
                                 ScenePage(project: project, scene: scene),
-                                Utils.DTU)) ??
+                                Utils.RTL)) ??
                         false;
                     if (back) {
                       getAll();

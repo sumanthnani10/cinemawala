@@ -91,7 +91,7 @@ class _SelectActors extends State<SelectActors>
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
-                      FlatButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           List<dynamic> selected = [];
                           for (Actor a in selectedActors) {
@@ -99,8 +99,6 @@ class _SelectActors extends State<SelectActors>
                           }
                           Navigator.pop(context, [selected, selectedActors]);
                         },
-                        color: background,
-                        splashColor: background1.withOpacity(0.2),
                         label: Text(
                           "Done",
                           style: TextStyle(color: Colors.indigo),

@@ -98,12 +98,10 @@ class _SelectCostumes extends State<SelectCostumes>
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
-                      FlatButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           Navigator.pop(context, costumes);
                         },
-                        color: background,
-                        splashColor: background1.withOpacity(0.2),
                         label: Text(
                           "Done",
                           style: TextStyle(color: Colors.indigo),

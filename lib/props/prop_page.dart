@@ -94,8 +94,6 @@ class _PropPageState extends State<PropPage> {
                                     false;
                                 Navigator.pop(context, back);
                               },
-                              color: background,
-                              splashColor: background1.withOpacity(0.2),
                               icon: Icon(
                                 Icons.edit,
                                 size: 20,

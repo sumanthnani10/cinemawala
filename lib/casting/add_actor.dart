@@ -257,47 +257,48 @@ class _AddActorState extends State<AddActor>
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: List<Widget>.generate(
                                 langsInEnglish.length, (i) {
-                              return Padding(
-                                padding:
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: i == selectedLanguage
+                                      ? color
+                                      : color.withOpacity(10 / 16),
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                margin:
                                     const EdgeInsets.symmetric(horizontal: 4),
-                                child: FlatButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedLanguage = i;
-                                        cardScrollController.animateTo(
-                                            MediaQuery.of(context).size.width *
-                                                i,
-                                            duration:
-                                                Duration(milliseconds: 400),
-                                            curve: Curves.decelerate);
-                                      });
-                                    },
-                                    color: i == selectedLanguage
-                                        ? color
-                                        : color.withOpacity(10 / 16),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(32)),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text:
-                                                  '${languages[i] ?? langsInEnglish[i]}',
-                                              style: TextStyle(
-                                                  color: background1,
-                                                  fontSize: 14,
-                                                  fontFamily: 'Poppins')),
-                                          TextSpan(
-                                              text: '\n${langsInEnglish[i]}',
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'Poppins',
-                                                  color: background1)),
-                                        ],
-                                      ),
-                                    )),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 2),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedLanguage = i;
+                                      cardScrollController.animateTo(
+                                          MediaQuery.of(context).size.width * i,
+                                          duration: Duration(milliseconds: 400),
+                                          curve: Curves.decelerate);
+                                    });
+                                  },
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text:
+                                                '${languages[i] ?? langsInEnglish[i]}',
+                                            style: TextStyle(
+                                                color: background1,
+                                                fontSize: 14,
+                                                fontFamily: 'Poppins')),
+                                        TextSpan(
+                                            text: '\n${langsInEnglish[i]}',
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'Poppins',
+                                                color: background1)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               );
                             }),
                           ),
@@ -392,27 +393,33 @@ class _AddActorState extends State<AddActor>
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                        child: FlatButton(
+                      InkWell(
+                        onTap: () {
+                          if (edit) {
+                            editArtist();
+                          } else {
+                            addArtist();
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: color,
-                            splashColor: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            onPressed: () async {
-                              if (edit) {
-                                editArtist();
-                              } else {
-                                addArtist();
-                              }
-                            },
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Center(
                             child: Text(
                               'Save',
                               style: TextStyle(
                                   color: background1,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16),
-                            )),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),

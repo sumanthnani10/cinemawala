@@ -281,27 +281,33 @@ class _AddCostume extends State<AddCostume>
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                        child: FlatButton(
+                      InkWell(
+                        onTap: () {
+                          if (edit) {
+                            editCostume();
+                          } else {
+                            addCostume();
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: color,
-                            splashColor: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            onPressed: () async {
-                              if (edit) {
-                                editCostume();
-                              } else {
-                                addCostume();
-                              }
-                            },
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Center(
                             child: Text(
                               'Save',
                               style: TextStyle(
                                   color: background1,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16),
-                            )),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),
