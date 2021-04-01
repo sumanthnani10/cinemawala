@@ -464,22 +464,30 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                       leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: scene['location'] == ""
-                              ? Container(
-                                  width: 60,
-                                  height: 50,
-                                  color: color,
-                                  child: Text('',
-                                      style: TextStyle(
-                                          color: background, fontSize: 12)),
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: selectedLocation.images[0] ?? '',
-                                  width: 60,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                )),
+                        borderRadius: BorderRadius.circular(4),
+                        child: scene['location'] == ""
+                            ? Container(
+                                width: 60,
+                                height: 50,
+                                color: color,
+                                child: Text('',
+                                    style: TextStyle(
+                                        color: background, fontSize: 12)),
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: selectedLocation.images.length > 0
+                                    ? selectedLocation.images[0]
+                                    : '',
+                                width: 60,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => const Icon(
+                                    Icons.image_not_supported_outlined),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                        Icons.image_not_supported_outlined),
+                              ),
+                      ),
                       title: Text(
                           scene['location'] == ""
                               ? ""

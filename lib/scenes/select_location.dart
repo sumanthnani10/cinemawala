@@ -187,7 +187,8 @@ class _SelectLocation extends State<SelectLocation>
                                       fit: BoxFit.cover,
                                       width: 45,
                                       height: 45,
-                                      imageUrl: "${location.images[0]}",
+                                      imageUrl:
+                                          "${location.images.length > 0 ? location.images[0] : ''}",
                                       errorWidget: (context, url, error) =>
                                           const Icon(Icons
                                               .image_not_supported_outlined),

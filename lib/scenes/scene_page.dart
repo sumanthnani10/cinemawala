@@ -549,7 +549,9 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(4),
                                     child: CachedNetworkImage(
                                       imageUrl:
-                                          selectedLocation.images[0] ?? '',
+                                          selectedLocation.images.length > 0
+                                              ? selectedLocation.images[0]
+                                              : '',
                                       width: 60,
                                       height: 50,
                                       fit: BoxFit.cover,
