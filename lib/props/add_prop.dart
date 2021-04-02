@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'prop.dart';
 
 class AddProp extends StatefulWidget {
   final Map<dynamic, dynamic> prop;
@@ -150,15 +151,13 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                         children: [
                           if (prop['reference_image'] != '' ||
                               propImage != null)
-                            RaisedButton.icon(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16)),
+                            ElevatedButton.icon(
+                                style: Utils.elevatedButtonStyle,
                                 label: Text(
                                   'Remove',
                                   style: TextStyle(
                                       color: background1, fontSize: 20),
                                 ),
-                                color: color,
                                 icon: Icon(
                                   Icons.close,
                                   color: background1,
@@ -169,15 +168,13 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                                   propImage = null;
                                   setState(() {});
                                 }),
-                          RaisedButton.icon(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
+                          ElevatedButton.icon(
+                              style: Utils.elevatedButtonStyle,
                               label: Text(
                                 'Edit',
                                 style:
                                     TextStyle(color: background1, fontSize: 20),
                               ),
-                              color: color,
                               icon: Icon(
                                 Icons.edit,
                                 color: background1,
@@ -319,7 +316,6 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
     Utils.showLoadingDialog(context, 'Adding Property');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (propImage != null) {
       try {
@@ -361,7 +357,9 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.propsMap[prop['id']] = Prop.fromJson(prop);
+            Utils.props = Utils.propsMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Property Added',
@@ -391,14 +389,13 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editProp() async {
     Utils.showLoadingDialog(context, 'Editing Property');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (propImage != null) {
       try {
@@ -440,7 +437,9 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.propsMap[prop['id']] = Prop.fromJson(prop);
+            Utils.props = Utils.propsMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Property Edited',
@@ -470,6 +469,6 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 }

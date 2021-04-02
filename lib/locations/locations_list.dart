@@ -34,7 +34,7 @@ class _LocationsList extends State<LocationsList>
   @override
   void initState() {
     loading = true;
-    locations = Utils.locations ?? [];
+    locations = Utils.locations.sublist(0) ?? [];
     scenes = Utils.scenes ?? [];
     if (Utils.locations == null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -119,12 +119,12 @@ class _LocationsList extends State<LocationsList>
                 onTap: () {
                   Navigator.push(
                       context,
-                      PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => LocationPage(
-                                project: project,
-                                location: location,
-                              ),
-                          opaque: false));
+                      Utils.createRoute(
+                          LocationPage(
+                            project: project,
+                            location: location,
+                          ),
+                          Utils.DTU));
                 },
               );
             }))),
@@ -135,18 +135,17 @@ class _LocationsList extends State<LocationsList>
                   var location = locations[i];
                   return InkWell(
                     onTap: () async {
-                      var back = await Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => LocationPage(
-                                        project: project,
-                                        location: location,
-                                      ),
-                                  opaque: false)) ??
-                          false;
-                      if (back) {
-                        getLocations();
-                      }
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              LocationPage(
+                                project: project,
+                                location: location,
+                              ),
+                              Utils.DTU));
+                      setState(() {
+                        locations = Utils.locations.sublist(0);
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -233,16 +232,15 @@ class _LocationsList extends State<LocationsList>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var back = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddLocation(
-                              project: project,
-                            ))) ??
-                false;
-            if (back) {
-              getLocations();
-            }
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddLocation(
+                          project: project,
+                        )));
+            setState(() {
+              locations = Utils.locations.sublist(0);
+            });
           },
           backgroundColor: color,
           child: Icon(

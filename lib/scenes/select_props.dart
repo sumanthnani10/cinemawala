@@ -194,10 +194,12 @@ class _SelectProps extends State<SelectProps> {
                                   onLongPress: () {
                                     Navigator.push(
                                         context,
-                                        PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                null /*PropPopUp(prop: prop)*/,
-                                            opaque: false));
+                                        Utils.createRoute(
+                                            PropPage(
+                                              project: project,
+                                              prop: prop,
+                                            ),
+                                            Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
                                   child: Container(
@@ -354,15 +356,15 @@ class _SelectedProps extends State<SelectedProps>
                               List<Widget>.generate(showProps.length, (i) {
                             Prop prop = showProps[i];
                             return InkWell(
-                              onLongPress: () {
-                                Navigator.push(
+                              onLongPress: () async {
+                                await Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => PropPage(
-                                              prop: prop,
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        PropPage(
+                                          prop: prop,
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               splashColor: background1.withOpacity(0.2),
                               child: Container(

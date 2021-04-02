@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'costume.dart';
 
 class AddCostume extends StatefulWidget {
   final Project project;
@@ -155,15 +156,13 @@ class _AddCostume extends State<AddCostume>
                         children: [
                           if (costume['reference_image'] != '' ||
                               costumeImage != null)
-                            RaisedButton.icon(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16)),
+                            ElevatedButton.icon(
+                                style: Utils.elevatedButtonStyle,
                                 label: Text(
                                   'Remove',
                                   style: TextStyle(
                                       color: background1, fontSize: 20),
                                 ),
-                                color: color,
                                 icon: Icon(
                                   Icons.close,
                                   color: background1,
@@ -174,15 +173,13 @@ class _AddCostume extends State<AddCostume>
                                   costumeImage = null;
                                   setState(() {});
                                 }),
-                          RaisedButton.icon(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
+                          ElevatedButton.icon(
+                              style: Utils.elevatedButtonStyle,
                               label: Text(
                                 'Edit',
                                 style:
                                     TextStyle(color: background1, fontSize: 20),
                               ),
-                              color: color,
                               icon: Icon(
                                 Icons.edit,
                                 color: background1,
@@ -324,7 +321,6 @@ class _AddCostume extends State<AddCostume>
     Utils.showLoadingDialog(context, 'Adding Costume');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (costumeImage != null) {
       try {
@@ -361,12 +357,14 @@ class _AddCostume extends State<AddCostume>
         var resp = await http.post(Utils.ADD_COSTUME,
             body: jsonEncode(costume),
             headers: {"Content-Type": "application/json"});
-        // // debugPrint(resp.body);
+        // debugPrint(resp.body);
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.costumesMap[costume['id']] = Costume.fromJson(costume);
+            Utils.costumes = Utils.costumesMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Costume Added',
@@ -396,14 +394,13 @@ class _AddCostume extends State<AddCostume>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editCostume() async {
     Utils.showLoadingDialog(context, 'Editing Costume');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (costumeImage != null) {
       try {
@@ -445,7 +442,9 @@ class _AddCostume extends State<AddCostume>
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.costumesMap[costume['id']] = Costume.fromJson(costume);
+            Utils.costumes = Utils.costumesMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Costume Edited',
@@ -475,6 +474,6 @@ class _AddCostume extends State<AddCostume>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 }

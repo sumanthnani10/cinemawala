@@ -21,7 +21,7 @@ class LocationPage extends StatefulWidget {
 class _LocationPageState extends State<LocationPage> {
   Color background, background1, color;
 
-  final Location location;
+  Location location;
   final Project project;
 
   _LocationPageState(this.project, this.location);
@@ -111,18 +111,17 @@ class _LocationPageState extends State<LocationPage> {
                                     backgroundColor: color,
                                     child: IconButton(
                                       onPressed: () async {
-                                        var back = await Navigator.push(
-                                                context,
-                                                Utils.createRoute(
-                                                    AddLocation(
-                                                      project: project,
-                                                      location:
-                                                          location.toJson(),
-                                                    ),
-                                                    Utils.RTL)) ??
-                                            false;
-                                        // debugPrint("${location.toJson()}");
-                                        Navigator.pop(context, back);
+                                        await Navigator.push(
+                                            context,
+                                            Utils.createRoute(
+                                                AddLocation(
+                                                  project: project,
+                                                  location: location.toJson(),
+                                                ),
+                                                Utils.RTL));
+                                        location =
+                                            Utils.locationsMap[location.id];
+                                        setState(() {});
                                       },
                                       icon: Icon(
                                         Icons.edit,

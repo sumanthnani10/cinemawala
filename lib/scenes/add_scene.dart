@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'scene.dart';
 import 'select_actors.dart';
 
 class AddScene extends StatefulWidget {
@@ -440,11 +441,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     Utils.showLoadingDialog(context, 'Loading');
                     Location selected = await Navigator.push(
                             context,
-                            PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => SelectLocation(
-                                      project: project,
-                                    ),
-                                opaque: false)) ??
+                            Utils.createRoute(
+                                SelectLocation(
+                                  project: project,
+                                ),
+                                Utils.DTU)) ??
                         null;
                     if (selected != null) {
                       scene["location"] = selected.id;
@@ -521,26 +522,27 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 0),
-                        child: RaisedButton.icon(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              primary: scene['day'] ? Colors.white : color,
+                              elevation: scene['day'] ? 4 : 0,
+                            ),
                             onPressed: () {
                               setState(() {
                                 scene['day'] = true;
                               });
                             },
-                            color: scene['day'] ? Colors.white : color,
-                            elevation: scene['day'] ? 4 : 0,
-                            icon: Icon(
-                              Icons.wb_sunny_outlined,
-                              size: 22,
-                            ),
+                            icon: Icon(Icons.wb_sunny_outlined,
+                                size: 22, color: background1),
                             label: Text(
                               "Day",
                               style: TextStyle(
                                   fontWeight: scene['day']
                                       ? FontWeight.bold
-                                      : FontWeight.normal),
+                                      : FontWeight.normal,
+                                  color: background1),
                             )),
                       ),
                     ),
@@ -548,26 +550,27 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 0),
-                        child: RaisedButton.icon(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              primary: !scene['day'] ? Colors.white : color,
+                              elevation: !scene['day'] ? 4 : 0,
+                            ),
                             onPressed: () {
                               setState(() {
                                 scene['day'] = false;
                               });
                             },
-                            color: !scene['day'] ? Colors.white : color,
-                            elevation: !scene['day'] ? 4 : 0,
-                            icon: Icon(
-                              Icons.nightlight_round,
-                              size: 22,
-                            ),
+                            icon: Icon(Icons.nightlight_round,
+                                size: 22, color: background1),
                             label: Text(
                               "Night",
                               style: TextStyle(
                                   fontWeight: !scene['day']
                                       ? FontWeight.bold
-                                      : FontWeight.normal),
+                                      : FontWeight.normal,
+                                  color: background1),
                             )),
                       ),
                     ),
@@ -589,22 +592,25 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 0),
-                        child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              primary: scene['interior'] ? Colors.white : color,
+                              elevation: scene['interior'] ? 4 : 0,
+                            ),
                             onPressed: () {
                               setState(() {
                                 scene['interior'] = true;
                               });
                             },
-                            color: scene['interior'] ? Colors.white : color,
-                            elevation: scene['interior'] ? 4 : 0,
                             child: Text(
                               "Interior",
                               style: TextStyle(
                                   fontWeight: scene['interior']
                                       ? FontWeight.bold
-                                      : FontWeight.normal),
+                                      : FontWeight.normal,
+                                  color: background1),
                             )),
                       ),
                     ),
@@ -612,22 +618,26 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 0),
-                        child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              primary:
+                                  !scene['interior'] ? Colors.white : color,
+                              elevation: !scene['interior'] ? 4 : 0,
+                            ),
                             onPressed: () {
                               setState(() {
                                 scene['interior'] = false;
                               });
                             },
-                            color: !scene['interior'] ? Colors.white : color,
-                            elevation: !scene['interior'] ? 4 : 0,
                             child: Text(
                               "Exterior",
                               style: TextStyle(
                                   fontWeight: !scene['interior']
                                       ? FontWeight.bold
-                                      : FontWeight.normal),
+                                      : FontWeight.normal,
+                                  color: background1),
                             )),
                       ),
                     ),
@@ -833,12 +843,12 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     Utils.showLoadingDialog(context, 'Loading');
                     var selected = await Navigator.push(
                         context,
-                        PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => SelectActors(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                ),
-                            opaque: false));
+                        Utils.createRoute(
+                            SelectActors(
+                              project: project,
+                              selectedActors: selectedArtists,
+                            ),
+                            Utils.DTU));
                     if (selected != null) {
                       scene['artists'] = selected[0];
                       selectedArtists = selected[1];
@@ -911,11 +921,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     }
                     var selected = await Navigator.push(
                         context,
-                        PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => AddCompanyArtists(
-                                  additionalArtists: addlArtists,
-                                ),
-                            opaque: false));
+                        Utils.createRoute(
+                            AddCompanyArtists(
+                              additionalArtists: addlArtists,
+                            ),
+                            Utils.DTU));
                     if (selected != null) {
                       for (var k in selected.keys) {
                         scene['addl_artists']['$k'] =
@@ -947,13 +957,13 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     Utils.showLoadingDialog(context, "Loading");
                     var selected = await Navigator.push(
                         context,
-                        PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => SelectCostumes(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                  costumes: scene['costumes'],
-                                ),
-                            opaque: false));
+                        Utils.createRoute(
+                            SelectCostumes(
+                              project: project,
+                              selectedActors: selectedArtists,
+                              costumes: scene['costumes'],
+                            ),
+                            Utils.DTU));
                     if (selected != null) {
                       scene['costumes'] = selected;
                       selectedCostumes.clear();
@@ -1005,12 +1015,12 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     Utils.showLoadingDialog(context, 'Loading');
                     var selected = await Navigator.push(
                         context,
-                        PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => SelectProps(
-                                  project: project,
-                                  selectedProps: selectedProps,
-                                ),
-                            opaque: false));
+                        Utils.createRoute(
+                            SelectProps(
+                              project: project,
+                              selectedProps: selectedProps,
+                            ),
+                            Utils.DTU));
                     if (selected != null) {
                       scene['props'] = selected[0];
                       selectedProps = selected[1];
@@ -1120,18 +1130,38 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       body['props'].add(p.toJson());
     });
 
-    // print(body);
-
-    var back = false;
-
     try {
       var resp = await http.post(Utils.ADD_SCENE,
           body: jsonEncode(body),
           headers: {"Content-Type": "application/json"});
       var r = jsonDecode(resp.body);
-      Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
+          Utils.scenesMap[scene['id']] = Scene.fromJson(scene);
+          Utils.scenes = Utils.scenesMap.values.toList();
+
+          body['artists'].forEach((a) {
+            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+          });
+          Utils.artists = Utils.artistsMap.values.toList();
+
+          body['costumes'].forEach((c) {
+            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+          });
+          Utils.costumes = Utils.costumesMap.values.toList();
+
+          body['props'].forEach((c) {
+            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+          });
+          Utils.props = Utils.propsMap.values.toList();
+
+          body['locations'].forEach((c) {
+            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+          });
+          Utils.locations = Utils.locationsMap.values.toList();
+
+          Navigator.pop(context);
+
           await Utils.showSuccessDialog(
               context,
               'Scene Added',
@@ -1141,9 +1171,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
             Navigator.pop(context);
           });
         } else {
+          Navigator.pop(context);
           await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
         }
       } else {
+        Navigator.pop(context);
         await Utils.showErrorDialog(context, 'Something went wrong.',
             'Please try again after sometime.');
       }
@@ -1156,7 +1188,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editScene() async {
@@ -1255,18 +1287,39 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
 
     // print(body['locations']);
 
-    var back = false;
-
     try {
       var resp = await http.post(Utils.EDIT_SCENE,
           body: jsonEncode(body),
           headers: {"Content-Type": "application/json"});
       // // debugPrint(resp.body);
       var r = jsonDecode(resp.body);
-      Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.scenesMap[scene['id']] = Scene.fromJson(scene);
+          Utils.scenes = Utils.scenesMap.values.toList();
+
+          body['artists'].forEach((a) {
+            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+          });
+          Utils.artists = Utils.artistsMap.values.toList();
+
+          body['costumes'].forEach((c) {
+            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+          });
+          Utils.costumes = Utils.costumesMap.values.toList();
+
+          body['props'].forEach((c) {
+            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+          });
+          Utils.props = Utils.propsMap.values.toList();
+
+          body['locations'].forEach((c) {
+            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+          });
+          Utils.locations = Utils.locationsMap.values.toList();
+
+          Navigator.pop(context);
+
           await Utils.showSuccessDialog(
               context,
               'Scene Edited',
@@ -1276,9 +1329,11 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
             Navigator.pop(context);
           });
         } else {
+          Navigator.pop(context);
           await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
         }
       } else {
+        Navigator.pop(context);
         await Utils.showErrorDialog(context, 'Something went wrong.',
             'Please try again after sometime.');
       }
@@ -1291,7 +1346,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 }
 

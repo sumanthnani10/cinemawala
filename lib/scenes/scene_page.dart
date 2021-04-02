@@ -67,11 +67,18 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
 
     langsInEnglish = project.languages;
 
+    setScene();
+
+    super.initState();
+  }
+
+  setScene() async {
     selectedLocation = Utils.locationsMap[scene.location];
 
     for (var i in langsInEnglish) {
       titleControllers.add(new TextEditingController(text: scene.titles[i]));
       gistControllers.add(new TextEditingController(text: scene.gists[i]));
+      print(scene.gists[i]);
     }
 
     for (var i in scene.artists) {
@@ -103,8 +110,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     choreographerTextController =
         new TextEditingController(text: scene.choreographer);
     fighterTextController = new TextEditingController(text: scene.fighter);
-
-    super.initState();
   }
 
   Widget imagesInCircles(images) {
@@ -285,15 +290,15 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                 actions: [
                   TextButton.icon(
                     onPressed: () async {
-                      var back = await Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  AddScene(
-                                      project: project, scene: scene.toJson()),
-                                  Utils.RTL)) ??
-                          false;
-                      // debugPrint("${location.toJson()}");
-                      Navigator.pop(context, back);
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              AddScene(project: project, scene: scene.toJson()),
+                              Utils.RTL));
+                      print(Utils.scenesMap[scene.id].gists);
+                      scene = Utils.scenesMap[scene.id];
+                      await setScene();
+                      setState(() {});
                     },
                     label: Text(
                       "Edit",
@@ -338,16 +343,15 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                       Spacer(),
                       TextButton.icon(
                         onPressed: () async {
-                          var back = await Navigator.push(
-                                  context,
-                                  Utils.createRoute(
-                                      AddScene(
-                                          project: project,
-                                          scene: scene.toJson()),
-                                      Utils.RTL)) ??
-                              false;
-                          // debugPrint("${location.toJson()}");
-                          Navigator.pop(context, back);
+                          await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  AddScene(
+                                      project: project, scene: scene.toJson()),
+                                  Utils.RTL));
+                          setState(() {
+                            scene = Utils.scenesMap[scene.id];
+                          });
                         },
                         label: Text(
                           "Edit",
@@ -517,23 +521,15 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: InkWell(
                             onTap: () async {
-                              var back = await Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              LocationPage(
-                                                project: project,
-                                                location: selectedLocation,
-                                              ),
-                                          opaque: false)) ??
-                                  false;
-                              if (back) {
-                                Utils.showLoadingDialog(
-                                    context, 'Getting Locations');
-                                await Utils.getLocations(context, project.id);
-                                Navigator.pop(context);
-                                setState(() {});
-                              }
+                              await Navigator.push(
+                                  context,
+                                  Utils.createRoute(
+                                      LocationPage(
+                                        project: project,
+                                        location: selectedLocation,
+                                      ),
+                                      Utils.DTU));
+                              setState(() {});
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -586,21 +582,22 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 0),
-                                  child: RaisedButton.icon(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      onPressed: () {},
-                                      color: Colors.white,
-                                      elevation: 4,
-                                      icon: Icon(
-                                        Icons.wb_sunny_outlined,
-                                        size: 22,
+                                  child: ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32)),
+                                        primary: Colors.white,
+                                        elevation: 4,
                                       ),
+                                      onPressed: () {},
+                                      icon: Icon(Icons.wb_sunny_outlined,
+                                          size: 22, color: background1),
                                       label: Text(
                                         scene.day ? "Day" : "Night",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            color: background1),
                                       )),
                                 ),
                               ),
@@ -608,19 +605,22 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 0),
-                                  child: RaisedButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        primary: Colors.white,
+                                        elevation: 4,
+                                      ),
                                       onPressed: () {},
-                                      color: Colors.white,
-                                      elevation: 4,
                                       child: Text(
                                         scene.interior
                                             ? "Interior"
                                             : "Exterior",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            color: background1),
                                       )),
                                 ),
                               ),
@@ -805,19 +805,20 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: InkWell(
                             onTap: () async {
-                              Navigator.push(
+                              await Navigator.push(
                                   context,
-                                  PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          SelectedActors(
-                                            project: project,
-                                            selectedArtists:
-                                                List<Actor>.generate(
-                                                    scene.artists.length,
-                                                    (a) => Utils.artistsMap[
-                                                        scene.artists[a]]),
-                                          ),
-                                      opaque: false));
+                                  Utils.createRoute(
+                                      SelectedActors(
+                                        project: project,
+                                        selectedArtists: List<Actor>.generate(
+                                            scene.artists.length,
+                                            (a) => Utils
+                                                .artistsMap[scene.artists[a]]),
+                                      ),
+                                      Utils.DTU));
+                              setState(() {
+                                setScene();
+                              });
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,
@@ -854,21 +855,14 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                 addlArtists['$k']['field_values'] =
                                     scene.addlArtists['$k'];
                               }
-                              var selected = await Navigator.push(
+                              await Navigator.push(
                                   context,
-                                  PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          ViewCompanyArtists(
-                                            additionalArtists: addlArtists,
-                                          ),
-                                      opaque: false));
-                              if (selected != null) {
-                                for (var k in addlArtists.keys) {
-                                  scene.addlArtists['$k'] =
-                                      selected['$k']['field_values'];
-                                }
-                                setState(() {});
-                              }
+                                  Utils.createRoute(
+                                      ViewCompanyArtists(
+                                        additionalArtists: addlArtists,
+                                      ),
+                                      Utils.DTU));
+                              setState(() {});
                             },
                             child: Container(
                                 width: MediaQuery.of(context).size.width,
@@ -892,14 +886,16 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: InkWell(
                             onTap: () async {
-                              Navigator.push(
+                              await Navigator.push(
                                   context,
-                                  PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          SelectedCostumes(
-                                              project: project,
-                                              costumes: scene.costumes),
-                                      opaque: false));
+                                  Utils.createRoute(
+                                      SelectedCostumes(
+                                          project: project,
+                                          costumes: scene.costumes),
+                                      Utils.DTU));
+                              setState(() {
+                                setScene();
+                              });
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,
@@ -931,19 +927,20 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: InkWell(
-                            onTap: () {
-                              Navigator.push(
+                            onTap: () async {
+                              await Navigator.push(
                                   context,
-                                  PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          SelectedProps(
-                                              project: project,
-                                              selectedProps:
-                                                  List<Prop>.generate(
-                                                      scene.artists.length,
-                                                      (p) => Utils.propsMap[
-                                                          scene.props[p]])),
-                                      opaque: false));
+                                  Utils.createRoute(
+                                      SelectedProps(
+                                          project: project,
+                                          selectedProps: List<Prop>.generate(
+                                              scene.artists.length,
+                                              (p) => Utils
+                                                  .propsMap[scene.props[p]])),
+                                      Utils.DTU));
+                              setState(() {
+                                setScene();
+                              });
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,

@@ -199,21 +199,17 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                         ),
                                         TextButton.icon(
                                           onPressed: () async {
-                                            var back = await Navigator.push(
-                                                    context,
-                                                    Utils.createRoute(
-                                                        AddDailyBudget(
-                                                          project: project,
-                                                          dailyBudget:
-                                                              dailyBudget
-                                                                  .toJson(),
-                                                          edit: true,
-                                                        ),
-                                                        Utils.RTL)) ??
-                                                false;
-                                            if (back) {
-                                              getDailyBudgets();
-                                            }
+                                            await Navigator.push(
+                                                context,
+                                                Utils.createRoute(
+                                                    AddDailyBudget(
+                                                      project: project,
+                                                      dailyBudget:
+                                                          dailyBudget.toJson(),
+                                                      edit: true,
+                                                    ),
+                                                    Utils.RTL));
+                                            getDailyBudgets();
                                           },
                                           label: Text("Edit"),
                                           icon: Icon(Icons.edit, size: 14),
@@ -617,22 +613,18 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                     "budget": {},
                     "id": id,
                     "year": date.year,
-                    "last_edit_by": Utils.USER_ID,
-                    "last_edit_on": now.millisecondsSinceEpoch,
-                    "created": now.millisecondsSinceEpoch
-                  };
-                  var back = await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddDailyBudget(
-                              project: project,
-                              dailyBudget: dailyBudget),
-                          Utils.DTU)) ??
-                      false;
-                  if (back) {
-                    getDailyBudgets();
-                  }
-                },
+                          "last_edit_by": Utils.USER_ID,
+                          "last_edit_on": now.millisecondsSinceEpoch,
+                          "created": now.millisecondsSinceEpoch
+                        };
+                        await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                AddDailyBudget(
+                                    project: project, dailyBudget: dailyBudget),
+                                Utils.DTU));
+                        getDailyBudgets();
+                      },
                 child: Text("+ Add Budget"),
                 style: ElevatedButton.styleFrom(primary: color),
               )

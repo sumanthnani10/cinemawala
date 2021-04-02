@@ -169,7 +169,13 @@ class _SchedulesState extends State<Schedules>
             date: selectedDate,
             id: selectedDateId,
             getAll: () {
-              getAll();
+              schedules = Utils.schedulesMap ?? {};
+
+              schedules.forEach((k, v) {
+                calenderSchedule[DateTime(v.year, v.month, v.day)] = v.scenes;
+              });
+              selectedSchedule = schedules[selectedDateId];
+              setState(() {});
             },
             nextDate: () async {
               selectedDate = selectedDate.add(Duration(days: 1));

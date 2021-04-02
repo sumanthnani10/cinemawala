@@ -31,7 +31,7 @@ class _ActorPage extends State<ActorPage> {
   ScrollController cardScrollController = new ScrollController();
   List<TextEditingController> nameControllers = [], characterControllers = [];
   Set<String> costumes = {};
-  final Actor actor;
+  Actor actor;
 
   _ActorPage({@required this.actor, @required this.project});
 
@@ -73,16 +73,16 @@ class _ActorPage extends State<ActorPage> {
         actions: [
           TextButton.icon(
             onPressed: () async {
-              var back = await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddActor(
-                            project: project,
-                            actor: actor.toJson(),
-                          ),
-                          Utils.RTL)) ??
-                  false;
-              Navigator.pop(context, back);
+              await Navigator.push(
+                  context,
+                  Utils.createRoute(
+                      AddActor(
+                        project: project,
+                        actor: actor.toJson(),
+                      ),
+                      Utils.RTL));
+              actor = Utils.artistsMap[actor.id];
+              setState(() {});
             },
             label: Text(
               "Edit",
@@ -413,31 +413,19 @@ class _ActorPage extends State<ActorPage> {
                                             (i) {
                                               return InkWell(
                                                 onLongPress: () async {
-                                                  var back =
-                                                      await Navigator.push(
-                                                              context,
-                                                              PageRouteBuilder(
-                                                                  pageBuilder: (_,
-                                                                          __,
-                                                                          ___) =>
-                                                                      CostumesPage(
-                                                                        project:
-                                                                            project,
-                                                                        costume:
-                                                                            Utils.costumesMap[costumes.elementAt(i)],
-                                                                      ),
-                                                                  opaque:
-                                                                      false)) ??
-                                                          false;
-                                                  if (back) {
-                                                    Utils.showLoadingDialog(
-                                                        context,
-                                                        'Getting Costumes');
-                                                    await Utils.getCostumes(
-                                                        context, project.id);
-                                                    Navigator.pop(context);
-                                                    setState(() {});
-                                                  }
+                                                  await Navigator.push(
+                                                      context,
+                                                      Utils.createRoute(
+                                                          CostumesPage(
+                                                            project: project,
+                                                            costume: Utils
+                                                                    .costumesMap[
+                                                                costumes
+                                                                    .elementAt(
+                                                                        i)],
+                                                          ),
+                                                          Utils.DTU));
+                                                  setState(() {});
                                                 },
                                                 child: Container(
                                                   margin: EdgeInsets.all(2),
@@ -893,32 +881,20 @@ class _ActorPopUpState extends State<ActorPopUp> {
                                                   (i) {
                                                     return InkWell(
                                                       onLongPress: () async {
-                                                        var back = await Navigator
-                                                                .push(
-                                                                    context,
-                                                                    PageRouteBuilder(
-                                                                        pageBuilder: (_,
-                                                                                __,
-                                                                                ___) =>
-                                                                            CostumesPage(
-                                                                              project: project,
-                                                                              costume: Utils.costumesMap[costumes.elementAt(i)],
-                                                                            ),
-                                                                        opaque:
-                                                                            false)) ??
-                                                            false;
-                                                        if (back) {
-                                                          Utils.showLoadingDialog(
-                                                              context,
-                                                              'Getting Costumes');
-                                                          await Utils
-                                                              .getCostumes(
-                                                                  context,
-                                                                  project.id);
-                                                          Navigator.pop(
-                                                              context);
-                                                          setState(() {});
-                                                        }
+                                                        await Navigator.push(
+                                                            context,
+                                                            Utils.createRoute(
+                                                                CostumesPage(
+                                                                  project:
+                                                                      project,
+                                                                  costume: Utils
+                                                                          .costumesMap[
+                                                                      costumes
+                                                                          .elementAt(
+                                                                              i)],
+                                                                ),
+                                                                Utils.DTU));
+                                                        setState(() {});
                                                       },
                                                       child: Container(
                                                         margin:

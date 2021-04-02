@@ -21,7 +21,7 @@ class CostumesPage extends StatefulWidget {
 class _CostumesPageState extends State<CostumesPage> {
   Color background, background1, color;
 
-  final Costume costume;
+  Costume costume;
   final Project project;
   Set<String> artists = {};
 
@@ -95,16 +95,17 @@ class _CostumesPageState extends State<CostumesPage> {
                               backgroundColor: color,
                               child: IconButton(
                                 onPressed: () async {
-                                  var back = await Navigator.push(
-                                          context,
-                                          Utils.createRoute(
-                                              AddCostume(
-                                                project: project,
-                                                costume: costume.toJson(),
-                                              ),
-                                              Utils.RTL)) ??
-                                      false;
-                                  Navigator.pop(context, back);
+                                  await Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          AddCostume(
+                                            project: project,
+                                            costume: costume.toJson(),
+                                          ),
+                                          Utils.RTL));
+                                  setState(() {
+                                    costume = Utils.costumesMap[costume.id];
+                                  });
                                 },
                                 icon: Icon(
                                   Icons.edit,
@@ -195,28 +196,16 @@ class _CostumesPageState extends State<CostumesPage> {
                                       (i) {
                                         return InkWell(
                                           onLongPress: () async {
-                                            var back = await Navigator.push(
-                                                    context,
-                                                    PageRouteBuilder(
-                                                        pageBuilder: (_, __,
-                                                                ___) =>
-                                                            ActorPopUp(
-                                                                actor: Utils
-                                                                        .artistsMap[
-                                                                    artists
-                                                                        .elementAt(
-                                                                            i)],
-                                                                project:
-                                                                    project),
-                                                        opaque: false)) ??
-                                                false;
-                                            if (back) {
-                                              Utils.showLoadingDialog(
-                                                  context, 'Getting Artists');
-                                              Utils.getArtists(
-                                                  context, project.id);
-                                              Navigator.pop(context);
-                                            }
+                                            await Navigator.push(
+                                                context,
+                                                Utils.createRoute(
+                                                    ActorPopUp(
+                                                        actor: Utils.artistsMap[
+                                                            artists
+                                                                .elementAt(i)],
+                                                        project: project),
+                                                    Utils.DTU));
+                                            setState(() {});
                                           },
                                           child: Container(
                                             margin: EdgeInsets.all(2),

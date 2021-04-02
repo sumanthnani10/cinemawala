@@ -790,14 +790,12 @@ class _SchedulePageState extends State<SchedulePage>
                                             onLongPress: () {
                                               Navigator.push(
                                                   context,
-                                                  PageRouteBuilder(
-                                                      pageBuilder: (_, __,
-                                                              ___) =>
-                                                          CostumesPage(
-                                                            costume: costume,
-                                                            project: project,
-                                                          ),
-                                                      opaque: false));
+                                                  Utils.createRoute(
+                                                      CostumesPage(
+                                                        costume: costume,
+                                                        project: project,
+                                                      ),
+                                                      Utils.DTU));
                                             },
                                             splashColor:
                                                 background1.withOpacity(0.2),
@@ -876,14 +874,12 @@ class _SchedulePageState extends State<SchedulePage>
                                             onLongPress: () {
                                               Navigator.push(
                                                   context,
-                                                  PageRouteBuilder(
-                                                      pageBuilder: (_, __,
-                                                              ___) =>
-                                                          PropPage(
-                                                            prop: prop,
-                                                            project: project,
-                                                          ),
-                                                      opaque: false));
+                                                  Utils.createRoute(
+                                                      PropPage(
+                                                        prop: prop,
+                                                        project: project,
+                                                      ),
+                                                      Utils.DTU));
                                             },
                                             splashColor:
                                                 background1.withOpacity(0.2),
@@ -977,20 +973,16 @@ class _SchedulePageState extends State<SchedulePage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
-                                        var back = await Navigator.push(
-                                                context,
-                                                Utils.createRoute(
-                                                    AddSchedule(
-                                                      project: project,
-                                                      schedule:
-                                                          schedule.toJson(),
-                                                      edit: true,
-                                                    ),
-                                                    Utils.RTL)) ??
-                                            false;
-                                        if (back) {
-                                          getAll();
-                                        }
+                                        await Navigator.push(
+                                            context,
+                                            Utils.createRoute(
+                                                AddSchedule(
+                                                  project: project,
+                                                  schedule: schedule.toJson(),
+                                                  edit: true,
+                                                ),
+                                                Utils.RTL));
+                                        getAll();
                                       },
                                       label: Text("Edit"),
                                       icon: Icon(Icons.edit, size: 14),
@@ -1015,20 +1007,17 @@ class _SchedulePageState extends State<SchedulePage>
                                         selectedScenes.length,
                                         (i) => InkWell(
                                           onLongPress: () async {
-                                            var back = await Navigator.push(
-                                                    context,
-                                                    Utils.createRoute(
-                                                        ScenePage(
-                                                          project: project,
-                                                          popUp: true,
-                                                          scene: selectedScenes
-                                                              .elementAt(i),
-                                                        ),
-                                                        Utils.DTU)) ??
-                                                false;
-                                            if (back) {
-                                              getAll();
-                                            }
+                                            await Navigator.push(
+                                                context,
+                                                Utils.createRoute(
+                                                    ScenePage(
+                                                      project: project,
+                                                      popUp: true,
+                                                      scene: selectedScenes
+                                                          .elementAt(i),
+                                                    ),
+                                                    Utils.DTU));
+                                            getAll();
                                           },
                                           onTap: () async {
                                             selectedSceneIndex = i;
@@ -1137,16 +1126,13 @@ class _SchedulePageState extends State<SchedulePage>
                           "last_edit_on": now.millisecondsSinceEpoch,
                           "created": now.millisecondsSinceEpoch
                         };
-                        var back = await Navigator.push(
-                                context,
-                                Utils.createRoute(
-                                    AddSchedule(
-                                        schedule: schedule, project: project),
-                                    Utils.DTU)) ??
-                            false;
-                        if (back) {
-                          getAll();
-                        }
+                        await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                AddSchedule(
+                                    schedule: schedule, project: project),
+                                Utils.DTU));
+                        getAll();
                       },
                       child: Text("+ Add Schedule"),
                       style: ElevatedButton.styleFrom(primary: color),
@@ -1159,9 +1145,7 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   editSchedule() async {
-    Utils.showLoadingDialog(context, 'Updationg Schedule');
-
-    var back = false;
+    Utils.showLoadingDialog(context, 'Updating Schedule');
 
     try {
       var resp = await http.post(Utils.EDIT_SCHEDULE,
@@ -1172,7 +1156,9 @@ class _SchedulePageState extends State<SchedulePage>
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.schedulesMap[schedule.id] = schedule;
+          Utils.schedules = Utils.schedulesMap.values.toList();
+
           await Utils.showSuccessDialog(
               context,
               'Schedule Edited',

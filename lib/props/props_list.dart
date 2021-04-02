@@ -44,16 +44,6 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  getProps() async {
-    loading = true;
-    Utils.showLoadingDialog(context, 'Getting Properties');
-    props = await Utils.getProps(context, project.id);
-    Navigator.pop(context);
-    setState(() {
-      loading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -118,13 +108,13 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                 onTap: () {
                   Navigator.push(
                       context,
-                      PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => SelectedProps(
+                      Utils.createRoute(
+                          SelectedProps(
                               project: project,
                               selectedProps: List<Prop>.generate(
                                   scene.props.length,
                                   (p) => Utils.propsMap[scene.props[p]])),
-                          opaque: false));
+                          Utils.DTU));
                 },
               );
             }))),
@@ -135,18 +125,17 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                   var prop = props[i];
                   return InkWell(
                     onTap: () async {
-                      var back = await Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => PropPage(
-                                        prop: prop,
-                                        project: project,
-                                      ),
-                                  opaque: false)) ??
-                          false;
-                      if (back) {
-                        getProps();
-                      }
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              PropPage(
+                                prop: prop,
+                                project: project,
+                              ),
+                              Utils.DTU));
+                      setState(() {
+                        props = Utils.props.sublist(0);
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -221,14 +210,13 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var back = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddProp(project: project))) ??
-                false;
-            if (back) {
-              getProps();
-            }
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddProp(project: project)));
+            setState(() {
+              props = Utils.props.sublist(0);
+            });
           },
           backgroundColor: color,
           child: Icon(
@@ -239,5 +227,15 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  getProps() async {
+    loading = true;
+    Utils.showLoadingDialog(context, 'Getting Properties');
+    props = await Utils.getProps(context, project.id);
+    Navigator.pop(context);
+    setState(() {
+      loading = false;
+    });
   }
 }

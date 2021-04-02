@@ -195,12 +195,10 @@ class _SelectActors extends State<SelectActors>
                                   onLongPress: () {
                                     Navigator.push(
                                         context,
-                                        PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                ActorPopUp(
-                                                    actor: actor,
-                                                    project: project),
-                                            opaque: false));
+                                        Utils.createRoute(
+                                            ActorPopUp(
+                                                actor: actor, project: project),
+                                            Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
                                   child: Container(
@@ -385,12 +383,12 @@ class _SelectedActors extends State<SelectedActors>
                               onLongPress: () {
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => ActorPopUp(
-                                              actor: actor,
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        ActorPopUp(
+                                          actor: actor,
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               splashColor: background1.withOpacity(0.2),
                               child: Container(

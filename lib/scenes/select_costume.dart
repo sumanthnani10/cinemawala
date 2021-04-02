@@ -203,12 +203,12 @@ class _SelectCostume extends State<SelectCostume>
                             onLongPress: () {
                               Navigator.push(
                                   context,
-                                  PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) => CostumesPage(
-                                            costume: costume,
-                                            project: project,
-                                          ),
-                                      opaque: false));
+                                  Utils.createRoute(
+                                      CostumesPage(
+                                        costume: costume,
+                                        project: project,
+                                      ),
+                                      Utils.DTU));
                             },
                             child: Container(
                               height: 70,

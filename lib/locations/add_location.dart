@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'location.dart';
 
 class AddLocation extends StatefulWidget {
   final Project project;
@@ -362,7 +363,6 @@ class _AddLocation extends State<AddLocation>
     Utils.showLoadingDialog(context, 'Adding Location');
 
     bool imageUploaded = true;
-    var back = false;
 
     var imagesLinks = [];
 
@@ -414,7 +414,9 @@ class _AddLocation extends State<AddLocation>
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.locationsMap[location['id']] = Location.fromJson(location);
+            Utils.locations = Utils.locationsMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Location Added',
@@ -444,14 +446,13 @@ class _AddLocation extends State<AddLocation>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editLocation() async {
     Utils.showLoadingDialog(context, 'Editing Location');
 
     bool imageUploaded = true;
-    var back = false;
 
     var imagesLinks = [];
 
@@ -509,7 +510,9 @@ class _AddLocation extends State<AddLocation>
         Navigator.pop(context);
         if (resp.statusCode == 200) {
           if (r['status'] == 'success') {
-            back = true;
+            Utils.locationsMap[location['id']] = Location.fromJson(location);
+            Utils.locations = Utils.locationsMap.values.toList();
+
             await Utils.showSuccessDialog(
                 context,
                 'Location Edited',
@@ -539,6 +542,6 @@ class _AddLocation extends State<AddLocation>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 }

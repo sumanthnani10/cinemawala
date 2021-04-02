@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -436,7 +437,6 @@ class _AddActorState extends State<AddActor>
     Utils.showLoadingDialog(context, 'Adding Artist');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (actorImage != null) {
       try {
@@ -477,7 +477,8 @@ class _AddActorState extends State<AddActor>
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
-          back = true;
+          Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
+          Utils.artists = Utils.artistsMap.values.toList();
           if (r['status'] == 'success') {
             await Utils.showSuccessDialog(
                 context,
@@ -508,14 +509,13 @@ class _AddActorState extends State<AddActor>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editArtist() async {
     Utils.showLoadingDialog(context, 'Editing Artist');
 
     bool imageUploaded = true;
-    var back = false;
 
     if (actorImage != null) {
       try {
@@ -556,9 +556,10 @@ class _AddActorState extends State<AddActor>
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
-          back = true;
+          Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
+          Utils.artists = Utils.artistsMap.values.toList();
+
           if (r['status'] == 'success') {
-            back = true;
             await Utils.showSuccessDialog(
                 context,
                 'Artist Edited',
@@ -588,7 +589,7 @@ class _AddActorState extends State<AddActor>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   uploadArtistImage() async {

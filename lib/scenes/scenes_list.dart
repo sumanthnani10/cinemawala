@@ -218,15 +218,14 @@ class _ScenesList extends State<ScenesList>
                 Scene scene = scenes[i];
                 return InkWell(
                   onTap: () async {
-                    var back = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                ScenePage(project: project, scene: scene),
-                                Utils.RTL)) ??
-                        false;
-                    if (back) {
-                      getAll();
-                    }
+                    await Navigator.push(
+                        context,
+                        Utils.createRoute(
+                            ScenePage(project: project, scene: scene),
+                            Utils.RTL));
+                    setState(() {
+                      scenes = Utils.scenes;
+                    });
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
@@ -296,19 +295,16 @@ class _ScenesList extends State<ScenesList>
                                   onTap: () {
                                     Navigator.push(
                                         context,
-                                        PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                SelectedActors(
-                                                  project: project,
-                                                  selectedArtists:
-                                                      List<Actor>.generate(
-                                                          scene.artists.length,
-                                                          (a) => Utils
-                                                                  .artistsMap[
-                                                              scene
-                                                                  .artists[a]]),
-                                                ),
-                                            opaque: false));
+                                        Utils.createRoute(
+                                            SelectedActors(
+                                              project: project,
+                                              selectedArtists:
+                                                  List<Actor>.generate(
+                                                      scene.artists.length,
+                                                      (a) => Utils.artistsMap[
+                                                          scene.artists[a]]),
+                                            ),
+                                            Utils.DTU));
                                   },
                                   child: Column(
                                     children: [
@@ -342,12 +338,11 @@ class _ScenesList extends State<ScenesList>
                                   onTap: () {
                                     Navigator.push(
                                         context,
-                                        PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                SelectedCostumes(
-                                                    project: project,
-                                                    costumes: scene.costumes),
-                                            opaque: false));
+                                        Utils.createRoute(
+                                            SelectedCostumes(
+                                                project: project,
+                                                costumes: scene.costumes),
+                                            Utils.DTU));
                                   },
                                   child: Column(
                                     children: [
@@ -386,16 +381,15 @@ class _ScenesList extends State<ScenesList>
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              SelectedProps(
-                                                  project: project,
-                                                  selectedProps:
-                                                      List<Prop>.generate(
-                                                          scene.artists.length,
-                                                          (p) => Utils.propsMap[
-                                                              scene.props[p]])),
-                                          opaque: false));
+                                      Utils.createRoute(
+                                          SelectedProps(
+                                              project: project,
+                                              selectedProps:
+                                                  List<Prop>.generate(
+                                                      scene.artists.length,
+                                                      (p) => Utils.propsMap[
+                                                          scene.props[p]])),
+                                          Utils.DTU));
                                 },
                                 child: Column(
                                   children: [
@@ -444,17 +438,16 @@ class _ScenesList extends State<ScenesList>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var back = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddScene(
-                            project: project,
-                            scene: null,
-                          ))) ??
-              false;
-          if (back) {
-            getScenes();
-          }
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddScene(
+                        project: project,
+                        scene: null,
+                      )));
+          setState(() {
+            scenes = Utils.scenes;
+          });
         },
         backgroundColor: color,
         child: Icon(

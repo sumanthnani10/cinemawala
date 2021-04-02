@@ -646,4 +646,9 @@ class Utils {
     'Models',
     'Dancers/Fighters'
   ];
+
+  static var elevatedButtonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    primary: Color(0xff6fd8a8),
+  );
 }

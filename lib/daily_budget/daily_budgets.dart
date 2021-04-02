@@ -139,7 +139,8 @@ class _DailyBudgetsState extends State<DailyBudgets>
             date: selectedDate,
             id: selectedDateId,
             getDailyBudgets: () {
-              getDailyBudgets();
+              dailyBudgets = Utils.dailyBudgetsMap;
+              setState(() {});
             },
             budget:
                 selectedDailyBudget != null ? selectedDailyBudget.budget : {},

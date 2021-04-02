@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'daily_budget.dart';
 
 class AddDailyBudget extends StatefulWidget {
   final Project project;
@@ -1608,8 +1609,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
   addDailyBudget() async {
     Utils.showLoadingDialog(context, 'Adding Daily Budget');
 
-    var back = false;
-
     try {
       var resp = await http.post(Utils.ADD_DAILY_BUDGET,
           body: jsonEncode(dailyBudget),
@@ -1618,7 +1617,10 @@ class _AddDailyBudget extends State<AddDailyBudget>
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.dailyBudgetsMap[dailyBudget['id']] =
+              DailyBudget.fromJson(dailyBudget);
+          Utils.dailyBudgets = Utils.dailyBudgetsMap.values.toList();
+
           await Utils.showSuccessDialog(
               context,
               'Daily Budget Added',
@@ -1643,13 +1645,11 @@ class _AddDailyBudget extends State<AddDailyBudget>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editDailyBudget() async {
     Utils.showLoadingDialog(context, 'Editing Daily Budget');
-
-    var back = false;
 
     try {
       var resp = await http.post(Utils.EDIT_DAILY_BUDGET,
@@ -1660,7 +1660,10 @@ class _AddDailyBudget extends State<AddDailyBudget>
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.dailyBudgetsMap[dailyBudget['id']] =
+              DailyBudget.fromJson(dailyBudget);
+          Utils.dailyBudgets = Utils.dailyBudgetsMap.values.toList();
+
           await Utils.showSuccessDialog(
               context,
               'Daily Budget Edited',
@@ -1685,7 +1688,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
 }

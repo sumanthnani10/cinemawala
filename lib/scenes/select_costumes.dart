@@ -158,11 +158,11 @@ class _SelectCostumes extends State<SelectCostumes>
                       onTap: () {
                         Navigator.push(
                             context,
-                            PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => SelectActors(
-                                      project: project,
-                                    ),
-                                opaque: false));
+                            Utils.createRoute(
+                                SelectActors(
+                                  project: project,
+                                ),
+                                Utils.DTU));
                       },
                       splashColor: background1.withOpacity(0.2),
                       child: Padding(
@@ -191,19 +191,16 @@ class _SelectCostumes extends State<SelectCostumes>
                                 });
                                 var costs = await Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            SelectCostume(
-                                              actor:
-                                                  '${actor.names['English']}',
-                                              character:
-                                                  '${actor.characters['English']}',
-                                              project: project,
-                                              selectedCostumes:
-                                                  selectedCostumes,
-                                              sceneTitle: '',
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        SelectCostume(
+                                          actor: '${actor.names['English']}',
+                                          character:
+                                              '${actor.characters['English']}',
+                                          project: project,
+                                          selectedCostumes: selectedCostumes,
+                                          sceneTitle: '',
+                                        ),
+                                        Utils.DTU));
                                 if (costs != null) {
                                   costumes[costumes.indexWhere((element) =>
                                           element['id'] == actor.id)]
@@ -214,12 +211,12 @@ class _SelectCostumes extends State<SelectCostumes>
                               onLongPress: () async {
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => ActorPopUp(
-                                              actor: actor,
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        ActorPopUp(
+                                          actor: actor,
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               title: Text(
                                 "${actor.names['English']}",
@@ -429,12 +426,12 @@ class _SelectedCostumes extends State<SelectedCostumes>
                               onLongPress: () async {
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => ActorPopUp(
-                                              actor: actor,
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        ActorPopUp(
+                                          actor: actor,
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               title: Text(
                                 "${actor.names['English']}",
@@ -449,24 +446,14 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                       '${actorCostumes['costumes'][j]}'];
                                   return InkWell(
                                     onTap: () async {
-                                      var back = await Navigator.push(
-                                              context,
-                                              PageRouteBuilder(
-                                                  pageBuilder: (_, __, ___) =>
-                                                      CostumesPage(
-                                                        project: project,
-                                                        costume: costume,
-                                                      ),
-                                                  opaque: false)) ??
-                                          false;
-                                      if (back) {
-                                        Utils.showLoadingDialog(
-                                            context, 'Getting Costumes');
-                                        await Utils.getCostumes(
-                                            context, project.id);
-                                        Navigator.pop(context);
-                                        setState(() {});
-                                      }
+                                      await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              CostumesPage(
+                                                project: project,
+                                                costume: costume,
+                                              ),
+                                              Utils.DTU));
                                     },
                                     child: Container(
                                       margin: EdgeInsets.only(left: 4),

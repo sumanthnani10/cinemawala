@@ -20,7 +20,7 @@ class PropPage extends StatefulWidget {
 class _PropPageState extends State<PropPage> {
   Color background, background1, color;
 
-  final Prop prop;
+  Prop prop;
   final Project project;
 
   _PropPageState(this.project, this.prop);
@@ -83,16 +83,16 @@ class _PropPageState extends State<PropPage> {
                             backgroundColor: color,
                             child: IconButton(
                               onPressed: () async {
-                                var back = await Navigator.push(
-                                        context,
-                                        Utils.createRoute(
-                                            AddProp(
-                                              project: project,
-                                              prop: prop.toJson(),
-                                            ),
-                                            Utils.RTL)) ??
-                                    false;
-                                Navigator.pop(context, back);
+                                await Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        AddProp(
+                                          project: project,
+                                          prop: prop.toJson(),
+                                        ),
+                                        Utils.RTL));
+                                prop = Utils.propsMap[prop.id];
+                                setState(() {});
                               },
                               icon: Icon(
                                 Icons.edit,

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'schedule.dart';
 
 class AddSchedule extends StatefulWidget {
   final Project project;
@@ -191,12 +192,12 @@ class _AddScheduleState extends State<AddSchedule> {
                       onPressed: () async {
                         var selected = await Navigator.push(
                                 context,
-                                PageRouteBuilder(
-                                    pageBuilder: (_, __, ___) => SelectScenes(
-                                          project: project,
-                                          selectedScenes: selectedScenes,
-                                        ),
-                                    opaque: false)) ??
+                                Utils.createRoute(
+                                    SelectScenes(
+                                      project: project,
+                                      selectedScenes: selectedScenes,
+                                    ),
+                                    Utils.DTU)) ??
                             null;
 
                         if (selected != null) {
@@ -1434,14 +1435,13 @@ class _AddScheduleState extends State<AddSchedule> {
                               onLongPress: () {
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            CostumesPage(
-                                              costume:
-                                                  selectedCostumes.elementAt(i),
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        CostumesPage(
+                                          costume:
+                                              selectedCostumes.elementAt(i),
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               splashColor: background1.withOpacity(0.2),
                               child: Container(
@@ -1486,12 +1486,12 @@ class _AddScheduleState extends State<AddSchedule> {
                               onLongPress: () {
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => PropPage(
-                                              prop: selectedProps.elementAt(i),
-                                              project: project,
-                                            ),
-                                        opaque: false));
+                                    Utils.createRoute(
+                                        PropPage(
+                                          prop: selectedProps.elementAt(i),
+                                          project: project,
+                                        ),
+                                        Utils.DTU));
                               },
                               splashColor: background1.withOpacity(0.2),
                               child: Container(
@@ -1518,8 +1518,6 @@ class _AddScheduleState extends State<AddSchedule> {
   addSchedule() async {
     Utils.showLoadingDialog(context, 'Adding Schedule');
 
-    var back = false;
-
     try {
       var resp = await http.post(Utils.ADD_SCHEDULE,
           body: jsonEncode(schedule),
@@ -1528,7 +1526,9 @@ class _AddScheduleState extends State<AddSchedule> {
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.schedulesMap[schedule['id']] = Schedule.fromJson(schedule);
+          Utils.schedules = Utils.schedulesMap.values.toList();
+
           await Utils.showSuccessDialog(
               context,
               'Schedule Added',
@@ -1553,13 +1553,11 @@ class _AddScheduleState extends State<AddSchedule> {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 
   editSchedule() async {
     Utils.showLoadingDialog(context, 'Editing Schedule');
-
-    var back = false;
 
     try {
       var resp = await http.post(Utils.EDIT_SCHEDULE,
@@ -1570,7 +1568,9 @@ class _AddScheduleState extends State<AddSchedule> {
       Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          back = true;
+          Utils.schedulesMap[schedule['id']] = Schedule.fromJson(schedule);
+          Utils.schedules = Utils.schedulesMap.values.toList();
+
           await Utils.showSuccessDialog(
               context,
               'Schedule Edited',
@@ -1595,7 +1595,7 @@ class _AddScheduleState extends State<AddSchedule> {
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
-    Navigator.pop(context, back);
+    Navigator.pop(context);
   }
 }
 /*Padding(

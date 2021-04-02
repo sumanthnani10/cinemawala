@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
 import 'package:cinemawala/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
+
 class AddProject1 extends StatefulWidget {
   AddProject1({Key key}) : super(key: key);
 
@@ -106,15 +107,13 @@ class _AddProject1 extends State<AddProject1> with SingleTickerProviderStateMixi
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               if (projectImage != null)
-                                RaisedButton.icon(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16)),
+                                ElevatedButton.icon(
+                                    style: Utils.elevatedButtonStyle,
                                     label: Text(
                                       'Remove',
                                       style: TextStyle(
                                           color: background1, fontSize: 20),
                                     ),
-                                    color: color,
                                     icon: Icon(
                                       Icons.close,
                                       color: background1,
@@ -125,15 +124,13 @@ class _AddProject1 extends State<AddProject1> with SingleTickerProviderStateMixi
                                     }),
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 32),
-                                child: RaisedButton.icon(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16)),
+                                child: ElevatedButton.icon(
+                                    style: Utils.elevatedButtonStyle,
                                     label: Text(
                                       'Edit',
-                                      style:
-                                      TextStyle(color: background1, fontSize: 20),
+                                      style: TextStyle(
+                                          color: background1, fontSize: 20),
                                     ),
-                                    color: color,
                                     icon: Icon(
                                       Icons.edit,
                                       color: background1,

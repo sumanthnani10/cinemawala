@@ -291,7 +291,52 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                                       [keysVal[j]]
                                                   : false,
                                               activeColor: color,
-                                              onChanged: (value) {}),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (role["permissions"][
+                                                              permissionsKeys[
+                                                                  i]][keysVal[
+                                                              0]] ==
+                                                          true &&
+                                                      j != 0) {
+                                                    role["permissions"]
+                                                            [permissionsKeys[i]]
+                                                        [keysVal[j]] = !role[
+                                                                "permissions"]
+                                                            [permissionsKeys[i]]
+                                                        [keysVal[j]];
+                                                  } else if (j == 0) {
+                                                    role["permissions"]
+                                                            [permissionsKeys[i]]
+                                                        [keysVal[j]] = !role[
+                                                                "permissions"]
+                                                            [permissionsKeys[i]]
+                                                        [keysVal[j]];
+                                                    if (!role["permissions"]
+                                                            [permissionsKeys[i]]
+                                                        [keysVal[j]]) {
+                                                      role["permissions"][
+                                                              permissionsKeys[
+                                                                  i]]
+                                                          [keysVal[1]] = false;
+                                                      role["permissions"][
+                                                              permissionsKeys[
+                                                                  i]]
+                                                          [keysVal[2]] = false;
+                                                    }
+                                                  } else if (role["permissions"]
+                                                              [permissionsKeys[
+                                                                  i]][keysVal[
+                                                              0]] ==
+                                                          false &&
+                                                      j != 0) {
+                                                    scaffoldKey.currentState
+                                                        .showSnackBar(SnackBar(
+                                                            content: Text(
+                                                                'View permission is needed for any other permissions.')));
+                                                  }
+                                                });
+                                              }),
                                           Text("${permission}"),
                                           //Text(keysVal[j]),
                                         ],

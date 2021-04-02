@@ -30,7 +30,7 @@ class _ActorsListState extends State<ActorsList>
   @override
   void initState() {
     loading = true;
-    artists = Utils.artists ?? [];
+    artists = Utils.artists.sublist(0) ?? [];
     if (Utils.artists == null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         getArtists();
@@ -90,18 +90,17 @@ class _ActorsListState extends State<ActorsList>
         children: List<Widget>.generate(artists.length, (i) {
           return InkWell(
             onTap: () async {
-              var back = await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          ActorPage(
-                            actor: artists[i],
-                            project: project,
-                          ),
-                          Utils.DTU)) ??
-                  false;
-              if (back) {
-                getArtists();
-              }
+              await Navigator.push(
+                  context,
+                  Utils.createRoute(
+                      ActorPage(
+                        actor: artists[i],
+                        project: project,
+                      ),
+                      Utils.DTU));
+              setState(() {
+                artists = Utils.artists.sublist(0);
+              });
             },
             child: Container(
               width: 50,
@@ -163,16 +162,16 @@ class _ActorsListState extends State<ActorsList>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var back = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddActor(
-                            project: project,
-                          ))) ??
-              false;
-          if (back) {
-            getArtists();
-          }
+          await Navigator.push(
+              context,
+              Utils.createRoute(
+                  AddActor(
+                    project: project,
+                  ),
+                  Utils.DTU));
+          setState(() {
+            artists = Utils.artists.sublist(0);
+          });
         },
         backgroundColor: Color(0xff6fd8a8),
         child: Icon(

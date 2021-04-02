@@ -36,7 +36,7 @@ class _CostumesListState extends State<CostumesList>
   @override
   void initState() {
     loading = true;
-    costumes = Utils.costumes ?? [];
+    costumes = Utils.costumes.sublist(0) ?? [];
     scenes = Utils.scenes ?? [];
     if (Utils.costumes == null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -123,18 +123,17 @@ class _CostumesListState extends State<CostumesList>
                   '$count ${count == 1 ? "Costume" : "Costumes"}',
                 ),
                 onTap: () async {
-                  var back = await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => SelectedCostumes(
-                                    project: project,
-                                    costumes: scene.costumes,
-                                  ),
-                              opaque: false)) ??
-                      false;
-                  if (back) {
-                    getCostumes();
-                  }
+                  await Navigator.push(
+                      context,
+                      Utils.createRoute(
+                          SelectedCostumes(
+                            project: project,
+                            costumes: scene.costumes,
+                          ),
+                          Utils.DTU));
+                  setState(() {
+                    costumes = Utils.costumes.sublist(0);
+                  });
                 },
               );
             }))),
@@ -145,18 +144,17 @@ class _CostumesListState extends State<CostumesList>
                   var costume = costumes[i];
                   return InkWell(
                     onTap: () async {
-                      var back = await Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => CostumesPage(
-                                        project: project,
-                                        costume: costume,
-                                      ),
-                                  opaque: false)) ??
-                          false;
-                      if (back) {
-                        getCostumes();
-                      }
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              CostumesPage(
+                                project: project,
+                                costume: costume,
+                              ),
+                              Utils.DTU));
+                      setState(() {
+                        costumes = Utils.costumes.sublist(0);
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -243,16 +241,15 @@ class _CostumesListState extends State<CostumesList>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var back = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddCostume(
-                              project: project,
-                            ))) ??
-                false;
-            if (back) {
-              getCostumes();
-            }
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddCostume(
+                          project: project,
+                        )));
+            setState(() {
+              costumes = Utils.costumes.sublist(0);
+            });
           },
           backgroundColor: color,
           child: Icon(
