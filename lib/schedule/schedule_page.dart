@@ -22,6 +22,7 @@ class SchedulePage extends StatefulWidget {
   final Schedule schedule;
   final DateTime date;
   final String id;
+  final int workingDay;
   final VoidCallback nextDate, prevDate, getAll;
 
   const SchedulePage(
@@ -32,7 +33,8 @@ class SchedulePage extends StatefulWidget {
       @required this.id,
       @required this.getAll,
       @required this.nextDate,
-      @required this.prevDate})
+      @required this.prevDate,
+      @required this.workingDay})
       : super(key: key);
 
   @override
@@ -43,7 +45,8 @@ class SchedulePage extends StatefulWidget {
       this.schedule,
       this.date,
       this.id,
-      this.getAll);
+      this.getAll,
+      this.workingDay);
 }
 
 class _SchedulePageState extends State<SchedulePage>
@@ -53,11 +56,12 @@ class _SchedulePageState extends State<SchedulePage>
   final String id;
   final Project project;
   Schedule schedule;
+  final int workingDay;
   final DateTime date;
   final VoidCallback nextDate, prevDate, getAll;
 
   _SchedulePageState(this.nextDate, this.prevDate, this.project, this.schedule,
-      this.date, this.id, this.getAll);
+      this.date, this.id, this.getAll, this.workingDay);
 
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   List<Scene> selectedScenes = [];
@@ -252,9 +256,16 @@ class _SchedulePageState extends State<SchedulePage>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    'Scenes',
-                                    style: bottomSheetHeadingStyle,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.all(4),
+                                    child: Text(
+                                      'WD: $workingDay',
+                                      style: bottomSheetHeadingStyle,
+                                    ),
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {},
@@ -457,6 +468,101 @@ class _SchedulePageState extends State<SchedulePage>
                                   ],
                                 ),
                               ),
+                            Divider(
+                              thickness: 2,
+                              height: 1,
+                            ),
+                            // Artists
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Artists",
+                                        style: bottomSheetHeadingStyle,
+                                      ),
+                                      Spacer(),
+                                      TextButton.icon(
+                                        onPressed: () async {
+                                          createAlertDialog(context);
+                                        },
+                                        label: Text("Call Sheet"),
+                                        icon: Icon(
+                                            Icons.picture_as_pdf_outlined,
+                                            size: 14),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: selectedArtists.length == 0
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('No Artists'),
+                                    )
+                                  : Column(
+                                      children: List<Widget>.generate(
+                                          selectedScene.artists.length, (j) {
+                                        Actor artist = Utils.artistsMap[
+                                            selectedScene.artists[j]];
+                                        if (artistTimings[selectedScene.id]
+                                                [selectedScene.artists[j]] ==
+                                            null) {
+                                          artistTimings[selectedScene.id]
+                                              [selectedScene.artists[j]] = {
+                                            "start": [8, 0, 0],
+                                            "end": [9, 0, 1]
+                                          };
+                                          schedule.artistTimings[selectedScene
+                                              .id][selectedScene.artists[j]] = {
+                                            "start": [8, 0, 0],
+                                            "end": [9, 0, 1]
+                                          };
+                                          shouldUpdate = true;
+                                        }
+                                        var timings =
+                                            artistTimings[selectedScene.id]
+                                                [selectedScene.artists[j]];
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  "${artist.names['English']}"),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
+                                                  Text(
+                                                    "    ",
+                                                    style: TextStyle(
+                                                        color: background1),
+                                                  ),
+                                                  Text(
+                                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                            ),
                             // ADDITIONAL ARTISTS
                             Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
@@ -637,96 +743,6 @@ class _SchedulePageState extends State<SchedulePage>
                                                       ],
                                                 );
                                         }
-                                      }),
-                                    ),
-                            ),
-                            Divider(
-                              thickness: 2,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                              child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Artists",
-                                        style: bottomSheetHeadingStyle,
-                                      ),
-                                      Spacer(),
-                                      TextButton.icon(
-                                        onPressed: () async {
-                                          createAlertDialog(context);
-                                        },
-                                        label: Text("Call Sheet"),
-                                        icon: Icon(
-                                            Icons.picture_as_pdf_outlined,
-                                            size: 14),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: selectedArtists.length == 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('No Artists'),
-                                    )
-                                  : Column(
-                                      children: List<Widget>.generate(
-                                          selectedScene.artists.length, (j) {
-                                        Actor artist = Utils.artistsMap[
-                                            selectedScene.artists[j]];
-                                        if (artistTimings[selectedScene.id]
-                                                [selectedScene.artists[j]] ==
-                                            null) {
-                                          artistTimings[selectedScene.id]
-                                              [selectedScene.artists[j]] = {
-                                            "start": [8, 0, 0],
-                                            "end": [9, 0, 1]
-                                          };
-                                          schedule.artistTimings[selectedScene
-                                              .id][selectedScene.artists[j]] = {
-                                            "start": [8, 0, 0],
-                                            "end": [9, 0, 1]
-                                          };
-                                          shouldUpdate = true;
-                                        }
-                                        var timings =
-                                            artistTimings[selectedScene.id]
-                                                [selectedScene.artists[j]];
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                  "${artist.names['English']}"),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                                    style: TextStyle(
-                                                        color: Colors.indigo),
-                                                  ),
-                                                  Text(
-                                                    "    ",
-                                                    style: TextStyle(
-                                                        color: background1),
-                                                  ),
-                                                  Text(
-                                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                                    style: TextStyle(
-                                                        color: Colors.indigo),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        );
                                       }),
                                     ),
                             ),
@@ -943,9 +959,16 @@ class _SchedulePageState extends State<SchedulePage>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Scenes',
-                                      style: bottomSheetHeadingStyle,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.all(4),
+                                      child: Text(
+                                        'WD: $workingDay',
+                                        style: bottomSheetHeadingStyle,
+                                      ),
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {

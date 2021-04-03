@@ -111,6 +111,12 @@ class _SchedulesState extends State<Schedules>
     } else {
       background1 = Colors.white;
     }
+
+    int wd = 0;
+    if (schedules.containsKey(selectedDateId)) {
+      wd = schedules.keys.toList().indexOf(selectedDateId) + 1;
+    }
+
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
@@ -177,6 +183,7 @@ class _SchedulesState extends State<Schedules>
               selectedSchedule = schedules[selectedDateId];
               setState(() {});
             },
+            workingDay: wd,
             nextDate: () async {
               selectedDate = selectedDate.add(Duration(days: 1));
               selectedDateId =
