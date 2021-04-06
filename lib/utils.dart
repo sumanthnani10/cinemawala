@@ -241,6 +241,8 @@ class Utils {
 
   static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
   static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
+  static Uri VALIDATE_USERNAME =
+      Uri.https('${DOMAIN}', '${URL_PATH}/validateUsername');
 
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');

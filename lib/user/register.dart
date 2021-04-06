@@ -1,6 +1,13 @@
+import 'dart:convert';
+
+import 'package:async/async.dart';
+import 'package:cinemawala/projects/projects_list.dart';
+import 'package:cinemawala/utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
   Register({Key key, this.title}) : super(key: key);
@@ -18,14 +25,18 @@ class _Register extends State<Register> {
       confirmPasswordController,
       eMailController,
       nameController,
+      phoneController,
       userNameController;
   String newPassword = "",
       confirmPassword = "",
       eMail = "",
       name = "",
       username = "",
-      phone = "";
+      phone = "",
+      countryCode = "+91";
+  int usernameValid = 0;
   Color background, color, background1;
+  CancelableOperation cancellableOperation;
 
   @override
   void initState() {
@@ -33,8 +44,46 @@ class _Register extends State<Register> {
     confirmPasswordController = new TextEditingController();
     eMailController = new TextEditingController();
     nameController = new TextEditingController();
+    phoneController = new TextEditingController();
     userNameController = new TextEditingController();
     super.initState();
+  }
+
+  validateUsername() async {
+    cancellableOperation?.cancel();
+    cancellableOperation = CancelableOperation.fromFuture(
+        validateUsernameMethod(),
+        onCancel: () {});
+    return cancellableOperation.value;
+  }
+
+  Future<dynamic> validateUsernameMethod() async {
+    setState(() {
+      usernameValid = 2;
+    });
+
+    if (username.length < 6) {
+      usernameValid = -1;
+      return false;
+    }
+
+    try {
+      var resp = await http.post(Utils.VALIDATE_USERNAME,
+          body: jsonEncode({"username": username}),
+          headers: {"Content-Type": "application/json"});
+      // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      if (resp.statusCode == 200) {
+        setState(() {
+          usernameValid = (r['valid'] ?? false) ? 1 : -1;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        usernameValid = -1;
+      });
+    }
+    return usernameValid == 1;
   }
 
   @override
@@ -48,267 +97,410 @@ class _Register extends State<Register> {
     }
     return Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 50),
-                  child: Image(image: AssetImage('assets/images/logo.png')),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: TextFormField(
-                    textInputAction: TextInputAction.next,
-                    controller: userNameController,
-                    textCapitalization: TextCapitalization.none,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^[a-z_.]+'),
-                          replacementString: "${username}"),
-                    ],
-                    onChanged: (v) {
-                      username = v;
-                    },
-                    validator: (v) {},
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "Username",
-                      contentPadding: EdgeInsets.all(8),
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 30, 8, 0),
+                    child: Image(image: AssetImage('assets/images/logo.png')),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.next,
-                    controller: nameController,
-                    onChanged: (v) {
-                      name = v;
-                    },
-                    validator: (v) {
-                      if (v.isEmpty) {
-                        return "Enter your name";
-                      } else {
-                        return null;
-                      }
-                    },
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z]+$'),
-                          replacementString: "${name}"),
-                    ],
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: 'Name',
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: TextFormField(
-                    textInputAction: TextInputAction.next,
-                    validator: (v) {
-                      Pattern pattern =
-                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                      RegExp regex = new RegExp(pattern);
-                      if (v.length == 0) {
-                        return 'Please enter email id';
-                      } else {
-                        if (!regex.hasMatch(v)) {
-                          return 'Enter valid email';
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: userNameController,
+                      textCapitalization: TextCapitalization.none,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^[a-z0-9_.]+'),
+                            replacementString: ""),
+                      ],
+                      onChanged: (v) {
+                        username = v;
+                        validateUsername();
+                      },
+                      onFieldSubmitted: (v) {
+                        validateUsername();
+                      },
+                      validator: (v) {
+                        if (v.length < 6) {
+                          return "Username must be at least 6 characters.";
+                        } else if (usernameValid != 1) {
+                          return "Choose different username.";
                         } else {
                           return null;
                         }
-                      }
-                    },
-                    controller: eMailController,
-                    onChanged: (value) {
-                      eMail = value;
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "Email",
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                      },
+                      decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: background1)),
+                          labelText: "Username",
+                          contentPadding: EdgeInsets.all(8),
+                          labelStyle:
+                              TextStyle(color: background1, fontSize: 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          helperStyle: usernameValid == 2
+                              ? TextStyle(fontSize: 12, color: background1)
+                              : usernameValid == 1
+                                  ? TextStyle(fontSize: 12, color: Colors.green)
+                                  : usernameValid == -1
+                                      ? TextStyle(
+                                          fontSize: 12, color: Colors.red)
+                                      : TextStyle(
+                                          fontSize: 12, color: background1),
+                          helperText: usernameValid == 2
+                              ? "Checking.."
+                              : usernameValid == 1
+                                  ? "$username is valid"
+                                  : usernameValid == -1
+                                      ? "$username is already used."
+                                      : "",
+                          suffixIcon: usernameValid == 2
+                              ? Icon(
+                                  Icons.refresh_rounded,
+                                  color: background1,
+                                )
+                              : usernameValid == 1
+                                  ? InkWell(
+                                      onTap: () {
+                                        validateUsername();
+                                      },
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                  : usernameValid == -1
+                                      ? InkWell(
+                                          onTap: () {
+                                            validateUsername();
+                                          },
+                                          child: Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            validateUsername();
+                                          },
+                                          child: Icon(
+                                            Icons.repeat,
+                                            color: Colors.blue,
+                                          ),
+                                        )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextFormField(
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      controller: nameController,
+                      onChanged: (v) {
+                        name = v;
+                      },
+                      validator: (v) {
+                        if (v.isEmpty) {
+                          return "Enter your name";
+                        } else {
+                          return null;
+                        }
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^[a-zA-Z ]+$'),
+                            replacementString: "${name}"),
+                      ],
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'Name',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: CountryCodePicker(
-                        initialSelection: 'IN',
-                        showDropDownButton: true,
-                        showFlag: true,
-                        showCountryOnly: true,
-                        favorite: ['+91', 'IN'],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      validator: (v) {
+                        Pattern pattern =
+                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                        RegExp regex = new RegExp(pattern);
+                        if (v.length == 0) {
+                          return 'Please enter email id';
+                        } else {
+                          if (!regex.hasMatch(v)) {
+                            return 'Enter valid email';
+                          } else {
+                            return null;
+                          }
+                        }
+                      },
+                      controller: eMailController,
+                      onChanged: (value) {
+                        eMail = value;
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: "Email",
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      flex: 3,
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.none,
-                        textInputAction: TextInputAction.next,
-                        controller: nameController,
-                        onChanged: (v) {
-                          phone = v;
-                        },
-                        validator: (v) {
-                          if (v.isEmpty) {
-                            return "Enter your phone number";
-                          } else {
-                            if (v.length != 10) {
-                              return "Phone Number must be 10 digits";
-                            } else {
-                              return null;
-                            }
-                          }
-                        },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'),
-                              replacementString: "${phone}"),
-                        ],
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: background1)),
-                          labelText: "Phone Number",
-                          labelStyle:
-                              TextStyle(color: background1, fontSize: 14),
-                          contentPadding: EdgeInsets.all(8),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 3,
+                          child: CountryCodePicker(
+                            initialSelection: 'IN',
+                            showDropDownButton: true,
+                            showFlag: true,
+                            showCountryOnly: true,
+                            favorite: ['+91', 'IN'],
+                            onChanged: (c) {
+                              countryCode = c.dialCode;
+                              print(countryCode);
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: TextFormField(
+                            textCapitalization: TextCapitalization.none,
+                            textInputAction: TextInputAction.next,
+                            controller: phoneController,
+                            onChanged: (v) {
+                              phone = v;
+                            },
+                            validator: (v) {
+                              if (v.isEmpty) {
+                                return "Enter your phone number";
+                              } else {
+                                if (v.length != 10) {
+                                  return "Phone Number must be 10 digits";
+                                } else {
+                                  return null;
+                                }
+                              }
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^[0-9]+$'),
+                                  replacementString: "${phone}"),
+                            ],
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Phone Number",
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextFormField(
+                      obscureText: obscurePassword,
+                      controller: passwordController,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.text,
+                      validator: (v) {
+                        if (v.length == 0) {
+                          return 'Please enter password.';
+                        } else if (v.length < 8) {
+                          return 'Password must be minimum 8 characters';
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (v) {
+                        newPassword = v;
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: "New Password",
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              obscurePassword = !obscurePassword;
+                            });
+                          },
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            color: background1,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: TextFormField(
-                    obscureText: obscurePassword,
-                    controller: passwordController,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.text,
-                    validator: (v) {
-                      if (v.length == 0) {
-                        return 'Please enter password.';
-                      } else if (v.length < 8) {
-                        return 'Password must be minimum 8 characters';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (v) {
-                      newPassword = v;
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "New Password",
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      suffix: InkWell(
-                        onTap: () {
-                          setState(() {
-                            obscurePassword = !obscurePassword;
-                          });
-                        },
-                        child: Icon(Icons.remove_red_eye),
-                      ),
-                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: TextFormField(
-                    obscureText: obscureConfirmPassword,
-                    controller: confirmPasswordController,
-                    textInputAction: TextInputAction.done,
-                    keyboardType: TextInputType.text,
-                    validator: (v) {
-                      if (v.length == 0) {
-                        return 'Please enter password.';
-                      } else if (v.length < 8) {
-                        return 'Password must be minimum 8 characters';
-                      } else if (v != newPassword) {
-                        return 'Passwords doesn\'t match';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (v) {
-                      confirmPassword = v;
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: background1)),
-                      labelText: "Confirm New Password",
-                      labelStyle: TextStyle(color: background1, fontSize: 14),
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      suffix: InkWell(
-                        onTap: () {
-                          setState(() {
-                            obscureConfirmPassword = !obscureConfirmPassword;
-                          });
-                        },
-                        child: Icon(Icons.remove_red_eye),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 32, bottom: 16),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: color,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextFormField(
+                      obscureText: obscureConfirmPassword,
+                      controller: confirmPasswordController,
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.text,
+                      validator: (v) {
+                        if (v.length == 0) {
+                          return 'Please enter password.';
+                        } else if (v.length < 8) {
+                          return 'Password must be minimum 8 characters';
+                        } else if (v != newPassword) {
+                          return 'Passwords doesn\'t match';
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (v) {
+                        confirmPassword = v;
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: "Confirm New Password",
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            // insert data into database here
-                          }
-                        },
-                        child: Text(
-                          "Join Us",
-                          style: TextStyle(
-                              color: background1,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16),
-                        )),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              obscureConfirmPassword = !obscureConfirmPassword;
+                            });
+                          },
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            color: background1,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 16),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: color,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          onPressed: () async {
+                            Utils.showLoadingDialog(context, "Signing Up");
+                            if (await validateUsername()) {
+                              if (_formKey.currentState.validate()) {
+                                await addUser();
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            } else {
+                              Navigator.pop(context);
+                              Utils.showErrorDialog(context, "Username",
+                                  "Username you have chosen is aleady used. Please choose a different username.");
+                            }
+                          },
+                          child: Text(
+                            "Join Us",
+                            style: TextStyle(
+                                color: background1,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
+  }
+
+  addUser() async {
+    var user = {
+      "email": "$eMail",
+      "mobile": "$countryCode$phone",
+      "username": "$username",
+      "password": "$newPassword",
+      "name": "$name",
+      "uid": "${Utils.generateId("user_")}"
+    };
+
+    try {
+      var resp = await http.post(Utils.ADD_USER,
+          body: jsonEncode(user),
+          headers: {"Content-Type": "application/json"});
+      var r = jsonDecode(resp.body);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: eMail, password: newPassword)
+              .then((value) async {
+            await Utils.getUser(context, value.user.uid);
+            Navigator.pushAndRemoveUntil(context,
+                Utils.createRoute(ProjectsList(), Utils.RTL), (r) => false);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        Navigator.pop(context);
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+    } catch (e) {
+      // debugPrint(e);
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
   }
 }

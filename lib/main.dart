@@ -55,8 +55,6 @@ class _SplashScreenState extends State<SplashScreen> {
       if (FirebaseAuth.instance.currentUser == null) {
         Navigator.pushReplacement(
             context, Utils.createRoute(Login(), Utils.LTR));
-        /*await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: 'test@gmail.com', password: 'test1234');*/
       } else {
         await Utils.getUser(context, FirebaseAuth.instance.currentUser.uid);
         Navigator.pushReplacement(
