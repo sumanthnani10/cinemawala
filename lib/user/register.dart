@@ -34,7 +34,7 @@ class _Register extends State<Register> {
       username = "",
       phone = "",
       countryCode = "+91";
-  int usernameValid = 0;
+  int usernameValid = 0, gender = 1;
   Color background, color, background1;
   CancelableOperation cancellableOperation;
 
@@ -108,12 +108,12 @@ class _Register extends State<Register> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 30, 8, 0),
+                    padding: const EdgeInsets.fromLTRB(8, 30, 16, 0),
                     child: Image(image: AssetImage('assets/images/logo.png')),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                     child: Text(
                       "Register",
                       style: TextStyle(
@@ -122,8 +122,9 @@ class _Register extends State<Register> {
                           decoration: TextDecoration.underline),
                     ),
                   ),
+                  //Username
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 0),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: userNameController,
@@ -211,6 +212,7 @@ class _Register extends State<Register> {
                                         )),
                     ),
                   ),
+                  //Name
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: TextFormField(
@@ -244,6 +246,7 @@ class _Register extends State<Register> {
                       ),
                     ),
                   ),
+                  //Email
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: TextFormField(
@@ -278,8 +281,9 @@ class _Register extends State<Register> {
                       ),
                     ),
                   ),
+                  //Mobile
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 0),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -292,7 +296,6 @@ class _Register extends State<Register> {
                             favorite: ['+91', 'IN'],
                             onChanged: (c) {
                               countryCode = c.dialCode;
-                              print(countryCode);
                             },
                           ),
                         ),
@@ -338,6 +341,76 @@ class _Register extends State<Register> {
                       ],
                     ),
                   ),
+                  //Gender
+                  Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 0),
+                            child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: gender == 1 ? Colors.white : color,
+                                  elevation: gender == 1 ? 4 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    gender = 1;
+                                  });
+                                },
+                                icon: Icon(Icons.wb_sunny_outlined,
+                                    size: 22, color: background1),
+                                label: Text(
+                                  "Male",
+                                  style: TextStyle(
+                                      fontWeight: gender == 1
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 0),
+                            child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: gender == 2 ? Colors.white : color,
+                                  elevation: gender == 2 ? 4 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    gender = 2;
+                                  });
+                                },
+                                icon: Icon(Icons.nightlight_round,
+                                    size: 22, color: background1),
+                                label: Text(
+                                  "Female",
+                                  style: TextStyle(
+                                      fontWeight: gender == 2
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //Password
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: TextFormField(
@@ -380,6 +453,7 @@ class _Register extends State<Register> {
                       ),
                     ),
                   ),
+                  //Confirm Password
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: TextFormField(
@@ -471,7 +545,9 @@ class _Register extends State<Register> {
       "username": "$username",
       "password": "$newPassword",
       "name": "$name",
-      "uid": "${Utils.generateId("user_")}"
+      "id": "${Utils.generateId("user_")}",
+      "projects": [],
+      "gender": 1
     };
 
     try {
@@ -489,6 +565,7 @@ class _Register extends State<Register> {
                 Utils.createRoute(ProjectsList(), Utils.RTL), (r) => false);
           });
         } else {
+          Navigator.pop(context);
           await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
         }
       } else {

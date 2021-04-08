@@ -44,10 +44,18 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
         "last_edit_by": "${Utils.USER_ID}",
         "added_by": "${Utils.USER_ID}",
         "name": "",
+        "username": "",
         "role": "",
-        "user_id": "qwerty",
+        "user_id": "",
+        "owner": false,
+        "accepted": false,
         "project_id": project.id,
         "permissions": {
+          "roles": {
+            "view": false,
+            "add": false,
+            "edit": false,
+          },
           "casting": {
             "view": false,
             "add": false,
@@ -58,12 +66,12 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
             "add": false,
             "edit": false,
           },
-          "art_department": {
+          "props": {
             "view": false,
             "add": false,
             "edit": false,
           },
-          "one_line_order": {
+          "scenes": {
             "view": false,
             "add": false,
             "edit": false,
@@ -73,17 +81,17 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
             "add": false,
             "edit": false,
           },
-          "location": {
+          "locations": {
             "view": false,
             "add": false,
             "edit": false,
           },
-          "daily_report": {
+          "report": {
             "view": false,
             "add": false,
             "edit": false,
           },
-          "daily_budget": {
+          "budget": {
             "view": false,
             "add": false,
             "edit": false,

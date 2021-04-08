@@ -7,6 +7,7 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
 import 'package:cinemawala/user/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +17,7 @@ import 'props/prop.dart';
 class Utils {
   static String USER_ID;
   static User user;
+  static List<Project> projects;
   static List<Actor> artists;
   static List<Costume> costumes;
   static List<Prop> props;
@@ -23,6 +25,7 @@ class Utils {
   static List<Scene> scenes;
   static List<Schedule> schedules;
   static List<DailyBudget> dailyBudgets;
+  static Map<String, Project> projectsMap;
   static Map<String, Actor> artistsMap;
   static Map<String, Costume> costumesMap;
   static Map<String, Prop> propsMap;
@@ -68,6 +71,28 @@ class Utils {
       showErrorDialog(context, '', 'Something went Wrong. Please try again');
     }
     return null;
+  }
+
+  static getProjects(context) async {
+    var resp = await http
+        .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
+
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        Utils.projects = [];
+        Utils.projectsMap = {};
+        r['projects'].forEach((i) {
+          Utils.projects.add(Project.fromJson(i));
+          Utils.projectsMap[Utils.projects.last.id] = Utils.projects.last;
+        });
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return Utils.projects;
   }
 
   static getArtists(context, projectId) async {
@@ -247,6 +272,7 @@ class Utils {
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
   static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
+  static Uri EDIT_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/editProject');
 
   static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
   static Uri ADD_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/addArtist');
@@ -412,7 +438,7 @@ class Utils {
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("cancel"),
+                  child: Text("Cancel"),
                 ),
               )
             ],
@@ -423,8 +449,8 @@ class Utils {
   static showLoadingDialog(BuildContext context, String title) {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
+      barrierDismissible: kDebugMode,
+      builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: () {
             return;

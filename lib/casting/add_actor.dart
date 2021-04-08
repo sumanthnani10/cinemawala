@@ -119,8 +119,6 @@ class _AddActorState extends State<AddActor>
                         String imagePath = await Utils.askSource(context);
                         if (imagePath != null) {
                           actorImage = File(imagePath);
-                        } else {
-                          actorImage = null;
                         }
                         setState(() {});
                       },
@@ -201,8 +199,6 @@ class _AddActorState extends State<AddActor>
                           String imagePath = await Utils.askSource(context);
                           if (imagePath != null) {
                             actorImage = File(imagePath);
-                          } else {
-                            actorImage = null;
                           }
                           setState(() {});
                         },

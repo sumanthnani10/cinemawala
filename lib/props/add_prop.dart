@@ -96,11 +96,9 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                     children: [
                       InkWell(
                         onTap: () async {
-                          String image_path = await Utils.askSource(context);
-                          if (image_path != null) {
-                            propImage = File(image_path);
-                          } else {
-                            propImage = null;
+                          String imagePath = await Utils.askSource(context);
+                          if (imagePath != null) {
+                            propImage = File(imagePath);
                           }
                           setState(() {});
                         },
@@ -181,12 +179,10 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                                 size: 20,
                               ),
                               onPressed: () async {
-                                String image_path =
+                                String imagePath =
                                     await Utils.askSource(context);
-                                if (image_path != null) {
-                                  propImage = File(image_path);
-                                } else {
-                                  propImage = null;
+                                if (imagePath != null) {
+                                  propImage = File(imagePath);
                                 }
                                 setState(() {});
                               }),

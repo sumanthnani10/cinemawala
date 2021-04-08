@@ -51,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   check() async {
+    // await FirebaseAuth.instance.signOut();
     if (!kIsWeb) {
       if (FirebaseAuth.instance.currentUser == null) {
         Navigator.pushReplacement(

@@ -78,7 +78,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     for (var i in langsInEnglish) {
       titleControllers.add(new TextEditingController(text: scene.titles[i]));
       gistControllers.add(new TextEditingController(text: scene.gists[i]));
-      print(scene.gists[i]);
     }
 
     for (var i in scene.artists) {

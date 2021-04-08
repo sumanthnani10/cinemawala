@@ -1,11 +1,10 @@
-import 'dart:convert';
 
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_home.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../utils.dart';
+import 'add_project.dart';
 
 class ProjectsList extends StatefulWidget {
   ProjectsList({Key key}) : super(key: key);
@@ -32,22 +31,7 @@ class _ProjectsList extends State<ProjectsList> {
   getProjects() async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Projects');
-    var resp = await http
-        .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
-    // // debugPrint(resp.body);
-    projects = [];
-    if (resp.statusCode == 200) {
-      var r = jsonDecode(resp.body);
-      if (r['status'] == 'success') {
-        r['projects'].forEach((i) {
-          projects.add(Project.fromJson(i));
-        });
-      } else {
-        projects = [];
-      }
-    } else {
-      projects = [];
-    }
+    projects = await Utils.getProjects(context);
     setState(() {
       loading = false;
     });
@@ -150,18 +134,21 @@ class _ProjectsList extends State<ProjectsList> {
           : Center(
               child: Text(loading ? '' : 'No Projects.'),
             ),
-      /*floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         backgroundColor: color,
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddProject()));
+        onPressed: () async {
+          await Navigator.push(
+              context, Utils.createRoute(AddProject(), Utils.DTU));
+          setState(() {
+            projects = Utils.projects;
+          });
         },
         child: Icon(
           Icons.add,
           color: background1,
           size: 32,
         ),
-      ),*/
+      ),
     );
   }
 }

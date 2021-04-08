@@ -103,8 +103,6 @@ class _AddCostume extends State<AddCostume>
                           var imagePath = await Utils.askSource(context);
                           if (imagePath != null) {
                             costumeImage = File(imagePath);
-                          } else {
-                            costumeImage = null;
                           }
                           setState(() {});
                         },
@@ -190,8 +188,6 @@ class _AddCostume extends State<AddCostume>
                                     await Utils.askSource(context);
                                 if (imagePath != null) {
                                   costumeImage = File(imagePath);
-                                } else {
-                                  costumeImage = null;
                                 }
                                 setState(() {});
                               }),
