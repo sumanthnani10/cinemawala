@@ -46,7 +46,7 @@ class _AddProject extends State<AddProject>
       projectID = "${Utils.generateId("proj_")}";
       project = {
         "id": projectID,
-        "languages": [],
+        "languages": ['English'],
         "name": "",
         "owner_id": "${Utils.USER_ID}",
         "owner_username": "${Utils.user.username}",

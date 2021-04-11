@@ -41,8 +41,8 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
   int selectedLanguage = 0;
   Location selectedLocation;
   List<TextEditingController> titleControllers = [], gistControllers = [];
-  List<dynamic> langsInEnglish,
-      languages = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
+  List<dynamic> languages,
+      langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
       artistsImages = [],
       propsImages = [],
       costumesImages = [];
@@ -65,7 +65,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
       minus = 48;
     }
 
-    langsInEnglish = project.languages;
+    languages = project.languages;
 
     setScene();
 
@@ -75,7 +75,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
   setScene() async {
     selectedLocation = Utils.locationsMap[scene.location];
 
-    for (var i in langsInEnglish) {
+    for (var i in languages) {
       titleControllers.add(new TextEditingController(text: scene.titles[i]));
       gistControllers.add(new TextEditingController(text: scene.gists[i]));
     }
@@ -236,7 +236,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: List<Widget>.generate(languages.length, (i) {
+                      children: List<Widget>.generate(langsInLang.length, (i) {
                         return Container(
                           decoration: BoxDecoration(
                             color: i == selectedLanguage ? Colors.white : color,
@@ -261,13 +261,13 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               text: TextSpan(
                           children: <TextSpan>[
                             TextSpan(
-                                text: '${languages[i]}',
-                                style: TextStyle(
-                                    color: background1,
+                                text: '${langsInLang[i]}',
+                                      style: TextStyle(
+                                          color: background1,
                                           fontSize: 14,
                                           fontFamily: 'Poppins')),
                                   TextSpan(
-                                      text: '\n${langsInEnglish[i]}',
+                                      text: '\n${languages[i]}',
                                       style: TextStyle(
                                           fontSize: 10,
                                           fontFamily: 'Poppins',
@@ -381,7 +381,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: List<Widget>.generate(
-                                    languages.length, (i) {
+                                    langsInLang.length, (i) {
                                   return Container(
                                     decoration: BoxDecoration(
                                       color: i == selectedLanguage
@@ -412,13 +412,13 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                         text: TextSpan(
                                           children: <TextSpan>[
                                             TextSpan(
-                                                text: '${languages[i]}',
+                                                text: '${langsInLang[i]}',
                                                 style: TextStyle(
                                                     color: background1,
                                                     fontSize: 14,
                                                     fontFamily: 'Poppins')),
                                             TextSpan(
-                                                text: '\n${langsInEnglish[i]}',
+                                                text: '\n${languages[i]}',
                                                 style: TextStyle(
                                                     fontSize: 10,
                                                     fontFamily: 'Poppins',
@@ -446,7 +446,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: List<Widget>.generate(
-                                      languages.length, (i) {
+                                      langsInLang.length, (i) {
                                     return Container(
                                       color: Colors.white,
                                       padding: EdgeInsets.symmetric(

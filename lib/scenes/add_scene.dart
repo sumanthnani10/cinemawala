@@ -41,8 +41,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   int selectedLanguage = 0;
   Location selectedLocation, oldLocation;
   List<TextEditingController> titleControllers = [], gistControllers = [];
-  List<dynamic> langsInEnglish,
-      languages = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
+  List<dynamic> languages,
+      langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
       specialEquipments = [],
       artistsImages = [],
       propsImages = [],
@@ -58,7 +58,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    langsInEnglish = project.languages;
+    languages = project.languages;
     if (scene == null) {
       scene = {
         "project_id": "${project.id}",
@@ -108,7 +108,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       };
       scene['created'] = DateTime.now().millisecondsSinceEpoch;
       scene['last_edit_on'] = scene['created'];
-      for (var i in langsInEnglish) {
+      for (var i in languages) {
         titleControllers.add(new TextEditingController());
         gistControllers.add(new TextEditingController());
         scene["titles"][i] = "";
@@ -120,7 +120,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       scene['last_edit_by'] = "${Utils.USER_ID}";
       selectedLocation = Utils.locationsMap[scene["location"]];
       oldLocation = Utils.locationsMap[scene["location"]];
-      for (var i in langsInEnglish) {
+      for (var i in languages) {
         titleControllers
             .add(new TextEditingController(text: scene["titles"][i]));
         gistControllers.add(new TextEditingController(text: scene["gists"][i]));
@@ -301,13 +301,13 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text: '${languages[i]}',
+                              text: '${langsInLang[i]}',
                               style: TextStyle(
                                   color: background1,
                                   fontSize: 14,
                                   fontFamily: 'Poppins')),
                           TextSpan(
-                              text: '\n${langsInEnglish[i]}',
+                              text: '\n${languages[i]}',
                               style: TextStyle(
                                   fontSize: 10,
                                   fontFamily: 'Poppins',
@@ -382,7 +382,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   textInputAction: TextInputAction.done,
                                   textCapitalization: TextCapitalization.words,
                                   onChanged: (v) {
-                                    scene['titles'][langsInEnglish[i]] = v;
+                                    scene['titles'][languages[i]] = v;
                                   },
                                   controller: titleControllers[i],
                                   decoration: InputDecoration(
@@ -405,7 +405,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   textInputAction: TextInputAction.done,
                                   textCapitalization: TextCapitalization.words,
                                   onChanged: (v) {
-                                    scene['gists'][langsInEnglish[i]] = v;
+                                    scene['gists'][languages[i]] = v;
                                   },
                                   maxLines: null,
                                   controller: gistControllers[i],

@@ -24,8 +24,8 @@ class _ActorPage extends State<ActorPage> {
   Color background, color, background1;
   int selectedLanguage = 0;
 
-  List<dynamic> langsInEnglish,
-      languages = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'];
+  List<dynamic> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
+      languages;
 
   TextStyle headingStyle;
   ScrollController cardScrollController = new ScrollController();
@@ -37,8 +37,8 @@ class _ActorPage extends State<ActorPage> {
 
   @override
   void initState() {
-    langsInEnglish = project.languages;
-    for (var i in langsInEnglish) {
+    languages = project.languages;
+    for (var i in languages) {
       nameControllers.add(new TextEditingController(
           text: '${actor.names[i] != "" ? actor.names[i] : "-"}'));
       characterControllers.add(new TextEditingController(
@@ -211,13 +211,13 @@ class _ActorPage extends State<ActorPage> {
                                         text: TextSpan(
                                           children: <TextSpan>[
                                             TextSpan(
-                                                text: '${languages[i]}',
+                                                text: '${langsInLang[i]}',
                                                 style: TextStyle(
                                                     color: background1,
                                                     fontSize: 14,
                                                     fontFamily: 'Poppins')),
                                             TextSpan(
-                                                text: '\n${langsInEnglish[i]}',
+                                                text: '\n${languages[i]}',
                                                 style: TextStyle(
                                                     fontSize: 10,
                                                     fontFamily: 'Poppins',
@@ -367,7 +367,7 @@ class _ActorPage extends State<ActorPage> {
                                                           300),
                                                 ),
                                                 child: Text(
-                                                    '${Utils.scenesMap[actor.scenes[i]].titles[langsInEnglish[selectedLanguage]]}'),
+                                                    '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
                                               ),
                                             );
                                           },
@@ -478,8 +478,8 @@ class _ActorPopUpState extends State<ActorPopUp> {
   Color background, color, background1;
   int selectedLanguage = 0;
 
-  List<dynamic> langsInEnglish,
-      languages = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'];
+  List<dynamic> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
+      languages;
 
   TextStyle headingStyle;
   ScrollController cardScrollController = new ScrollController();
@@ -491,8 +491,8 @@ class _ActorPopUpState extends State<ActorPopUp> {
 
   @override
   void initState() {
-    langsInEnglish = project.languages;
-    for (var i in langsInEnglish) {
+    languages = project.languages;
+    for (var i in languages) {
       nameControllers.add(new TextEditingController(
           text: '${actor.names[i] != "" ? actor.names[i] : "-"}'));
       characterControllers.add(new TextEditingController(
@@ -655,17 +655,15 @@ class _ActorPopUpState extends State<ActorPopUp> {
                                             text: TextSpan(
                                               children: <TextSpan>[
                                                 TextSpan(
-                                                    text: '${languages[i]}',
+                                                    text: '${langsInLang[i]}',
                                                     style: TextStyle(
-                                                        color: background1,
-                                                        fontSize: 14,
-                                                        fontFamily: 'Poppins')),
+                                                      color: background1,
+                                                      fontSize: 14,
+                                                    )),
                                                 TextSpan(
-                                                    text:
-                                                        '\n${langsInEnglish[i]}',
+                                                    text: '\n${languages[i]}',
                                                     style: TextStyle(
                                                         fontSize: 10,
-                                                        fontFamily: 'Poppins',
                                                         color: background1)),
                                               ],
                                             ),
@@ -832,7 +830,7 @@ class _ActorPopUpState extends State<ActorPopUp> {
                                                                 .circular(300),
                                                       ),
                                                       child: Text(
-                                                          '${Utils.scenesMap[actor.scenes[i]].titles[langsInEnglish[selectedLanguage]]}'),
+                                                          '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
                                                     ),
                                                   );
                                                 },

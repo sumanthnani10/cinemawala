@@ -32,8 +32,8 @@ class _AddActorState extends State<AddActor>
 
   List<TextEditingController> nameControllers = [], characterControllers = [];
 
-  List<String> languages = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'];
-  List<dynamic> langsInEnglish = [];
+  List<String> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'];
+  List<dynamic> languages = [];
   Map<dynamic, dynamic> actor;
   File actorImage;
 
@@ -44,7 +44,7 @@ class _AddActorState extends State<AddActor>
   @override
   void initState() {
     actorImage = null;
-    langsInEnglish = project.languages;
+    languages = project.languages;
     if (actor == null) {
       actor = {
         "added_by": "${Utils.USER_ID}",
@@ -60,7 +60,7 @@ class _AddActorState extends State<AddActor>
       };
       actor['created'] = DateTime.now().millisecondsSinceEpoch;
       actor['last_edit_on'] = actor['created'];
-      for (var i in langsInEnglish) {
+      for (var i in languages) {
         nameControllers.add(new TextEditingController());
         characterControllers.add(new TextEditingController());
         actor["names"][i] = "";
@@ -70,7 +70,7 @@ class _AddActorState extends State<AddActor>
       edit = true;
       actor['last_edit_on'] = DateTime.now().millisecondsSinceEpoch;
       actor['last_edit_by'] = "${Utils.USER_ID}";
-      for (var i in langsInEnglish) {
+      for (var i in languages) {
         nameControllers.add(new TextEditingController(text: actor["names"][i]));
         characterControllers
             .add(new TextEditingController(text: actor["characters"][i]));
@@ -253,7 +253,7 @@ class _AddActorState extends State<AddActor>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: List<Widget>.generate(
-                                langsInEnglish.length, (i) {
+                                languages.length, (i) {
                               return Container(
                                 decoration: BoxDecoration(
                                   color: i == selectedLanguage
@@ -281,13 +281,13 @@ class _AddActorState extends State<AddActor>
                                       children: <TextSpan>[
                                         TextSpan(
                                             text:
-                                                '${languages[i] ?? langsInEnglish[i]}',
+                                                '${langsInLang[i] ?? languages[i]}',
                                             style: TextStyle(
                                                 color: background1,
                                                 fontSize: 14,
                                                 fontFamily: 'Poppins')),
                                         TextSpan(
-                                            text: '\n${langsInEnglish[i]}',
+                                            text: '\n${languages[i]}',
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 fontFamily: 'Poppins',
@@ -336,7 +336,7 @@ class _AddActorState extends State<AddActor>
                                           TextCapitalization.words,
                                       controller: nameControllers[i],
                                       onChanged: (v) {
-                                        actor['names'][langsInEnglish[i]] = v;
+                                        actor['names'][languages[i]] = v;
                                       },
                                       decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
@@ -363,8 +363,7 @@ class _AddActorState extends State<AddActor>
                                           TextCapitalization.words,
                                       controller: characterControllers[i],
                                       onChanged: (v) {
-                                        actor['characters'][langsInEnglish[i]] =
-                                            v;
+                                        actor['characters'][languages[i]] = v;
                                       },
                                       decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(

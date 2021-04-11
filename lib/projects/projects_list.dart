@@ -47,7 +47,8 @@ class _ProjectsList extends State<ProjectsList> {
   getProject(Project proj) async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting ${proj.name}');
-    project = await Utils.getProject(context, proj.id);
+    Utils.project = await Utils.getProject(context, proj.id);
+    project = Utils.project;
     await Utils.getArtists(context, proj.id);
     await Utils.getCostumes(context, proj.id);
     await Utils.getProps(context, proj.id);
@@ -127,20 +128,23 @@ class _ProjectsList extends State<ProjectsList> {
                           children: List.generate(ownProjects.length, (i) {
                             project = ownProjects[i];
                             return ProjectCard(
-                              project: allProjects[0],
+                              project: project,
                               onTap: () async {
-                                Utils.artists = null;
-                                Utils.artistsMap = null;
-                                Utils.costumes = null;
-                                Utils.props = null;
-                                Utils.costumes = null;
-                                Utils.propsMap = null;
-                                Utils.locations = null;
-                                Utils.scenes = null;
-                                Utils.locations = null;
-                                Utils.scenesMap = null;
+                                if (Utils.project == null ||
+                                    Utils.project.id != project.id) {
+                                  Utils.artists = null;
+                                  Utils.artistsMap = null;
+                                  Utils.costumes = null;
+                                  Utils.props = null;
+                                  Utils.costumes = null;
+                                  Utils.propsMap = null;
+                                  Utils.locations = null;
+                                  Utils.scenes = null;
+                                  Utils.locations = null;
+                                  Utils.scenesMap = null;
 
-                                await getProject(project);
+                                  await getProject(project);
+                                }
 
                                 Navigator.push(
                                     context,
@@ -181,20 +185,23 @@ class _ProjectsList extends State<ProjectsList> {
                           children: List.generate(otherProjects.length, (i) {
                             project = otherProjects[i];
                             return ProjectCard(
-                              project: allProjects[0],
+                              project: project,
                               onTap: () async {
-                                Utils.artists = null;
-                                Utils.artistsMap = null;
-                                Utils.costumes = null;
-                                Utils.props = null;
-                                Utils.costumes = null;
-                                Utils.propsMap = null;
-                                Utils.locations = null;
-                                Utils.scenes = null;
-                                Utils.locations = null;
-                                Utils.scenesMap = null;
+                                if (Utils.project == null ||
+                                    Utils.project.id != project.id) {
+                                  Utils.artists = null;
+                                  Utils.artistsMap = null;
+                                  Utils.costumes = null;
+                                  Utils.props = null;
+                                  Utils.costumes = null;
+                                  Utils.propsMap = null;
+                                  Utils.locations = null;
+                                  Utils.scenes = null;
+                                  Utils.locations = null;
+                                  Utils.scenesMap = null;
 
-                                await getProject(project);
+                                  await getProject(project);
+                                }
 
                                 Navigator.push(
                                     context,
@@ -237,29 +244,8 @@ class _ProjectsList extends State<ProjectsList> {
                                     List.generate(requestProjects.length, (i) {
                                   project = requestProjects[i];
                                   return ProjectCard(
-                                    project: allProjects[0],
-                                    onTap: () async {
-                                      Utils.artists = null;
-                                      Utils.artistsMap = null;
-                                      Utils.costumes = null;
-                                      Utils.props = null;
-                                      Utils.costumes = null;
-                                      Utils.propsMap = null;
-                                      Utils.locations = null;
-                                      Utils.scenes = null;
-                                      Utils.locations = null;
-                                      Utils.scenesMap = null;
-
-                                      await getProject(project);
-
-                                      Navigator.push(
-                                          context,
-                                          Utils.createRoute(
-                                              ProjectHome(
-                                                project: project,
-                                              ),
-                                              Utils.RTL));
-                                    },
+                                    project: project,
+                                    onTap: () async {},
                                   );
                                 }),
                               ),
