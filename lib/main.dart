@@ -52,15 +52,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   check() async {
     // await FirebaseAuth.instance.signOut();
-    if (!kIsWeb) {
-      if (FirebaseAuth.instance.currentUser == null) {
-        Navigator.pushReplacement(
-            context, Utils.createRoute(Login(), Utils.LTR));
-      } else {
-        await Utils.getUser(context, FirebaseAuth.instance.currentUser.uid);
-        Navigator.pushReplacement(
-            context, Utils.createRoute(ProjectsList(), Utils.RTL));
-      }
+    if (kIsWeb) {
+      await FirebaseAuth.instance.authStateChanges().first;
+    }
+    if (FirebaseAuth.instance.currentUser == null) {
+      Navigator.pushReplacement(context, Utils.createRoute(Login(), Utils.LTR));
+    } else {
+      await Utils.getUser(context, FirebaseAuth.instance.currentUser.uid);
+      Navigator.pushReplacement(
+          context, Utils.createRoute(ProjectsList(), Utils.RTL));
     }
   }
 

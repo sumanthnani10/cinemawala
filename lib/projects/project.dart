@@ -1,3 +1,4 @@
+import 'package:cinemawala/roles/role.dart';
 import "package:flutter/cupertino.dart";
 
 import "../utils.dart";
@@ -19,7 +20,8 @@ class Project {
   int productionNumber;
   DateTime created, lastEditOn;
   List<dynamic> languages, rolesIDs;
-  Map<String, dynamic> role, roles;
+  Map<String, dynamic> roles;
+  Role role;
 
   Project(
       {@required this.id,
@@ -31,17 +33,17 @@ class Project {
       @required this.ownerUsername,
       @required this.ownerName,
       @required this.role,
-      @required this.productionName,
-      @required this.productionNumber,
-      @required this.producer,
-      @required this.director,
-      @required this.dop,
-      @required this.artDirector,
-      @required this.image,
-      @required this.created,
-      @required this.lastEditOn,
-      @required this.lastEditBy,
-      @required this.addedBy});
+    @required this.productionName,
+    @required this.productionNumber,
+    @required this.producer,
+    @required this.director,
+    @required this.dop,
+    @required this.artDirector,
+    @required this.image,
+    @required this.created,
+    @required this.lastEditOn,
+    @required this.lastEditBy,
+    @required this.addedBy});
 
   Map<dynamic, dynamic> toJson() {
     return <dynamic, dynamic>{
@@ -77,7 +79,7 @@ class Project {
         ownerName: i["owner_name"],
         roles: i["roles"],
         rolesIDs: i["roles_ids"],
-        role: i["roles"]["${Utils.USER_ID}"],
+        role: Role.fromJson(i["roles"]["${Utils.USER_ID}"]),
         productionName: i["production_name"],
         productionNumber: i["production_number"],
         producer: i["producer"],

@@ -152,7 +152,7 @@ class _ProjectHome extends State<ProjectHome> {
                   return Expanded(
                     child: InkWell(
                       onTap: () {
-                        if (project.role['permissions'][categories[ind]['key']]
+                        if (project.role.permissions[categories[ind]['key']]
                             ['view']) {
                           Navigator.push(
                               context,
@@ -201,8 +201,8 @@ class _ProjectHome extends State<ProjectHome> {
                               ),
                             ),
                           ),
-                          if (!project.role['permissions']
-                              [categories[ind]['key']]['view'])
+                          if (!project.role.permissions[categories[ind]['key']]
+                              ['view'])
                             Center(
                               child: AspectRatio(
                                 aspectRatio: 4 / 3,
@@ -225,7 +225,7 @@ class _ProjectHome extends State<ProjectHome> {
                   return Expanded(
                     child: InkWell(
                       onTap: () async {
-                        if (project.role['permissions'][categories[ind]['key']]
+                        if (project.role.permissions[categories[ind]['key']]
                             ['view']) {
                           var back = await Navigator.push(
                               context,
@@ -279,8 +279,8 @@ class _ProjectHome extends State<ProjectHome> {
                               ),
                             ),
                           ),
-                          if (!project.role['permissions']
-                              [categories[ind]['key']]['view'])
+                          if (!project.role.permissions[categories[ind]['key']]
+                              ['view'])
                             Center(
                               child: AspectRatio(
                                 aspectRatio: 4 / 3,
@@ -303,7 +303,7 @@ class _ProjectHome extends State<ProjectHome> {
                   return Expanded(
                     child: InkWell(
                       onTap: () {
-                        if (project.role['permissions'][categories[ind]['key']]
+                        if (project.role.permissions[categories[ind]['key']]
                             ['view']) {
                           Navigator.push(
                               context,
@@ -353,8 +353,8 @@ class _ProjectHome extends State<ProjectHome> {
                               ),
                             ),
                           ),
-                          if (!project.role['permissions']
-                              [categories[ind]['key']]['view'])
+                          if (!project.role.permissions[categories[ind]['key']]
+                              ['view'])
                             Center(
                               child: AspectRatio(
                                 aspectRatio: 4 / 3,
