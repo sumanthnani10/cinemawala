@@ -4,7 +4,7 @@ class Role {
   String project, userId, name, username, addedBy, lastEditBy, role;
   DateTime created, lastEditOn;
   bool owner, accepted;
-  Map<String, dynamic> permissions;
+  Map<dynamic, dynamic> permissions;
 
   Role(
       {@required this.project,

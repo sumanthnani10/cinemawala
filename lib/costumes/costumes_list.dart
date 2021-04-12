@@ -71,6 +71,11 @@ class _CostumesListState extends State<CostumesList>
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Utils.linearGradient,
+            ),
+          ),
           backgroundColor: color,
           actions: [
             TextButton.icon(

@@ -69,6 +69,11 @@ class _LocationsList extends State<LocationsList>
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Utils.linearGradient,
+            ),
+          ),
           backgroundColor: color,
           actions: [
             TextButton.icon(

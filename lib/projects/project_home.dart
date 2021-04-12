@@ -6,8 +6,10 @@ import 'package:cinemawala/props/props_list.dart';
 import 'package:cinemawala/roles/roles_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:cinemawala/schedule/schedules.dart';
+import 'package:cinemawala/utils.dart';
 import 'package:flutter/material.dart';
 
+import 'add_project.dart';
 import 'project.dart';
 
 class ProjectHome extends StatefulWidget {
@@ -31,6 +33,12 @@ class _ProjectHome extends State<ProjectHome> {
 
   @override
   void initState() {
+    loading = false;
+    setCategories();
+    super.initState();
+  }
+
+  setCategories() async {
     categories = [
       {
         "title": "Casting",
@@ -116,8 +124,6 @@ class _ProjectHome extends State<ProjectHome> {
         "color": Colors.green[100],
       },
     ];
-    loading = false;
-    super.initState();
   }
 
   @override
@@ -134,12 +140,45 @@ class _ProjectHome extends State<ProjectHome> {
     var padding = EdgeInsets.all(8);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         title: Text(
           "${project.name}",
           style: TextStyle(color: background1),
         ),
         iconTheme: IconThemeData(color: background1),
+        actions: [
+          if (project.role.owner)
+            TextButton.icon(
+              onPressed: () async {
+                await Navigator.push(
+                    context,
+                    Utils.createRoute(
+                        AddProject(
+                          project: project.toJson(),
+                        ),
+                        Utils.RTL));
+                Utils.project = Utils.projectsMap[project.id];
+                project = Utils.project;
+                setCategories();
+                setState(() {});
+              },
+              label: Text(
+                "Edit Project",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
+              ),
+              icon: Icon(
+                Icons.edit,
+                size: 18,
+                color: Colors.indigo,
+              ),
+            )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(4),

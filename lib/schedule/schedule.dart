@@ -5,7 +5,7 @@ class Schedule {
   DateTime lastEditOn, created;
   int year, month, day;
   List<dynamic> scenes;
-  Map<String, dynamic> artistTimings,
+  Map<dynamic, dynamic> artistTimings,
       additionalTimings,
       callSheetTimings,
       vfxTimings,

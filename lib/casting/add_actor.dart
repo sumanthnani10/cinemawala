@@ -32,7 +32,7 @@ class _AddActorState extends State<AddActor>
 
   List<TextEditingController> nameControllers = [], characterControllers = [];
 
-  List<String> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'];
+  List<String> langsInLang = Utils.langsInLang;
   List<dynamic> languages = [];
   Map<dynamic, dynamic> actor;
   File actorImage;
@@ -45,6 +45,7 @@ class _AddActorState extends State<AddActor>
   void initState() {
     actorImage = null;
     languages = project.languages;
+    // print(languages);
     if (actor == null) {
       actor = {
         "added_by": "${Utils.USER_ID}",
@@ -92,6 +93,11 @@ class _AddActorState extends State<AddActor>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(
@@ -281,13 +287,14 @@ class _AddActorState extends State<AddActor>
                                       children: <TextSpan>[
                                         TextSpan(
                                             text:
-                                                '${langsInLang[i] ?? languages[i]}',
+                                                '${langsInLang[i] ?? Utils.codeToLanguagesInEnglish[languages[i]]}',
                                             style: TextStyle(
                                                 color: background1,
                                                 fontSize: 14,
                                                 fontFamily: 'Poppins')),
                                         TextSpan(
-                                            text: '\n${languages[i]}',
+                                            text:
+                                                '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 fontFamily: 'Poppins',
@@ -468,7 +475,7 @@ class _AddActorState extends State<AddActor>
         var resp = await http.post(Utils.ADD_ARTIST,
             body: jsonEncode(actor),
             headers: {"Content-Type": "application/json"});
-        // // debugPrint(resp.body);
+        // debugPrint(resp.body);
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
@@ -499,7 +506,6 @@ class _AddActorState extends State<AddActor>
             'Please try again after sometime.');
       }
     } catch (e) {
-      // debugPrint(e);
       Navigator.pop(context);
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
@@ -590,7 +596,7 @@ class _AddActorState extends State<AddActor>
   uploadArtistImage() async {
     var req = http.MultipartRequest(
         'POST', Uri.parse('${Utils.UPLOAD_ARTIST_IMAGE}'));
-    Map<String, String> headers = {"Content-type": "multipart/form-data"};
+    Map<dynamic, String> headers = {"Content-type": "multipart/form-data"};
 
     req.headers.addAll(headers);
     req.fields

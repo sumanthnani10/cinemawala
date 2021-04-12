@@ -59,6 +59,11 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Utils.linearGradient,
+            ),
+          ),
           backgroundColor: color,
           actions: [
             TextButton.icon(

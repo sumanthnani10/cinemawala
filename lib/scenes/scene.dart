@@ -13,7 +13,7 @@ class Scene {
       sfx,
       vfx;
   DateTime created, lastEditOn;
-  Map<String, dynamic> titles, gists, addlArtists;
+  Map<dynamic, dynamic> titles, gists, addlArtists;
   bool day, interior;
   List<dynamic> artists, costumes, props;
 

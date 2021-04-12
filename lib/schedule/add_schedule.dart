@@ -133,6 +133,11 @@ class _AddScheduleState extends State<AddSchedule> {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(
@@ -208,7 +213,7 @@ class _AddScheduleState extends State<AddSchedule> {
                           selectedProps = {};
                           selectedLocations = {};
                           selectedCostumes = {};
-                          Map<String, dynamic> timings = {},
+                          Map<dynamic, dynamic> timings = {},
                               vTimings = {},
                               sTimings = {},
                               csTimings = {},
@@ -440,7 +445,8 @@ class _AddScheduleState extends State<AddSchedule> {
                                               selectedProps = {};
                                               selectedLocations = {};
                                               selectedCostumes = {};
-                                              Map<String, dynamic> timings = {},
+                                              Map<dynamic, dynamic> timings =
+                                                      {},
                                                   vTimings = {},
                                                   sTimings = {},
                                                   csTimings = {},
@@ -1660,7 +1666,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                 selectedProps = {};
                                 selectedLocations = {};
                                 selectedCostumes = {};
-                                Map<String, dynamic> timings = {};
+                                Map<dynamic, dynamic> timings = {};
 
                                 selected.forEach((s) {
                                   Scene scene = Utils.scenesMap[s];
@@ -1748,7 +1754,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                         selectedProps = {};
                                         selectedLocations = {};
                                         selectedCostumes = {};
-                                        Map<String, dynamic> timings = {};
+                                        Map<dynamic, dynamic> timings = {};
 
                                         selectedScenes.forEach((scene) {
                                           schedule['scenes'].add(scene.id);
@@ -1865,7 +1871,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                               selectedProps = {};
                                               selectedLocations = {};
                                               selectedCostumes = {};
-                                              Map<String, dynamic> timings = {};
+                                              Map<dynamic, dynamic> timings = {};
 
                                               selectedScenes.forEach((scene) {
                                                 schedule['scenes']

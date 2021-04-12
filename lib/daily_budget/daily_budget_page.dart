@@ -605,14 +605,14 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
               ElevatedButton(
                 onPressed: () async {
                   var now = DateTime.now();
-                  Map<String, dynamic> dailyBudget = {
-                    "day": date.day,
-                    "project_id": project.id,
-                    "month": date.month,
-                    "added_by": Utils.USER_ID,
-                    "budget": {},
-                    "id": id,
-                    "year": date.year,
+                  Map<dynamic, dynamic> dailyBudget = {
+                          "day": date.day,
+                          "project_id": project.id,
+                          "month": date.month,
+                          "added_by": Utils.USER_ID,
+                          "budget": {},
+                          "id": id,
+                          "year": date.year,
                           "last_edit_by": Utils.USER_ID,
                           "last_edit_on": now.millisecondsSinceEpoch,
                           "created": now.millisecondsSinceEpoch

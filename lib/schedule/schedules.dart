@@ -26,7 +26,7 @@ class _SchedulesState extends State<Schedules>
 
   Color background, background1, color;
   CalendarController calendarController;
-  Map<String, Schedule> schedules = {};
+  Map<dynamic, Schedule> schedules = {};
   DateTime selectedDate;
   Map<DateTime, List<dynamic>> calenderSchedule = {};
   Schedule selectedSchedule;
@@ -120,6 +120,11 @@ class _SchedulesState extends State<Schedules>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(

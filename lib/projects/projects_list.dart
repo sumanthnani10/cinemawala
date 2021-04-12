@@ -73,6 +73,11 @@ class _ProjectsList extends State<ProjectsList> {
     }
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         automaticallyImplyLeading: false,
@@ -144,6 +149,16 @@ class _ProjectsList extends State<ProjectsList> {
                                   Utils.scenesMap = null;
 
                                   await getProject(project);
+
+                                  Utils.languages = [];
+                                  Utils.langsInLang = [];
+
+                                  project.languages.forEach((l) {
+                                    Utils.languages
+                                        .add(Utils.codeToLanguagesInEnglish[l]);
+                                    Utils.langsInLang.add(
+                                        Utils.codeToLanguagesInLanguage[l]);
+                                  });
                                 }
 
                                 Navigator.push(

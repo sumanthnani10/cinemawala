@@ -26,7 +26,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
 
   Color background, background1, color;
   CalendarController calendarController;
-  Map<String, dynamic> dailyBudgets = {};
+  Map<dynamic, dynamic> dailyBudgets = {};
   DateTime selectedDate;
   Map<DateTime, List<dynamic>> calenderDailyBudget = {};
   DailyBudget selectedDailyBudget;
@@ -84,6 +84,11 @@ class _DailyBudgetsState extends State<DailyBudgets>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(

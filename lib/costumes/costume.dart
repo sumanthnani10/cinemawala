@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class Costume {
   String title, referenceImage, project, id, description, addedBy, lastEditBy;
   DateTime created, lastEditOn;
-  Map<String, dynamic> usedBy;
+  Map<dynamic, dynamic> usedBy;
   List<dynamic> scenes;
   int changed;
 

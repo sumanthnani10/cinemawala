@@ -4,7 +4,7 @@ class DailyBudget {
   String project, id, lastEditBy, addedBy;
   DateTime lastEditOn, created;
   int year, month, day;
-  Map<String, dynamic> budget;
+  Map<dynamic, dynamic> budget;
 
   DailyBudget(
       {@required this.project,

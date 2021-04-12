@@ -4,7 +4,7 @@ class Actor {
   String image, project, id, addedBy, lastEditBy;
   DateTime created, lastEditOn;
   int days;
-  Map<String, dynamic> names, characters, costumes;
+  Map<dynamic, dynamic> names, characters, costumes;
   List<dynamic> scenes;
 
   Actor(

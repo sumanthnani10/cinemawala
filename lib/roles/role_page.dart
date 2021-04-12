@@ -19,7 +19,7 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
   Project project;
   Color background, background1, color;
   Role role;
-  Map<String, dynamic> permissions;
+  Map<dynamic, dynamic> permissions;
   List<String> permissionsKeys;
   String catName = "";
   TextEditingController roleTitleController, nameController;
@@ -47,6 +47,11 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(

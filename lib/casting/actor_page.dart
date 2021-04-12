@@ -24,8 +24,7 @@ class _ActorPage extends State<ActorPage> {
   Color background, color, background1;
   int selectedLanguage = 0;
 
-  List<dynamic> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
-      languages;
+  List<dynamic> langsInLang = Utils.langsInLang, languages;
 
   TextStyle headingStyle;
   ScrollController cardScrollController = new ScrollController();
@@ -64,6 +63,11 @@ class _ActorPage extends State<ActorPage> {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         title: Text(
           'Actor Info',
@@ -217,7 +221,8 @@ class _ActorPage extends State<ActorPage> {
                                                     fontSize: 14,
                                                     fontFamily: 'Poppins')),
                                             TextSpan(
-                                                text: '\n${languages[i]}',
+                                                text:
+                                                    '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                                 style: TextStyle(
                                                     fontSize: 10,
                                                     fontFamily: 'Poppins',
@@ -478,8 +483,7 @@ class _ActorPopUpState extends State<ActorPopUp> {
   Color background, color, background1;
   int selectedLanguage = 0;
 
-  List<dynamic> langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
-      languages;
+  List<dynamic> langsInLang = Utils.langsInLang, languages;
 
   TextStyle headingStyle;
   ScrollController cardScrollController = new ScrollController();
@@ -661,7 +665,8 @@ class _ActorPopUpState extends State<ActorPopUp> {
                                                       fontSize: 14,
                                                     )),
                                                 TextSpan(
-                                                    text: '\n${languages[i]}',
+                                                    text:
+                                                        '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                                     style: TextStyle(
                                                         fontSize: 10,
                                                         color: background1)),

@@ -19,6 +19,7 @@ class Utils {
   static String USER_ID;
   static User user;
   static Project project;
+  static List<String> languages = [], langsInLang = [];
   static List<Project> projects;
   static List<Actor> artists;
   static List<Costume> costumes;
@@ -683,7 +684,7 @@ class Utils {
     primary: Color(0xff6fd8a8),
   );
 
-  static Map<String, String> codeToLanguagesInLanguage = {
+  static Map<dynamic, String> codeToLanguagesInLanguage = {
         'hi': '\u0939\u093f\u0928\u094d\u0926\u0940',
         'ps': '\u067e\u069a\u062a\u0648',
         'fil': 'Filipino',
@@ -959,4 +960,15 @@ class Utils {
         "yo": 'Yoruba',
         "zu": 'Zulu',
       };
+
+  static final linearGradient = LinearGradient(
+    begin: Alignment(-1.0, 0.0),
+    end: Alignment(1.0, 0.0),
+    colors: [
+      const Color(0xff9ef2df),
+      const Color(0xff6cf2d3),
+      const Color(0xff25f1c3)
+    ],
+    stops: [0.0, 0.536, 1.0],
+  );
 }

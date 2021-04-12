@@ -119,6 +119,11 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
       key: scaffoldKey,
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
         title: Text(

@@ -20,7 +20,7 @@ class Project {
   int productionNumber;
   DateTime created, lastEditOn;
   List<dynamic> languages, rolesIDs;
-  Map<String, dynamic> roles;
+  Map<dynamic, dynamic> roles;
   Role role;
 
   Project(

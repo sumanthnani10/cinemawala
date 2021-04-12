@@ -186,6 +186,11 @@ class _ScenesList extends State<ScenesList>
     }
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         title: Text(
           "Scenes",
           style: TextStyle(color: background1),
@@ -241,7 +246,7 @@ class _ScenesList extends State<ScenesList>
                         Row(
                           children: [
                             Text(
-                              '${scene.titles['English']}',
+                              '${scene.titles['en']}',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Spacer(),
@@ -261,7 +266,7 @@ class _ScenesList extends State<ScenesList>
                           ],
                         ),
                         Text(
-                          "${scene.gists['English']}",
+                          "${scene.gists['en']}",
                           style: TextStyle(fontSize: 12),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

@@ -19,7 +19,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
   Color background, background1, color;
 
   List<TextEditingController> textFieldControllers = [];
-  Map<String, dynamic> additionalArtists;
+  Map<dynamic, dynamic> additionalArtists;
 
   var categoryHeadingStyle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
@@ -107,7 +107,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                   child: Column(
                     children:
                         List<Widget>.generate(additionalArtists.length, (i) {
-                      Map<String, dynamic> category =
+                          Map<dynamic, dynamic> category =
                           additionalArtists[categories[i]];
                       List<String> fields = category['fields'].keys.toList();
                       return Container(
@@ -367,7 +367,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
   Color background, background1, color;
 
   List<TextEditingController> textFieldControllers = [];
-  Map<String, dynamic> additionalArtists;
+  Map<dynamic, dynamic> additionalArtists;
 
   var categoryHeadingStyle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
@@ -436,7 +436,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                   child: Column(
                     children:
                         List<Widget>.generate(additionalArtists.length, (i) {
-                      Map<String, dynamic> category =
+                          Map<dynamic, dynamic> category =
                           additionalArtists[categories[i]];
                       List<String> fields = category['fields'].keys.toList();
                       return Container(

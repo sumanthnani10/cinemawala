@@ -1150,6 +1150,11 @@ class _AddDailyBudget extends State<AddDailyBudget>
         key: _scaffoldKey,
         backgroundColor: background,
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Utils.linearGradient,
+            ),
+          ),
           backgroundColor: color,
           iconTheme: IconThemeData(color: background1),
           title: Text(

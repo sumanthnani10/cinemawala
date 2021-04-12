@@ -51,6 +51,7 @@ class _ActorsListState extends State<ActorsList>
 
   @override
   Widget build(BuildContext context) {
+    // print(project.languages);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -60,6 +61,11 @@ class _ActorsListState extends State<ActorsList>
     }
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: Color(0xff6fd8a8),
         title: Text(
           'Casting',
@@ -143,12 +149,12 @@ class _ActorsListState extends State<ActorsList>
                   SizedBox(
                     height: 4,
                   ),
-                  Text('${artists[i].names['English']}',
+                  Text('${artists[i].names['en']}',
                       maxLines: 2,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis),
                   Text(
-                    '${artists[i].characters['English']}',
+                    '${artists[i].characters['en']}',
                     maxLines: 1,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,

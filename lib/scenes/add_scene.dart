@@ -42,7 +42,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   Location selectedLocation, oldLocation;
   List<TextEditingController> titleControllers = [], gistControllers = [];
   List<dynamic> languages,
-      langsInLang = ['English', 'తెలుగు', 'हिंदी', 'தமிழ்'],
+      langsInLang = Utils.langsInLang,
       specialEquipments = [],
       artistsImages = [],
       propsImages = [],
@@ -265,10 +265,15 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     } else {
       background1 = Colors.white;
     }
-
+    // Navigator.pop(context);
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Utils.linearGradient,
+          ),
+        ),
         backgroundColor: color,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
@@ -283,9 +288,9 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     borderRadius: BorderRadius.circular(32),
                   ),
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   child: InkWell(
                     onTap: () {
                       setState(() {
@@ -307,7 +312,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   fontSize: 14,
                                   fontFamily: 'Poppins')),
                           TextSpan(
-                              text: '\n${languages[i]}',
+                              text:
+                                  '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                               style: TextStyle(
                                   fontSize: 10,
                                   fontFamily: 'Poppins',
@@ -439,7 +445,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 child: InkWell(
                   onTap: () async {
                     Utils.showLoadingDialog(context, 'Loading');
-                    Location selected = await Navigator.push(
+                    var selected = await Navigator.push(
                             context,
                             Utils.createRoute(
                                 SelectLocation(
@@ -1066,11 +1072,17 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   addScene() async {
     Utils.showLoadingDialog(context, 'Adding Scene');
 
+    if (selectedLocation == null) {
+      Navigator.pop(context);
+      Utils.showErrorDialog(context, "Location", "Select a Location");
+      return;
+    }
+
     if (!selectedLocation.usedIn.contains(scene['id'])) {
       selectedLocation.usedIn.add(scene['id']);
     }
 
-    Map<String, dynamic> body = {
+    Map<dynamic, dynamic> body = {
       "scene": scene,
       "artists": [],
       "costumes": [],
@@ -1078,8 +1090,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       "locations": [selectedLocation.toJson()]
     };
 
-    Map<String, dynamic> costumesOfArtists = {};
-    Map<String, dynamic> artistsOfCostumes = {};
+    Map<dynamic, dynamic> costumesOfArtists = {};
+    Map<dynamic, dynamic> artistsOfCostumes = {};
 
     scene['costumes'].forEach((cl) {
       costumesOfArtists['${cl['id']}'] = cl['costumes'];
@@ -1194,7 +1206,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   editScene() async {
     Utils.showLoadingDialog(context, 'Editing Scene');
 
-    Map<String, dynamic> body = {
+    Map<dynamic, dynamic> body = {
       "scene": scene,
       "artists": [],
       "costumes": [],
@@ -1215,8 +1227,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     }
     body['locations'].add(l.toJson());
 
-    Map<String, dynamic> costumesOfArtists = {};
-    Map<String, dynamic> artistsOfCostumes = {};
+    Map<dynamic, dynamic> costumesOfArtists = {};
+    Map<dynamic, dynamic> artistsOfCostumes = {};
 
     scene['costumes'].forEach((cl) {
       costumesOfArtists['${cl['id']}'] = cl['costumes'];

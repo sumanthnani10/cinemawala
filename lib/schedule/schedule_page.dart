@@ -116,14 +116,14 @@ class _SchedulePageState extends State<SchedulePage>
                           selectedScene,
                           schedule,
                           d,
-                          "English",
+                          "en",
                           selectedArtist,
                         );
                         Navigator.pop(context);
                       },
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Text("${setIterator.names["English"]}"),
+                        child: Text("${setIterator.names["en"]}"),
                       ),
                     ),
                   );
@@ -776,7 +776,7 @@ class _SchedulePageState extends State<SchedulePage>
                                         selectedScene,
                                         schedule,
                                         d,
-                                        "English",
+                                        "en",
                                         selectedArtists,
                                         //{selectedArtists.elementAt(0)},
                                       );
@@ -861,7 +861,7 @@ class _SchedulePageState extends State<SchedulePage>
                                         selectedScene,
                                         schedule,
                                         d,
-                                        "English",
+                                        "en",
                                         selectedArtists,
                                       );
                                       Navigator.pop(context);
@@ -984,7 +984,7 @@ class _SchedulePageState extends State<SchedulePage>
                                           selectedScene,
                                           schedule,
                                           d,
-                                          "English",
+                                          "en",
                                           selectedArtists,
                                           //{selectedArtists.elementAt(0)},
                                         );
@@ -1132,7 +1132,7 @@ class _SchedulePageState extends State<SchedulePage>
                     ElevatedButton(
                       onPressed: () async {
                         var now = DateTime.now();
-                        Map<String, dynamic> schedule = {
+                        Map<dynamic, dynamic> schedule = {
                           "day": date.day,
                           "project_id": project.id,
                           "scenes": [],
