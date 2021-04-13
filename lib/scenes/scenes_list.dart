@@ -391,7 +391,7 @@ class _ScenesList extends State<ScenesList>
                                               project: project,
                                               selectedProps:
                                                   List<Prop>.generate(
-                                                      scene.artists.length,
+                                                      scene.props.length,
                                                       (p) => Utils.propsMap[
                                                           scene.props[p]])),
                                           Utils.DTU));

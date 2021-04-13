@@ -320,6 +320,9 @@ class Utils {
   static const Offset UTD = Offset(0, -1);
   static const Offset DTU = Offset(0, 1);
 
+  static const String ImagePlaceholderLink =
+      "https://firebasestorage.googleapis.com/v0/b/cinemawala-2021b.appspot.com/o/logo%201920.png?alt=media&token=16e3d346-1ed9-4f52-96b2-d1c01a593449";
+
   static String generateId(String pref) {
     var chars =
         'zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210';
@@ -972,3 +975,4 @@ class Utils {
     stops: [0.0, 0.536, 1.0],
   );
 }
+

@@ -123,7 +123,7 @@ class _CostumesListState extends State<CostumesList>
                 count += c['costumes'].length;
               });
               return ListTile(
-                title: Text('${scene.titles['English']}'),
+                title: Text('${scene.titles['en']}'),
                 subtitle: Text(
                   '$count ${count == 1 ? "Costume" : "Costumes"}',
                 ),

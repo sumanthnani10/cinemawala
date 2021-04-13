@@ -1153,22 +1153,22 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           Utils.scenes = Utils.scenesMap.values.toList();
 
           body['artists'].forEach((a) {
-            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+            Utils.artistsMap[a['id']] = Actor.fromJson(a);
           });
           Utils.artists = Utils.artistsMap.values.toList();
 
           body['costumes'].forEach((c) {
-            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+            Utils.costumesMap[c['id']] = Costume.fromJson(c);
           });
           Utils.costumes = Utils.costumesMap.values.toList();
 
           body['props'].forEach((c) {
-            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+            Utils.propsMap[c['id']] = Prop.fromJson(c);
           });
           Utils.props = Utils.propsMap.values.toList();
 
           body['locations'].forEach((c) {
-            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+            Utils.locationsMap[c['id']] = Location.fromJson(c);
           });
           Utils.locations = Utils.locationsMap.values.toList();
 
@@ -1311,22 +1311,22 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           Utils.scenes = Utils.scenesMap.values.toList();
 
           body['artists'].forEach((a) {
-            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+            Utils.artistsMap[a['id']] = Actor.fromJson(a);
           });
           Utils.artists = Utils.artistsMap.values.toList();
 
           body['costumes'].forEach((c) {
-            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+            Utils.costumesMap[c['id']] = Costume.fromJson(c);
           });
           Utils.costumes = Utils.costumesMap.values.toList();
 
           body['props'].forEach((c) {
-            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+            Utils.propsMap[c['id']] = Prop.fromJson(c);
           });
           Utils.props = Utils.propsMap.values.toList();
 
           body['locations'].forEach((c) {
-            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+            Utils.locationsMap[c['id']] = Location.fromJson(c);
           });
           Utils.locations = Utils.locationsMap.values.toList();
 

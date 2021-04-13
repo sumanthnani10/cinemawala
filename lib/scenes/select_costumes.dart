@@ -193,9 +193,9 @@ class _SelectCostumes extends State<SelectCostumes>
                                     context,
                                     Utils.createRoute(
                                         SelectCostume(
-                                          actor: '${actor.names['English']}',
+                                          actor: '${actor.names['en']}',
                                           character:
-                                              '${actor.characters['English']}',
+                                              '${actor.characters['en']}',
                                           project: project,
                                           selectedCostumes: selectedCostumes,
                                           sceneTitle: '',
@@ -219,9 +219,9 @@ class _SelectCostumes extends State<SelectCostumes>
                                         Utils.DTU));
                               },
                               title: Text(
-                                "${actor.names['English']}",
+                                "${actor.names['en']}",
                               ),
-                              subtitle: Text("${actor.characters['English']}",
+                              subtitle: Text("${actor.characters['en']}",
                                   style: characterStyle),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -434,9 +434,9 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                         Utils.DTU));
                               },
                               title: Text(
-                                "${actor.names['English']}",
+                                "${actor.names['en']}",
                               ),
-                              subtitle: Text("${actor.characters['English']}",
+                              subtitle: Text("${actor.characters['en']}",
                                   style: characterStyle),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,

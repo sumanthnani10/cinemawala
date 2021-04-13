@@ -306,7 +306,7 @@ class _SchedulePageState extends State<SchedulePage>
                                                               color: background,
                                                               width: 3))),
                                           child: Text(
-                                            '${selectedScenes[i].titles['English']}',
+                                            '${selectedScenes[i].titles['en']}',
                                             style: selectedSceneIndex == i
                                                 ? TextStyle(
                                                     fontWeight: FontWeight.bold,
@@ -533,8 +533,7 @@ class _SchedulePageState extends State<SchedulePage>
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                  "${artist.names['English']}"),
+                                              Text("${artist.names['en']}"),
                                               Row(
                                                 children: [
                                                   Text(
@@ -1073,14 +1072,14 @@ class _SchedulePageState extends State<SchedulePage>
                                                           background,
                                                           width: 3))),
                                               child: Text(
-                                                '${selectedScenes[i].titles['English']}',
+                                                '${selectedScenes[i].titles['en']}',
                                                 style: selectedSceneIndex == i
                                                     ? TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: background1)
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: background1)
                                                     : TextStyle(
-                                                    color: background1),
+                                                        color: background1),
                                               )),
                                         ),
                                       ),

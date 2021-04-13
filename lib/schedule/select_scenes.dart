@@ -214,7 +214,7 @@ class _SelectScenes extends State<SelectScenes>
                                           : color.withOpacity(8 / 16),
                                       borderRadius: BorderRadius.circular(300),
                                     ),
-                                    child: Text('${scene.titles['English']}'),
+                                    child: Text('${scene.titles['en']}'),
                                   ),
                                 );
                               }),
@@ -376,7 +376,7 @@ class _SelectedScenes extends State<SelectedScenes>
                                   color: color,
                                   borderRadius: BorderRadius.circular(300),
                                 ),
-                                child: Text('${scene.titles['English']}'),
+                                child: Text('${scene.titles['en']}'),
                               ),
                             );
                           }),

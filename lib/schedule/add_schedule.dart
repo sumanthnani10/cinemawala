@@ -422,7 +422,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          '${selectedScenes[i].titles['English']}',
+                                          '${selectedScenes[i].titles['en']}',
                                           style: selectedSceneIndex == i
                                               ? TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -1003,7 +1003,7 @@ class _AddScheduleState extends State<AddSchedule> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${artist.names['English']}"),
+                                Text("${artist.names['en']}"),
                                 Row(
                                   children: [
                                     InkWell(

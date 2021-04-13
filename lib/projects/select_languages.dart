@@ -337,8 +337,8 @@ class _SelectedActors extends State<SelectedActors>
                                   color: color,
                                   borderRadius: BorderRadius.circular(300),
                                 ),
-                                child: Text(
-                                    '${selectedLanguages[i].names['English']}'),
+                                child:
+                                    Text('${selectedLanguages[i].names['en']}'),
                               ),
                             );
                           }),

@@ -295,16 +295,17 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
           actions: [
             TextButton.icon(
               onPressed: () async {
-                await Navigator.push(
-                    context,
-                    Utils.createRoute(
-                        AddScene(project: project, scene: scene.toJson()),
-                        Utils.RTL));
-                // print(Utils.scenesMap[scene.id].gists);
-                      scene = Utils.scenesMap[scene.id];
-                await setScene();
-                setState(() {});
-              },
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              AddScene(project: project, scene: scene.toJson()),
+                              Utils.RTL));
+                      Navigator.pop(context);
+                      // print(Utils.scenesMap[scene.id].gists);
+                      // scene = Utils.scenesMap[scene.id];
+                      // await setScene();
+                      // setState(() {});
+                    },
               label: Text(
                 "Edit",
                 style: TextStyle(color: Colors.indigo),

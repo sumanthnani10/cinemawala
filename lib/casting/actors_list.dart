@@ -51,7 +51,8 @@ class _ActorsListState extends State<ActorsList>
 
   @override
   Widget build(BuildContext context) {
-    // print(project.languages);
+    print(Utils.artistsMap);
+    print(Utils.artists);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {

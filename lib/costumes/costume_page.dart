@@ -217,7 +217,7 @@ class _CostumesPageState extends State<CostumesPage> {
                                                   BorderRadius.circular(300),
                                             ),
                                             child: Text(
-                                                '${Utils.artistsMap[artists.elementAt(i)].names['English']}'),
+                                                '${Utils.artistsMap[artists.elementAt(i)].names['en']}'),
                                           ),
                                         );
                                       },
@@ -272,7 +272,7 @@ class _CostumesPageState extends State<CostumesPage> {
                                                   BorderRadius.circular(300),
                                             ),
                                             child: Text(
-                                                '${Utils.scenesMap[costume.scenes[i]].titles['English']}'),
+                                                '${Utils.scenesMap[costume.scenes[i]].titles['en']}'),
                                           ),
                                         );
                                       },

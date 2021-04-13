@@ -240,7 +240,7 @@ class _LocationPageState extends State<LocationPage> {
                                                           300),
                                                 ),
                                                 child: Text(
-                                                    '${Utils.scenesMap[location.usedIn[i]].titles['English']}'),
+                                                    '${Utils.scenesMap[location.usedIn[i]].titles['en']}'),
                                               ),
                                             );
                                           },

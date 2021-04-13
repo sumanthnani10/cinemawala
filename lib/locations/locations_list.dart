@@ -118,7 +118,7 @@ class _LocationsList extends State<LocationsList>
               Scene scene = scenes[i];
               Location location = Utils.locationsMap[scene.location];
               return ListTile(
-                title: Text('${scene.titles['English']}'),
+                title: Text('${scene.titles['en']}'),
                 subtitle:
                     Text('${location.location} @ ${location.shootLocation}'),
                 onTap: () {
