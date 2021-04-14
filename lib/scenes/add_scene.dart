@@ -1249,8 +1249,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     oldArtists.forEach((a) {
       if (!scene['artists'].contains(a.id)) {
         a = Actor.fromJson(a.toJson());
-        if (!a.scenes.contains(scene['id'])) {
-          a.scenes.add(scene['id']);
+        if (a.scenes.contains(scene['id'])) {
+          a.scenes.remove(scene['id']);
         }
         a.costumes.remove('${scene['id']}');
         body['artists'].add(a.toJson());
@@ -1286,6 +1286,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         c.usedBy.remove('${scene['id']}');
         c.changed = c.scenes.length;
         body['costumes'].add(c.toJson());
+      }
+    });
+
+    oldProps.forEach((p) {
+      if (!scene['props'].contains(p.id)) {
+        p = Prop.fromJson(p.toJson());
+        if (p.usedIn.contains(scene['id'])) {
+          p.usedIn.remove(scene['id']);
+        }
+        body['props'].add(p.toJson());
       }
     });
 
