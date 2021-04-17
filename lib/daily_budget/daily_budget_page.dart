@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cinemawala/daily_budget/add_daily_budget.dart';
 import 'package:cinemawala/daily_budget/daily_budget.dart';
+import 'package:cinemawala/pdf_generator.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class DailyBudgetPage extends StatefulWidget {
   final Map budget;
   final String id;
   final VoidCallback nextDate, prevDate, getDailyBudgets;
-
+  final bool isPopUp;
   DailyBudgetPage({Key key,
     @required this.project,
     @required this.budget,
@@ -26,7 +27,9 @@ class DailyBudgetPage extends StatefulWidget {
     @required this.id,
     @required this.getDailyBudgets,
     @required this.nextDate,
-    @required this.prevDate})
+    @required this.prevDate,
+    this.isPopUp,
+  })
       : super(key: key);
 
   @override
@@ -38,7 +41,9 @@ class DailyBudgetPage extends StatefulWidget {
       this.id,
       this.getDailyBudgets,
       this.nextDate,
-      this.prevDate);
+      this.prevDate,
+      this.isPopUp
+  );
 }
 
 class _DailyBudgetPage extends State<DailyBudgetPage>
@@ -47,11 +52,12 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   DailyBudget dailyBudget;
   DateTime date;
   Map budget;
+  bool isPopUp;
   String id;
   VoidCallback nextDate, prevDate, getDailyBudgets;
 
   _DailyBudgetPage(this.project, this.budget, this.dailyBudget, this.date,
-      this.id, this.getDailyBudgets, this.nextDate, this.prevDate);
+      this.id, this.getDailyBudgets, this.nextDate, this.prevDate,this.isPopUp);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Color background, background1, color;
@@ -74,6 +80,8 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
+    print(isPopUp);
     super.initState();
   }
 
@@ -114,22 +122,11 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
     } else {
       background1 = Colors.white;
     }
-    return DraggableScrollableSheet(
+    return isPopUp ? DraggableScrollableSheet(
       initialChildSize: 300 / MediaQuery.of(context).size.height,
       minChildSize: 300 / MediaQuery.of(context).size.height,
       maxChildSize: 1,
       builder: (context, scrollController) {
-        /*scrollController.addListener(() {
-          if (scrollController.offset >=
-              scrollController.position.maxScrollExtent &&
-              !scrollController.position.outOfRange) {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              viewCats += 3;
-              setState(() {});
-            });
-          }
-        });*/
-
         return Container(
           decoration: BoxDecoration(
               color: Colors.white,
@@ -146,11 +143,11 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
               ? NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (OverscrollIndicatorNotification overscroll) {
               overscroll.disallowGlow();
-                    Timer(Duration(milliseconds: 500), () {
-                      viewCats += 3;
-                      // print(viewCats);
-                      setState(() {});
-                    });
+              Timer(Duration(milliseconds: 500), () {
+                viewCats += 3;
+                // print(viewCats);
+                setState(() {});
+              });
                     return;
                   },
                   child: Stack(
@@ -196,6 +193,14 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                         Text(
                                           "Budget",
                                           style: categoryHeading,
+                                        ),
+                                        InkWell(
+                                          onTap:(){
+                                            PdfGenerator.dailyReportCallSheet(
+                                              dailyBudget,
+                                            );
+                                          },
+                                          child: Text("generate"),
                                         ),
                                         TextButton.icon(
                                           onPressed: () async {
@@ -632,7 +637,525 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
           ),
         );
       },
-    );
+    ) :
+    Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xff6fd8a8),
+                  offset: Offset(0, -0.5),
+                  blurRadius: 4,
+                ),
+              ]),
+          child: dailyBudget != null
+              ? NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (OverscrollIndicatorNotification overscroll) {
+              overscroll.disallowGlow();
+              return;
+            },
+            child: Stack(
+              children: [
+                Scrollbar(
+                  thickness: 2,
+                  child: SingleChildScrollView(
+                    //controller: scrollController,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                icon: Icon(CupertinoIcons.back),
+                                onPressed: () {},
+                              ),
+                              Text(
+                                "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              IconButton(
+                                icon: Icon(CupertinoIcons.forward),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Budget",
+                                style: categoryHeading,
+                              ),
+                              TextButton.icon(
+                                onPressed: () async {
+                                  if(isPopUp){
+                                    await Navigator.push(
+                                        context,
+                                        Utils.createRoute(
+                                            AddDailyBudget(
+                                              project: project,
+                                              dailyBudget:
+                                              dailyBudget.toJson(),
+                                              edit: true,
+                                            ),
+                                            Utils.RTL));
+                                  }
+                                  else{
+                                    await Navigator.push(
+                                        context,
+                                        Utils.createRoute(
+                                            AddDailyBudget(
+                                              project: project,
+                                              isPopUp: false,
+                                              dailyBudget:
+                                              dailyBudget.toJson(),
+                                              edit: true,
+                                            ),
+                                            Utils.RTL));
+                                  }
+                                  getDailyBudgets();
+                                },
+                                label: Text("Edit"),
+                                icon: Icon(Icons.edit, size: 14),
+                              )
+                            ],
+                          ),
+                        )
+                      ] +
+                          List<Widget>.generate(
+                              min<int>(viewCats, budget.length), (i) {
+                            Timer(Duration(milliseconds: 500), () {
+                              if(viewCats<budget.length){
+                                viewCats += 6;
+                                setState(() {});
+                              }
+                            });
+                            subCategories =
+                                budget[categories[i]].keys.toList();
+                            return Column(
+                              children: [
+                                Divider(
+                                  thickness: 1,
+                                  color: background1,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          "${reFormatKey(categories[i])}",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: categoryHeading,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Column(
+                                      children: List<Widget>.generate(
+                                          subCategories.length, (j) {
+                                        var subcategory =
+                                        budget[categories[i]]
+                                        [subCategories[j]];
+
+                                        contactControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                "${subcategory["contact"] != "" ? subcategory["contact"] : "-"}"));
+                                        quantityControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                "${subcategory["quantity"] != "" ? subcategory["quantity"] : "-"}"));
+                                        rateControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                "${subcategory["rate"] != "" ? subcategory["rate"] : "-"}"));
+                                        callSheetControllers.add(
+                                            new TextEditingController(
+                                                text:
+                                                "${subcategory["callSheet"] != "" ? subcategory["callSheet"] : "-"}"));
+
+                                        return Column(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      top: BorderSide(
+                                                          color: j != 0
+                                                              ? background1
+                                                              : background,
+                                                          width: 1))),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Transform.scale(
+                                                        scale: 1.1,
+                                                        child: Checkbox(
+                                                            value: budget[categories[
+                                                            i]][budget[
+                                                            categories[
+                                                            i]]
+                                                                .keys
+                                                                .elementAt(
+                                                                j)]["use"],
+                                                            activeColor: color,
+                                                            onChanged: (value) {}),
+                                                      ),
+                                                      Flexible(
+                                                        child: Text(
+                                                          "${reFormatKey(subCategories[j])}",
+                                                          maxLines: 1,
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                          style: subheading,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(4),
+                                                          child: TextField(
+                                                            controller:
+                                                            contactControllers
+                                                                .last,
+                                                            keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                            decoration:
+                                                            InputDecoration(
+                                                              enabled: false,
+                                                              disabledBorder:
+                                                              OutlineInputBorder(
+                                                                  borderSide:
+                                                                  BorderSide(color: background)),
+                                                              labelText:
+                                                              'Contact#',
+                                                              labelStyle:
+                                                              TextStyle(
+                                                                  color:
+                                                                  background1,
+                                                                  fontSize:
+                                                                  14),
+                                                              contentPadding:
+                                                              EdgeInsets
+                                                                  .all(8),
+                                                              border:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Container(
+                                                          width: MediaQuery.of(
+                                                              context)
+                                                              .size
+                                                              .width /
+                                                              4,
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(4),
+                                                          child: TextField(
+                                                            onChanged:
+                                                                (value) {},
+                                                            controller:
+                                                            callSheetControllers
+                                                                .last,
+                                                            keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                            decoration:
+                                                            InputDecoration(
+                                                              enabled: false,
+                                                              disabledBorder:
+                                                              OutlineInputBorder(
+                                                                  borderSide:
+                                                                  BorderSide(color: background)),
+                                                              labelText:
+                                                              'Call Sheet',
+                                                              labelStyle:
+                                                              TextStyle(
+                                                                  color:
+                                                                  background1,
+                                                                  fontSize:
+                                                                  14),
+                                                              contentPadding:
+                                                              EdgeInsets
+                                                                  .all(8),
+                                                              border:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Text(
+                                                            "Subtotal: ${budget[categories[i]][budget[categories[i]].keys.elementAt(j)]["subtotal"]}",
+                                                            style: subheading,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                              4,
+                                                              vertical:
+                                                              8),
+                                                          child: TextField(
+                                                            controller:
+                                                            quantityControllers
+                                                                .last,
+                                                            keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                            decoration:
+                                                            InputDecoration(
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide:
+                                                                  BorderSide(
+                                                                      color:
+                                                                      background)),
+                                                              labelText:
+                                                              'Quantity',
+                                                              labelStyle:
+                                                              TextStyle(
+                                                                  color:
+                                                                  background1,
+                                                                  fontSize:
+                                                                  14),
+                                                              contentPadding:
+                                                              EdgeInsets
+                                                                  .all(8),
+                                                              border:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                              4,
+                                                              vertical:
+                                                              8),
+                                                          child: TextField(
+                                                            controller:
+                                                            rateControllers
+                                                                .last,
+                                                            keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                            decoration:
+                                                            InputDecoration(
+                                                              enabled: false,
+                                                              disabledBorder:
+                                                              OutlineInputBorder(
+                                                                  borderSide:
+                                                                  BorderSide(color: background)),
+                                                              labelText:
+                                                              'Rate',
+                                                              labelStyle:
+                                                              TextStyle(
+                                                                  color:
+                                                                  background1,
+                                                                  fontSize:
+                                                                  14),
+                                                              contentPadding:
+                                                              EdgeInsets
+                                                                  .all(8),
+                                                              border:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    8),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      })),
+                                ),
+                              ],
+                            );
+                          }) +
+                          <Widget>[
+                            Text(
+                              viewCats < budget.length ? "Loading.." : "",
+                              style: TextStyle(color: color),
+                            )
+                          ],
+                    ),
+                  ),
+                ),
+                Container(
+                  color: background,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(CupertinoIcons.back),
+                              onPressed: prevDate,
+                            ),
+                            Text(
+                              "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            IconButton(
+                              icon: Icon(CupertinoIcons.forward),
+                              onPressed: nextDate,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+              : Column(
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(CupertinoIcons.back),
+                      onPressed: prevDate,
+                    ),
+                    Text(
+                      "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    IconButton(
+                      icon: Icon(CupertinoIcons.forward),
+                      onPressed: nextDate,
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 2,
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                "No Budget.",
+                style: TextStyle(fontSize: 20),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  var now = DateTime.now();
+                  Map<dynamic, dynamic> dailyBudget = {
+                    "day": date.day,
+                    "project_id": project.id,
+                    "month": date.month,
+                    "added_by": Utils.USER_ID,
+                    "budget": {},
+                    "id": id,
+                    "year": date.year,
+                    "last_edit_by": Utils.USER_ID,
+                    "last_edit_on": now.millisecondsSinceEpoch,
+                    "created": now.millisecondsSinceEpoch
+                  };
+                  await Navigator.push(
+                      context,
+                      Utils.createRoute(
+                          AddDailyBudget(
+                              project: project, dailyBudget: dailyBudget),
+                          Utils.DTU));
+                  getDailyBudgets();
+                },
+                child: Text("+ Add Budget"),
+                style: ElevatedButton.styleFrom(primary: color),
+              )
+            ],
+          ),
+        );
+
   }
 }
 /*Scaffold(

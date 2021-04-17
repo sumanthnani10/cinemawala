@@ -299,18 +299,19 @@ class _SelectCostumes extends State<SelectCostumes>
 class SelectedCostumes extends StatefulWidget {
   final Project project;
   final List<dynamic> costumes;
-
-  SelectedCostumes({Key key, @required this.project, @required this.costumes})
+  final bool isPopUp;
+  SelectedCostumes({Key key, @required this.project, @required this.costumes,this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedCostumes createState() =>
-      _SelectedCostumes(this.project, this.costumes);
+      _SelectedCostumes(this.project, this.costumes,this.isPopUp);
 }
 
 class _SelectedCostumes extends State<SelectedCostumes>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   List<dynamic> costumes;
   Color background, background1, color;
   TextEditingController searchController = new TextEditingController();
@@ -318,10 +319,11 @@ class _SelectedCostumes extends State<SelectedCostumes>
 
   TextStyle nameStyle, characterStyle;
 
-  _SelectedCostumes(this.project, this.costumes);
+  _SelectedCostumes(this.project, this.costumes,this.isPopUp);
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
   }
 
@@ -342,10 +344,12 @@ class _SelectedCostumes extends State<SelectedCostumes>
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        if(isPopUp) {
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -366,11 +370,11 @@ class _SelectedCostumes extends State<SelectedCostumes>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      IconButton(
+                      isPopUp ? IconButton(
                           icon: Icon(Icons.arrow_back_rounded),
                           onPressed: () {
                             Navigator.pop(context);
-                          }),
+                          }): Container(),
                       Text(
                         "Selected Costumes",
                         style: TextStyle(fontSize: 20, color: background1),

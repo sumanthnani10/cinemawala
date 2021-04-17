@@ -9,22 +9,28 @@ import 'prop.dart';
 class PropPage extends StatefulWidget {
   final Prop prop;
   final Project project;
-
-  const PropPage({Key key, @required this.project, this.prop})
+  final bool isPopUp;
+  const PropPage({Key key, @required this.project, this.prop,this.isPopUp})
       : super(key: key);
 
   @override
-  _PropPageState createState() => _PropPageState(project, prop);
+  _PropPageState createState() => _PropPageState(project, prop,isPopUp);
 }
 
 class _PropPageState extends State<PropPage> {
   Color background, background1, color;
-
+  bool isPopUp;
   Prop prop;
   final Project project;
 
-  _PropPageState(this.project, this.prop);
+  _PropPageState(this.project, this.prop,this.isPopUp);
 
+  @override
+  void initState() {
+    isPopUp = isPopUp ?? true;
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -40,7 +46,7 @@ class _PropPageState extends State<PropPage> {
         Navigator.pop(context);
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
         body: Center(
           child: GestureDetector(
             onTap: () {},

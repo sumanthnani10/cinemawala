@@ -14,23 +14,24 @@ import 'costume.dart';
 class AddCostume extends StatefulWidget {
   final Project project;
   final Map<dynamic, dynamic> costume;
-
-  AddCostume({Key key, @required this.project, this.costume}) : super(key: key);
+  final bool isPopUp;
+  AddCostume({Key key, @required this.project, this.costume,this.isPopUp}) : super(key: key);
 
   @override
-  _AddCostume createState() => _AddCostume(project, costume);
+  _AddCostume createState() => _AddCostume(project, costume,isPopUp);
 }
 
 class _AddCostume extends State<AddCostume>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   Color background, background1, color;
   var nameController, descriptionController;
   Map<dynamic, dynamic> costume;
   File costumeImage;
   bool loading = true, edit = false;
 
-  _AddCostume(this.project, this.costume);
+  _AddCostume(this.project, this.costume,this.isPopUp);
 
   @override
   void initState() {
@@ -62,7 +63,234 @@ class _AddCostume extends State<AddCostume>
 
     super.initState();
   }
-
+  Widget widget1(){
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        padding:
+        const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () async {
+                  var imagePath = await Utils.askSource(context);
+                  if (imagePath != null) {
+                    costumeImage = File(imagePath);
+                  }
+                  setState(() {});
+                },
+                child: AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: costumeImage == null
+                            ? costume['reference_image'] == ''
+                            ? ColoredBox(
+                          color: Colors.grey,
+                          child: Center(
+                            child: Text(
+                              'Add Image',
+                              style: TextStyle(
+                                  color: background,
+                                  fontSize: 16),
+                            ),
+                          ),
+                        )
+                            : CachedNetworkImage(
+                          progressIndicatorBuilder:
+                              (context, url, progress) =>
+                              LinearProgressIndicator(
+                                value: progress.progress,
+                              ),
+                          errorWidget:
+                              (context, url, error) => Center(
+                              child: Text(
+                                'Image',
+                                style: const TextStyle(
+                                    color: Colors.grey),
+                              )),
+                          useOldImageOnUrlChange: true,
+                          imageUrl:
+                          costume['reference_image'],
+                          fit: BoxFit.cover,
+                        )
+                            : Image(
+                          image: FileImage(costumeImage),
+                          fit: BoxFit.cover,
+                        ))),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  if (costume['reference_image'] != '' ||
+                      costumeImage != null)
+                    ElevatedButton.icon(
+                        style: Utils.elevatedButtonStyle,
+                        label: Text(
+                          'Remove',
+                          style: TextStyle(
+                              color: background1, fontSize: 20),
+                        ),
+                        icon: Icon(
+                          Icons.close,
+                          color: background1,
+                          size: 20,
+                        ),
+                        onPressed: () async {
+                          costume['reference_image'] = '';
+                          costumeImage = null;
+                          setState(() {});
+                        }),
+                  ElevatedButton.icon(
+                      style: Utils.elevatedButtonStyle,
+                      label: Text(
+                        'Edit',
+                        style:
+                        TextStyle(color: background1, fontSize: 20),
+                      ),
+                      icon: Icon(
+                        Icons.edit,
+                        color: background1,
+                        size: 20,
+                      ),
+                      onPressed: () async {
+                        String imagePath =
+                        await Utils.askSource(context);
+                        if (imagePath != null) {
+                          costumeImage = File(imagePath);
+                        }
+                        setState(() {});
+                      }),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  Widget widget2(){
+    return Align(
+      alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: isPopUp ? BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16)): BorderRadius.all(Radius.circular(16)),
+            boxShadow: [
+              isPopUp ?
+              BoxShadow(
+                color: const Color(0x26000000),
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ):BoxShadow(
+                color: Colors.white,
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ),
+            ]),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                  controller: nameController,
+                  onChanged: (v) {
+                    costume['title'] = v;
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Costume Title',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.done,
+                  textCapitalization: TextCapitalization.words,
+                  maxLines: null,
+                  onChanged: (v) {
+                    costume['description'] = v;
+                  },
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Costume Description',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  if (edit) {
+                    editCostume();
+                  } else {
+                    addCostume();
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  child: Center(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          color: background1,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -76,9 +304,9 @@ class _AddCostume extends State<AddCostume>
       backgroundColor: background,
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration:  BoxDecoration(
             gradient: Utils.linearGradient,
-          ),
+          )
         ),
         backgroundColor: color,
         iconTheme: IconThemeData(color: background1),
@@ -91,227 +319,19 @@ class _AddCostume extends State<AddCostume>
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Stack(
+        child: isPopUp ? Stack(
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          var imagePath = await Utils.askSource(context);
-                          if (imagePath != null) {
-                            costumeImage = File(imagePath);
-                          }
-                          setState(() {});
-                        },
-                        child: AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: costumeImage == null
-                                    ? costume['reference_image'] == ''
-                                        ? ColoredBox(
-                                            color: Colors.grey,
-                                            child: Center(
-                                              child: Text(
-                                                'Add Image',
-                                                style: TextStyle(
-                                                    color: background,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
-                                          )
-                                        : CachedNetworkImage(
-                                            progressIndicatorBuilder:
-                                                (context, url, progress) =>
-                                                    LinearProgressIndicator(
-                                              value: progress.progress,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) => Center(
-                                                    child: Text(
-                                              'Image',
-                                              style: const TextStyle(
-                                                  color: Colors.grey),
-                                            )),
-                                            useOldImageOnUrlChange: true,
-                                            imageUrl:
-                                                costume['reference_image'],
-                                            fit: BoxFit.cover,
-                                          )
-                                    : Image(
-                                        image: FileImage(costumeImage),
-                                        fit: BoxFit.cover,
-                                      ))),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          if (costume['reference_image'] != '' ||
-                              costumeImage != null)
-                            ElevatedButton.icon(
-                                style: Utils.elevatedButtonStyle,
-                                label: Text(
-                                  'Remove',
-                                  style: TextStyle(
-                                      color: background1, fontSize: 20),
-                                ),
-                                icon: Icon(
-                                  Icons.close,
-                                  color: background1,
-                                  size: 20,
-                                ),
-                                onPressed: () async {
-                                  costume['reference_image'] = '';
-                                  costumeImage = null;
-                                  setState(() {});
-                                }),
-                          ElevatedButton.icon(
-                              style: Utils.elevatedButtonStyle,
-                              label: Text(
-                                'Edit',
-                                style:
-                                    TextStyle(color: background1, fontSize: 20),
-                              ),
-                              icon: Icon(
-                                Icons.edit,
-                                color: background1,
-                                size: 20,
-                              ),
-                              onPressed: () async {
-                                String imagePath =
-                                    await Utils.askSource(context);
-                                if (imagePath != null) {
-                                  costumeImage = File(imagePath);
-                                }
-                                setState(() {});
-                              }),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x26000000),
-                        offset: Offset(0, -1),
-                        blurRadius: 10,
-                      ),
-                    ]),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          controller: nameController,
-                          onChanged: (v) {
-                            costume['title'] = v;
-                          },
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Costume Title',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.words,
-                          maxLines: null,
-                          onChanged: (v) {
-                            costume['description'] = v;
-                          },
-                          controller: descriptionController,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Costume Description',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (edit) {
-                            editCostume();
-                          } else {
-                            addCostume();
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              'Save',
-                              style: TextStyle(
-                                  color: background1,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
+            widget1(),
+            widget2()
+          ],
+        ):Row(
+          children: [
+            Flexible(
+                flex: 6,
+                child: widget1()),
+            Flexible(
+                flex: 4,
+                child: widget2())
           ],
         ),
       ),

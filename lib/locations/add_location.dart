@@ -14,29 +14,31 @@ import 'location.dart';
 class AddLocation extends StatefulWidget {
   final Project project;
   final Map<dynamic, dynamic> location;
-
-  AddLocation({Key key, @required this.project, this.location})
+  final bool isPopUp;
+  AddLocation({Key key, @required this.project, this.location,this.isPopUp})
       : super(key: key);
 
   @override
   _AddLocation createState() {
-    return _AddLocation(project, location);
+    return _AddLocation(project, location,isPopUp);
   }
 }
 
 class _AddLocation extends State<AddLocation>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   Color background, background1, color;
   var locationController, shootLocationController, descriptionController;
   Map<dynamic, dynamic> location;
   List<File> locationImages = [];
   bool loading = true, edit = false;
 
-  _AddLocation(this.project, this.location);
+  _AddLocation(this.project, this.location,this.isPopUp);
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     locationImages = [null, null, null, null];
     if (location == null) {
       location = {
@@ -69,7 +71,272 @@ class _AddLocation extends State<AddLocation>
 
     super.initState();
   }
-
+  Widget widget1(){
+    return Align(
+      alignment: isPopUp ? Alignment.topCenter : Alignment.center,
+      child: Padding(
+        padding:
+        const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        child: Wrap(
+          direction: isPopUp ? Axis.horizontal : Axis.vertical,
+          children: List<Widget>.generate(4, (i) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      String image_path =
+                      await Utils.askSource(context);
+                      if (image_path != null) {
+                        locationImages[i] = File(image_path);
+                      }
+                      setState(() {});
+                    },
+                    child: SizedBox(
+                      width: 100,
+                      height: 75,
+                      child: AspectRatio(
+                          aspectRatio: 4 / 3,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: locationImages[i] == null
+                                  ? location['images'][i] == ''
+                                  ? ColoredBox(
+                                color: Colors.grey,
+                                child: Center(
+                                  child: Text(
+                                    'Add Image',
+                                    style: TextStyle(
+                                        color: background,
+                                        fontSize: 12),
+                                  ),
+                                ),
+                              )
+                                  : CachedNetworkImage(
+                                progressIndicatorBuilder:
+                                    (context, url,
+                                    progress) =>
+                                    LinearProgressIndicator(
+                                      value: progress.progress,
+                                    ),
+                                errorWidget:
+                                    (context, url, error) =>
+                                    Center(
+                                        child: Text(
+                                          'Image',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        )),
+                                useOldImageOnUrlChange: true,
+                                imageUrl: location['images']
+                                [i],
+                                fit: BoxFit.cover,
+                              )
+                                  : Image(
+                                image:
+                                FileImage(locationImages[i]),
+                                fit: BoxFit.cover,
+                              ))),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      if (location['images'][i] != '' ||
+                          locationImages[i] != null)
+                        CircleAvatar(
+                          backgroundColor: color,
+                          maxRadius: 14,
+                          child: IconButton(
+                            onPressed: () async {
+                              location['images'][i] = '';
+                              locationImages[i] = null;
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              size: 14,
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      CircleAvatar(
+                        backgroundColor: color,
+                        maxRadius: 14,
+                        child: IconButton(
+                          onPressed: () async {
+                            String image_path =
+                            await Utils.askSource(context);
+                            if (image_path != null) {
+                              locationImages[i] = File(image_path);
+                            }
+                            setState(() {});
+                          },
+                          icon: Icon(
+                            Icons.edit,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+  Widget widget2(){
+    return Align(
+      alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: isPopUp ? BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16)): BorderRadius.all(Radius.circular(16)),
+            boxShadow: [
+              isPopUp ?
+              BoxShadow(
+                color: const Color(0x26000000),
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ):BoxShadow(
+                color: Colors.white,
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ),
+            ]),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                  controller: locationController,
+                  onChanged: (v) {
+                    location['location'] = v;
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Location',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                  controller: shootLocationController,
+                  onChanged: (v) {
+                    location['shoot_location'] = v;
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: 'Shoot Location',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.done,
+                  textCapitalization: TextCapitalization.words,
+                  maxLines: null,
+                  onChanged: (v) {
+                    location['description'] = v;
+                  },
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Description',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  if (edit) {
+                    editLocation();
+                  } else {
+                    addLocation();
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  child: Center(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          color: background1,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     // // debugPrint("${location}");
@@ -100,263 +367,20 @@ class _AddLocation extends State<AddLocation>
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Stack(
+        child: isPopUp ? Stack(
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-                child: Wrap(
-                  children: List<Widget>.generate(4, (i) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              String image_path =
-                                  await Utils.askSource(context);
-                              if (image_path != null) {
-                                locationImages[i] = File(image_path);
-                              }
-                              setState(() {});
-                            },
-                            child: SizedBox(
-                              width: 100,
-                              height: 75,
-                              child: AspectRatio(
-                                  aspectRatio: 4 / 3,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: locationImages[i] == null
-                                          ? location['images'][i] == ''
-                                              ? ColoredBox(
-                                                  color: Colors.grey,
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Add Image',
-                                                      style: TextStyle(
-                                                          color: background,
-                                                          fontSize: 12),
-                                                    ),
-                                                  ),
-                                                )
-                                              : CachedNetworkImage(
-                                                  progressIndicatorBuilder:
-                                                      (context, url,
-                                                              progress) =>
-                                                          LinearProgressIndicator(
-                                                    value: progress.progress,
-                                                  ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Center(
-                                                              child: Text(
-                                                    'Image',
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                  )),
-                                                  useOldImageOnUrlChange: true,
-                                                  imageUrl: location['images']
-                                                      [i],
-                                                  fit: BoxFit.cover,
-                                                )
-                                          : Image(
-                                              image:
-                                                  FileImage(locationImages[i]),
-                                              fit: BoxFit.cover,
-                                            ))),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              if (location['images'][i] != '' ||
-                                  locationImages[i] != null)
-                                CircleAvatar(
-                                  backgroundColor: color,
-                                  maxRadius: 14,
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      location['images'][i] = '';
-                                      locationImages[i] = null;
-                                      setState(() {});
-                                    },
-                                    icon: Icon(
-                                      Icons.close,
-                                      size: 14,
-                                    ),
-                                  ),
-                                ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              CircleAvatar(
-                                backgroundColor: color,
-                                maxRadius: 14,
-                                child: IconButton(
-                                  onPressed: () async {
-                                    String image_path =
-                                        await Utils.askSource(context);
-                                    if (image_path != null) {
-                                      locationImages[i] = File(image_path);
-                                    }
-                                    setState(() {});
-                                  },
-                                  icon: Icon(
-                                    Icons.edit,
-                                    size: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-              ),
+            widget1(),
+            widget2()
+          ],
+        ) : Row(
+          children: [
+            Flexible(
+              flex: 6,
+              child: widget1(),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x26000000),
-                        offset: Offset(0, -1),
-                        blurRadius: 10,
-                      ),
-                    ]),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          controller: locationController,
-                          onChanged: (v) {
-                            location['location'] = v;
-                          },
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Location',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          controller: shootLocationController,
-                          onChanged: (v) {
-                            location['shoot_location'] = v;
-                          },
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)),
-                            labelText: 'Shoot Location',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.words,
-                          maxLines: null,
-                          onChanged: (v) {
-                            location['description'] = v;
-                          },
-                          controller: descriptionController,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Description',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (edit) {
-                            editLocation();
-                          } else {
-                            addLocation();
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              'Save',
-                              style: TextStyle(
-                                  color: background1,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            Flexible(
+              flex: 4,
+              child: widget2(),
             )
           ],
         ),

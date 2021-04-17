@@ -14,26 +14,254 @@ import 'prop.dart';
 class AddProp extends StatefulWidget {
   final Map<dynamic, dynamic> prop;
   final Project project;
-
-  const AddProp({Key key, @required this.project, this.prop}) : super(key: key);
+  final bool isPopUp;
+  const AddProp({Key key, @required this.project, this.prop,this.isPopUp}) : super(key: key);
 
   @override
-  _AddProp createState() => _AddProp(this.project, this.prop);
+  _AddProp createState() => _AddProp(this.project, this.prop,this.isPopUp);
 }
 
 class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
   Color background, background1, color;
   var nameController, descriptionController;
+  bool isPopUp;
   Map<dynamic, dynamic> prop;
   final Project project;
   File propImage;
   bool loading = true, edit = false;
 
-  _AddProp(this.project, this.prop);
-
+  _AddProp(this.project, this.prop,this.isPopUp);
+  Widget widget1(){
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        padding:
+        const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () async {
+                  String imagePath = await Utils.askSource(context);
+                  if (imagePath != null) {
+                    propImage = File(imagePath);
+                  }
+                  setState(() {});
+                },
+                child: AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: propImage == null
+                            ? prop['reference_image'] == ''
+                            ? ColoredBox(
+                          color: Colors.grey,
+                          child: Center(
+                            child: Text(
+                              'Add Image',
+                              style: TextStyle(
+                                  color: background,
+                                  fontSize: 16),
+                            ),
+                          ),
+                        )
+                            : CachedNetworkImage(
+                          progressIndicatorBuilder:
+                              (context, url, progress) =>
+                              LinearProgressIndicator(
+                                value: progress.progress,
+                              ),
+                          errorWidget:
+                              (context, url, error) => Center(
+                              child: Text(
+                                'Image',
+                                style: const TextStyle(
+                                    color: Colors.grey),
+                              )),
+                          useOldImageOnUrlChange: true,
+                          imageUrl: prop['reference_image'],
+                          fit: BoxFit.cover,
+                        )
+                            : Image(
+                          image: FileImage(propImage),
+                          fit: BoxFit.cover,
+                        ))),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  if (prop['reference_image'] != '' ||
+                      propImage != null)
+                    ElevatedButton.icon(
+                        style: Utils.elevatedButtonStyle,
+                        label: Text(
+                          'Remove',
+                          style: TextStyle(
+                              color: background1, fontSize: 20),
+                        ),
+                        icon: Icon(
+                          Icons.close,
+                          color: background1,
+                          size: 20,
+                        ),
+                        onPressed: () async {
+                          prop['reference_image'] = '';
+                          propImage = null;
+                          setState(() {});
+                        }),
+                  ElevatedButton.icon(
+                      style: Utils.elevatedButtonStyle,
+                      label: Text(
+                        'Edit',
+                        style:
+                        TextStyle(color: background1, fontSize: 20),
+                      ),
+                      icon: Icon(
+                        Icons.edit,
+                        color: background1,
+                        size: 20,
+                      ),
+                      onPressed: () async {
+                        String imagePath =
+                        await Utils.askSource(context);
+                        if (imagePath != null) {
+                          propImage = File(imagePath);
+                        }
+                        setState(() {});
+                      }),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  Widget widget2(){
+    return Align(
+      alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius:isPopUp ? BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16)): BorderRadius.all(Radius.circular(16)),
+            boxShadow: [
+              isPopUp ?
+              BoxShadow(
+                color: const Color(0x26000000),
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ):BoxShadow(
+                color: Colors.white,
+                offset: Offset(0, -1),
+                blurRadius: 10,
+              ),
+            ]),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                  controller: nameController,
+                  onChanged: (v) {
+                    prop['title'] = v;
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Property Name',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: TextField(
+                  textInputAction: TextInputAction.done,
+                  textCapitalization: TextCapitalization.words,
+                  maxLines: null,
+                  onChanged: (v) {
+                    prop['description'] = v;
+                  },
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)
+                      //borderSide: const BorderSide(color: Colors.white)
+                    ),
+                    labelText: 'Property Description',
+                    labelStyle:
+                    TextStyle(color: background1, fontSize: 14),
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  if (edit) {
+                    editProp();
+                  } else {
+                    addProp();
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  child: Center(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          color: background1,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   @override
   void initState() {
     propImage = null;
+    isPopUp = isPopUp ?? true;
     if (prop == null) {
       prop = {
         "added_by": '${Utils.USER_ID}',
@@ -87,225 +315,20 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Stack(
+        child: isPopUp ? Stack(
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          String imagePath = await Utils.askSource(context);
-                          if (imagePath != null) {
-                            propImage = File(imagePath);
-                          }
-                          setState(() {});
-                        },
-                        child: AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: propImage == null
-                                    ? prop['reference_image'] == ''
-                                        ? ColoredBox(
-                                            color: Colors.grey,
-                                            child: Center(
-                                              child: Text(
-                                                'Add Image',
-                                                style: TextStyle(
-                                                    color: background,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
-                                          )
-                                        : CachedNetworkImage(
-                                            progressIndicatorBuilder:
-                                                (context, url, progress) =>
-                                                    LinearProgressIndicator(
-                                              value: progress.progress,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) => Center(
-                                                    child: Text(
-                                              'Image',
-                                              style: const TextStyle(
-                                                  color: Colors.grey),
-                                            )),
-                                            useOldImageOnUrlChange: true,
-                                            imageUrl: prop['reference_image'],
-                                            fit: BoxFit.cover,
-                                          )
-                                    : Image(
-                                        image: FileImage(propImage),
-                                        fit: BoxFit.cover,
-                                      ))),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          if (prop['reference_image'] != '' ||
-                              propImage != null)
-                            ElevatedButton.icon(
-                                style: Utils.elevatedButtonStyle,
-                                label: Text(
-                                  'Remove',
-                                  style: TextStyle(
-                                      color: background1, fontSize: 20),
-                                ),
-                                icon: Icon(
-                                  Icons.close,
-                                  color: background1,
-                                  size: 20,
-                                ),
-                                onPressed: () async {
-                                  prop['reference_image'] = '';
-                                  propImage = null;
-                                  setState(() {});
-                                }),
-                          ElevatedButton.icon(
-                              style: Utils.elevatedButtonStyle,
-                              label: Text(
-                                'Edit',
-                                style:
-                                    TextStyle(color: background1, fontSize: 20),
-                              ),
-                              icon: Icon(
-                                Icons.edit,
-                                color: background1,
-                                size: 20,
-                              ),
-                              onPressed: () async {
-                                String imagePath =
-                                    await Utils.askSource(context);
-                                if (imagePath != null) {
-                                  propImage = File(imagePath);
-                                }
-                                setState(() {});
-                              }),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            widget1(),
+            widget2(),
+          ],
+        ) : Row(
+          children: [
+            Flexible(
+              flex: 6,
+              child: widget1(),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x26000000),
-                        offset: Offset(0, -1),
-                        blurRadius: 10,
-                      ),
-                    ]),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          controller: nameController,
-                          onChanged: (v) {
-                            prop['title'] = v;
-                          },
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Property Name',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: TextField(
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.words,
-                          maxLines: null,
-                          onChanged: (v) {
-                            prop['description'] = v;
-                          },
-                          controller: descriptionController,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: background1)
-                                //borderSide: const BorderSide(color: Colors.white)
-                                ),
-                            labelText: 'Property Description',
-                            labelStyle:
-                                TextStyle(color: background1, fontSize: 14),
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (edit) {
-                            editProp();
-                          } else {
-                            addProp();
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              'Save',
-                              style: TextStyle(
-                                  color: background1,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            Flexible(
+              flex: 4,
+              child: widget2(),
             )
           ],
         ),

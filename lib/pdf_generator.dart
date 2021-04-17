@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cinemawala/daily_budget/daily_budget.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/scenes/scene.dart';
@@ -24,7 +25,6 @@ class PdfGenerator {
             .asUint8List();
     return response;
   }
-
   static Widget sceneDetails(
     Project project,
     Scene scene,
@@ -212,7 +212,80 @@ class PdfGenerator {
       ],
     );
   }
-
+  static dailyReportCallSheet(
+      DailyBudget dailyReport,
+      ) async{
+    Map dailyReportMap = dailyReport.budget;
+    List<dynamic> categories,subcategories;
+    Document pdf = Document();
+    categories = dailyReportMap.keys.toList();
+    pdf.addPage(
+      Page(
+        margin: const EdgeInsets.all(16),
+        pageFormat: PdfPageFormat(595.2, double.infinity),
+          build: (context) {
+          return Container(
+            child: Column(
+              children: List.generate(categories.length, (i){
+                subcategories = dailyReportMap[categories[i]].keys.toList();
+                return Column(
+                  children: [
+                    Table(
+                      children: [
+                        TableRow(children: [
+                          Text("${categories[i]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                        ])
+                      ]
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Wrap(
+                          children: List.generate(subcategories.length, (j){
+                            return dailyReportMap[categories[i]][subcategories[j]]["use"] ? Container(
+                                margin: EdgeInsets.symmetric(horizontal: 4,vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 6,vertical: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: PdfColors.black),
+                                ),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(text: '${subcategories[j]}\n\n',style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),
+                                      TextSpan(text: 'Contact', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["contact"]}\n'),
+                                      TextSpan(text: 'Quantity', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["quantity"]}\n'),
+                                      TextSpan(text: 'Rate', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["rate"]}\n'),
+                                      TextSpan(text: 'Subtotal', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["subtotal"]}\n'),
+                                      TextSpan(text: 'CallSheet', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["callSheet"]}\n'),
+                                    ],
+                                  ),
+                                )
+                            ) : Container();
+                          })
+                      ),
+                    ),
+                    Divider(height: 2,color: PdfColors.black),
+                    SizedBox(height: 8),
+                  ]
+                );
+              })
+            ),
+          );
+          },
+      )
+    );
+    Directory documentDirectory = await path.getExternalStorageDirectory();
+    String documentPath = documentDirectory.path;
+    File file = File("$documentPath/${dailyReport.id}.pdf");
+    file.writeAsBytesSync(await pdf.save());
+    return;
+    print(dailyReport.budget);
+    print(dailyReportMap.keys);
+  }
   static sceneCallSheet(
       Project project,
       context,
@@ -1580,7 +1653,6 @@ class PdfGenerator {
     file.writeAsBytesSync(await pdf.save());
     return;
   }
-
   static makeupCallSheet(
       Project project,
       context,

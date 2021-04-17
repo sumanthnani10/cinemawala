@@ -10,22 +10,27 @@ import 'location.dart';
 class LocationPage extends StatefulWidget {
   final Location location;
   final Project project;
-
-  const LocationPage({Key key, @required this.project, this.location})
+  final bool isPopUp;
+  const LocationPage({Key key, @required this.project, this.location,this.isPopUp})
       : super(key: key);
 
   @override
-  _LocationPageState createState() => _LocationPageState(project, location);
+  _LocationPageState createState() => _LocationPageState(project, location,isPopUp);
 }
 
 class _LocationPageState extends State<LocationPage> {
   Color background, background1, color;
-
+  bool isPopUp;
   Location location;
   final Project project;
 
-  _LocationPageState(this.project, this.location);
-
+  _LocationPageState(this.project, this.location,this.isPopUp);
+  @override
+  void initState() {
+    isPopUp = isPopUp ?? true;
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -38,11 +43,13 @@ class _LocationPageState extends State<LocationPage> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        if(isPopUp){
+          Navigator.pop(context);
+        }
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
-        body: Center(
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
+        body: SingleChildScrollView(
           child: GestureDetector(
             onTap: () {},
             child: Container(
@@ -58,7 +65,7 @@ class _LocationPageState extends State<LocationPage> {
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width * 3 / 4,
+                          height: isPopUp ? MediaQuery.of(context).size.width * 3 / 4 : MediaQuery.of(context).size.width * 0.4,
                           child: Stack(
                             children: [
                               Carousel(
@@ -115,6 +122,7 @@ class _LocationPageState extends State<LocationPage> {
                                             context,
                                             Utils.createRoute(
                                                 AddLocation(
+                                                  isPopUp: false,
                                                   project: project,
                                                   location: location.toJson(),
                                                 ),

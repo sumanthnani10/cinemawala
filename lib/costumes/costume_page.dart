@@ -10,25 +10,26 @@ import 'costume.dart';
 class CostumesPage extends StatefulWidget {
   final Costume costume;
   final Project project;
-
-  const CostumesPage({Key key, @required this.project, this.costume})
+  final bool isPopUp;
+  const CostumesPage({Key key, @required this.project, this.costume,this.isPopUp})
       : super(key: key);
 
   @override
-  _CostumesPageState createState() => _CostumesPageState(project, costume);
+  _CostumesPageState createState() => _CostumesPageState(project, costume,isPopUp);
 }
 
 class _CostumesPageState extends State<CostumesPage> {
   Color background, background1, color;
-
+  bool isPopUp;
   Costume costume;
   final Project project;
   Set<String> artists = {};
 
-  _CostumesPageState(this.project, this.costume);
+  _CostumesPageState(this.project, this.costume,this.isPopUp);
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
     costume.usedBy.forEach((key, value) {
       artists.addAll(Iterable.castFrom(value));
@@ -50,7 +51,7 @@ class _CostumesPageState extends State<CostumesPage> {
         Navigator.pop(context);
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
         body: Center(
           child: GestureDetector(
             onTap: () {},

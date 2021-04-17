@@ -235,27 +235,28 @@ class _SelectProps extends State<SelectProps> {
 class SelectedProps extends StatefulWidget {
   final Project project;
   final List<Prop> selectedProps;
-
-  SelectedProps({Key key, @required this.project, @required this.selectedProps})
+  final bool isPopUp;
+  SelectedProps({Key key, @required this.project, @required this.selectedProps,this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedProps createState() =>
-      _SelectedProps(this.project, this.selectedProps);
+      _SelectedProps(this.project, this.selectedProps,this.isPopUp);
 }
 
 class _SelectedProps extends State<SelectedProps>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   Color background, background1, color;
   final List<Prop> selectedProps;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
-  _SelectedProps(this.project, this.selectedProps);
-
+  _SelectedProps(this.project, this.selectedProps,this.isPopUp);
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
   }
 
@@ -274,10 +275,12 @@ class _SelectedProps extends State<SelectedProps>
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        if(isPopUp){
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
         body: Center(
           child: GestureDetector(
             onTap: () {
@@ -297,11 +300,11 @@ class _SelectedProps extends State<SelectedProps>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      IconButton(
+                      isPopUp ? IconButton(
                           icon: Icon(Icons.arrow_back_rounded),
                           onPressed: () {
                             Navigator.pop(context);
-                          }),
+                          }):Container(),
                       Text(
                         "Selected Props",
                         style: TextStyle(fontSize: 20, color: background1),
