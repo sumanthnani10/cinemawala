@@ -214,8 +214,7 @@ class _SelectActors extends State<SelectActors>
                                               : color.withOpacity(8 / 16),
                                       borderRadius: BorderRadius.circular(300),
                                     ),
-                                    child: Text(
-                                        '${showActors[i].names['English']}'),
+                                    child: Text('${showActors[i].names['en']}'),
                                   ),
                                 );
                               }),
@@ -402,8 +401,7 @@ class _SelectedActors extends State<SelectedActors>
                                   color: color,
                                   borderRadius: BorderRadius.circular(300),
                                 ),
-                                child:
-                                    Text('${showActors[i].names['English']}'),
+                                child: Text('${showActors[i].names['en']}'),
                               ),
                             );
                           }),

@@ -233,9 +233,11 @@ class _ProjectHome extends State<ProjectHome> {
                                         image: AssetImage(
                                             '${categories[ind]['image']}')),
                                   ),
-                                  Text(
-                                    "${categories[ind]['title']}",
-                                    style: TextStyle(fontSize: 16),
+                                  FittedBox(
+                                    child: Text(
+                                      "${categories[ind]['title']}",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -311,9 +313,11 @@ class _ProjectHome extends State<ProjectHome> {
                                         image: AssetImage(
                                             '${categories[ind]['image']}')),
                                   ),
-                                  Text(
-                                    "${categories[ind]['title']}",
-                                    style: TextStyle(fontSize: 16),
+                                  FittedBox(
+                                    child: Text(
+                                      "${categories[ind]['title']}",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -385,9 +389,11 @@ class _ProjectHome extends State<ProjectHome> {
                                         image: AssetImage(
                                             '${categories[ind]['image']}')),
                                   ),
-                                  Text(
-                                    "${categories[ind]['title']}",
-                                    style: TextStyle(fontSize: 16),
+                                  FittedBox(
+                                    child: Text(
+                                      "${categories[ind]['title']}",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
                                 ],
                               ),

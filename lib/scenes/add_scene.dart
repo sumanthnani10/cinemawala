@@ -1161,22 +1161,22 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           Utils.scenes = Utils.scenesMap.values.toList();
 
           body['artists'].forEach((a) {
-            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+            Utils.artistsMap[a['id']] = Actor.fromJson(a);
           });
           Utils.artists = Utils.artistsMap.values.toList();
 
           body['costumes'].forEach((c) {
-            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+            Utils.costumesMap[c['id']] = Costume.fromJson(c);
           });
           Utils.costumes = Utils.costumesMap.values.toList();
 
           body['props'].forEach((c) {
-            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+            Utils.propsMap[c['id']] = Prop.fromJson(c);
           });
           Utils.props = Utils.propsMap.values.toList();
 
           body['locations'].forEach((c) {
-            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+            Utils.locationsMap[c['id']] = Location.fromJson(c);
           });
           Utils.locations = Utils.locationsMap.values.toList();
 
@@ -1257,8 +1257,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     oldArtists.forEach((a) {
       if (!scene['artists'].contains(a.id)) {
         a = Actor.fromJson(a.toJson());
-        if (!a.scenes.contains(scene['id'])) {
-          a.scenes.add(scene['id']);
+        if (a.scenes.contains(scene['id'])) {
+          a.scenes.remove(scene['id']);
         }
         a.costumes.remove('${scene['id']}');
         body['artists'].add(a.toJson());
@@ -1297,6 +1297,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       }
     });
 
+    oldProps.forEach((p) {
+      if (!scene['props'].contains(p.id)) {
+        p = Prop.fromJson(p.toJson());
+        if (p.usedIn.contains(scene['id'])) {
+          p.usedIn.remove(scene['id']);
+        }
+        body['props'].add(p.toJson());
+      }
+    });
+
     selectedProps.forEach((p) {
       p = Prop.fromJson(p.toJson());
       if (!p.usedIn.contains(scene['id'])) {
@@ -1319,22 +1329,22 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
           Utils.scenes = Utils.scenesMap.values.toList();
 
           body['artists'].forEach((a) {
-            Utils.artistsMap[scene['id']] = Actor.fromJson(a);
+            Utils.artistsMap[a['id']] = Actor.fromJson(a);
           });
           Utils.artists = Utils.artistsMap.values.toList();
 
           body['costumes'].forEach((c) {
-            Utils.costumesMap[scene['id']] = Costume.fromJson(c);
+            Utils.costumesMap[c['id']] = Costume.fromJson(c);
           });
           Utils.costumes = Utils.costumesMap.values.toList();
 
           body['props'].forEach((c) {
-            Utils.propsMap[scene['id']] = Prop.fromJson(c);
+            Utils.propsMap[c['id']] = Prop.fromJson(c);
           });
           Utils.props = Utils.propsMap.values.toList();
 
           body['locations'].forEach((c) {
-            Utils.locationsMap[scene['id']] = Location.fromJson(c);
+            Utils.locationsMap[c['id']] = Location.fromJson(c);
           });
           Utils.locations = Utils.locationsMap.values.toList();
 
