@@ -77,8 +77,8 @@ class _AddLocation extends State<AddLocation>
       child: Padding(
         padding:
         const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-        child: Wrap(
-          direction: isPopUp ? Axis.horizontal : Axis.vertical,
+        child:  Wrap(
+          direction: Axis.horizontal,
           children: List<Widget>.generate(4, (i) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -96,8 +96,8 @@ class _AddLocation extends State<AddLocation>
                       setState(() {});
                     },
                     child: SizedBox(
-                      width: 100,
-                      height: 75,
+                      width: isPopUp ? 100 : 200,
+                      height: isPopUp ? 75 : 150,
                       child: AspectRatio(
                           aspectRatio: 4 / 3,
                           child: ClipRRect(
@@ -193,7 +193,8 @@ class _AddLocation extends State<AddLocation>
               ),
             );
           }),
-        ),
+        ) ,
+
       ),
     );
   }

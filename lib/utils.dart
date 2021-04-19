@@ -964,7 +964,7 @@ class Utils {
         "zu": 'Zulu',
       };
 
-  static final mobileWidth = 450;
+  static final mobileWidth = 480;
 
   static final linearGradient = LinearGradient(
     begin: Alignment(-1.0, 0.0),

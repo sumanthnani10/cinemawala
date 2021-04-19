@@ -59,7 +59,10 @@ class _ActorsListState extends State<ActorsList>
     } else {
       background1 = Colors.white;
     }
-    return Scaffold(
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          var maxWidth = constraints.maxWidth;
+      return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -90,8 +93,8 @@ class _ActorsListState extends State<ActorsList>
           )
         ],
       ),
-      body: GridView.count(
-        crossAxisCount: 3,
+      body:  GridView.count(
+        crossAxisCount: maxWidth>Utils.mobileWidth ? 6 : 3,
         childAspectRatio: 0.7,
         children: List<Widget>.generate(artists.length, (i) {
           return InkWell(
@@ -173,6 +176,7 @@ class _ActorsListState extends State<ActorsList>
               Utils.createRoute(
                   AddActor(
                     project: project,
+                    isPopUp: maxWidth>Utils.mobileWidth ? false : true,
                   ),
                   Utils.DTU));
           setState(() {
@@ -186,6 +190,6 @@ class _ActorsListState extends State<ActorsList>
           size: 36,
         ),
       ),
-    );
+    ); });
   }
 }

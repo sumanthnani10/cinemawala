@@ -148,7 +148,396 @@ class _AddProject extends State<AddProject>
 
     super.initState();
   }
-
+  Widget example(){
+    return Container(
+      constraints: BoxConstraints(maxWidth: 600),
+      child: Column(
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 12,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: InkWell(
+                        onTap: () async {
+                          String imagePath = await Utils.askSource(context);
+                          if (imagePath != null) {
+                            projectImage = File(imagePath);
+                          }
+                          setState(() {});
+                        },
+                        child: AspectRatio(
+                            aspectRatio: 4 / 2,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: projectImage == null
+                                    ? project['image'] == ''
+                                    ? ColoredBox(
+                                  color: Colors.grey,
+                                  child: Center(
+                                    child: Text(
+                                      'Add Image',
+                                      style: TextStyle(
+                                          color: background,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                )
+                                    : CachedNetworkImage(
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) =>
+                                      LinearProgressIndicator(
+                                        value: progress.progress,
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) =>
+                                      Center(
+                                          child: Text(
+                                            'Image',
+                                            style: const TextStyle(
+                                                color: Colors.grey),
+                                          )),
+                                  useOldImageOnUrlChange: true,
+                                  imageUrl: project['image'],
+                                  fit: BoxFit.cover,
+                                )
+                                    : Image(
+                                  image: FileImage(projectImage),
+                                  fit: BoxFit.cover,
+                                ))),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (projectImage != null)
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              setState(() {
+                                projectImage = null;
+                                project['image'] = "";
+                              });
+                            },
+                            style: Utils.elevatedButtonStyle,
+                            label: Text(
+                              'Remove',
+                              style: TextStyle(color: background1),
+                            ),
+                            icon: Icon(
+                              Icons.close,
+                              color: background1,
+                              size: 14,
+                            ),
+                          ),
+                        ElevatedButton.icon(
+                            onPressed: () async {
+                              String imagePath =
+                              await Utils.askSource(context);
+                              if (imagePath != null) {
+                                projectImage = File(imagePath);
+                              }
+                              setState(() {});
+                            },
+                            style: Utils.elevatedButtonStyle,
+                            label: Text(
+                              'Edit',
+                              style: TextStyle(color: background1),
+                            ),
+                            icon: Icon(
+                              Icons.edit,
+                              color: background1,
+                              size: 14,
+                            ))
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 24,bottom: 12),
+                child: Text(
+                  "Project Details",
+                  style:
+                  TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: nameController,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    project['name'] = v;
+                  },
+                  validator: (v) {
+                    if (v.isEmpty) {
+                      return "Enter Project Name";
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: "Project Name *",
+                    contentPadding: EdgeInsets.all(8),
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  project['languages'] = await Navigator.push(
+                      context,
+                      Utils.createRoute(
+                          SelectLanguages(
+                            selectedLanguages:
+                            project['languages'].toList(),
+                          ),
+                          Utils.UTD)) ??
+                      project['languages'];
+                  setState(() {});
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: Utils.linearGradient,
+                    ),
+                    padding:
+                    EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Languages",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List<Widget>.generate(
+                                  project['languages'].length,
+                                      (i) => Text(
+                                      "${Utils.codeToLanguagesInEnglish[project['languages'][i]]}${i + 1 != project['languages'].length ? ", " : ""}")),
+                            ))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: productionNameController,
+                        textCapitalization: TextCapitalization.words,
+                        onChanged: (v) {
+                          project['production_name'] = v;
+                        },
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: background1)),
+                          labelText: "Production Name",
+                          prefixIcon: Icon(
+                            Icons.home_filled,
+                            color: color,
+                          ),
+                          contentPadding: EdgeInsets.all(8),
+                          labelStyle:
+                          TextStyle(color: background1, fontSize: 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Padding(
+                      padding:
+                      const EdgeInsets.only(top: 6, bottom: 6, left: 4),
+                      child: TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: productionNumberController,
+                        textCapitalization: TextCapitalization.words,
+                        onChanged: (v) {
+                          if (v.isEmpty) v = "0";
+                          project['production_number'] = int.parse(v);
+                        },
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: background1)),
+                          labelText: "Number",
+                          contentPadding: EdgeInsets.all(8),
+                          labelStyle:
+                          TextStyle(color: background1, fontSize: 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: producerNameController,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    project['producer'] = v;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: "Producer",
+                    contentPadding: EdgeInsets.all(8),
+                    prefixIcon: Icon(
+                      FontAwesome.rupee,
+                      color: color,
+                    ),
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: directorNameController,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    project['director'] = v;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: "Director",
+                    prefixIcon: Icon(
+                      Ionicons.ios_megaphone,
+                      color: color,
+                    ),
+                    contentPadding: EdgeInsets.all(8),
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: dopNameController,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    project['dop'] = v;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    prefixIcon: Icon(
+                      Ionicons.ios_videocam,
+                      color: color,
+                    ),
+                    labelText: "D.O.P",
+                    contentPadding: EdgeInsets.all(8),
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: artDirectorNameController,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: (v) {
+                    project['art_director'] = v;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: background1)),
+                    labelText: "Art Director",
+                    contentPadding: EdgeInsets.all(8),
+                    prefixIcon: Icon(
+                      Ionicons.ios_brush,
+                      color: color,
+                    ),
+                    labelStyle: TextStyle(color: background1, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: color,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8))),
+                      onPressed: () async {
+                        if (formKey.currentState.validate()) {
+                          if (edit) {
+                            editProject();
+                          } else {
+                            addProject();
+                          }
+                        }
+                      },
+                      child: Text(
+                        edit ? "Edit Project" : "Add Project",
+                        style: TextStyle(
+                            color: background1,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16),
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -196,7 +585,9 @@ class _AddProject extends State<AddProject>
           )
         ],
       ),
-      body: GestureDetector(
+      body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+      return GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
@@ -206,7 +597,396 @@ class _AddProject extends State<AddProject>
           child: SingleChildScrollView(
             child: Form(
               key: formKey,
-              child: Column(
+              child: constraints.maxWidth>Utils.mobileWidth ?
+              Container(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                child: InkWell(
+                                  onTap: () async {
+                                    String imagePath = await Utils.askSource(context);
+                                    if (imagePath != null) {
+                                      projectImage = File(imagePath);
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: AspectRatio(
+                                      aspectRatio: 4 / 2,
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: projectImage == null
+                                              ? project['image'] == ''
+                                              ? ColoredBox(
+                                            color: Colors.grey,
+                                            child: Center(
+                                              child: Text(
+                                                'Add Image',
+                                                style: TextStyle(
+                                                    color: background,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          )
+                                              : CachedNetworkImage(
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) =>
+                                                LinearProgressIndicator(
+                                                  value: progress.progress,
+                                                ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                Center(
+                                                    child: Text(
+                                                      'Image',
+                                                      style: const TextStyle(
+                                                          color: Colors.grey),
+                                                    )),
+                                            useOldImageOnUrlChange: true,
+                                            imageUrl: project['image'],
+                                            fit: BoxFit.cover,
+                                          )
+                                              : Image(
+                                            image: FileImage(projectImage),
+                                            fit: BoxFit.cover,
+                                          ))),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (projectImage != null)
+                                    ElevatedButton.icon(
+                                      onPressed: () async {
+                                        setState(() {
+                                          projectImage = null;
+                                          project['image'] = "";
+                                        });
+                                      },
+                                      style: Utils.elevatedButtonStyle,
+                                      label: Text(
+                                        'Remove',
+                                        style: TextStyle(color: background1),
+                                      ),
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: background1,
+                                        size: 14,
+                                      ),
+                                    ),
+                                  ElevatedButton.icon(
+                                      onPressed: () async {
+                                        String imagePath =
+                                        await Utils.askSource(context);
+                                        if (imagePath != null) {
+                                          projectImage = File(imagePath);
+                                        }
+                                        setState(() {});
+                                      },
+                                      style: Utils.elevatedButtonStyle,
+                                      label: Text(
+                                        'Edit',
+                                        style: TextStyle(color: background1),
+                                      ),
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: background1,
+                                        size: 14,
+                                      ))
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 24,bottom: 12),
+                          child: Text(
+                            "Project Details",
+                            style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: nameController,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              project['name'] = v;
+                            },
+                            validator: (v) {
+                              if (v.isEmpty) {
+                                return "Enter Project Name";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Project Name *",
+                              contentPadding: EdgeInsets.all(8),
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            project['languages'] = await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    SelectLanguages(
+                                      selectedLanguages:
+                                      project['languages'].toList(),
+                                    ),
+                                    Utils.UTD)) ??
+                                project['languages'];
+                            setState(() {});
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                gradient: Utils.linearGradient,
+                              ),
+                              padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Languages",
+                                    style: TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: List<Widget>.generate(
+                                            project['languages'].length,
+                                                (i) => Text(
+                                                "${Utils.codeToLanguagesInEnglish[project['languages'][i]]}${i + 1 != project['languages'].length ? ", " : ""}")),
+                                      ))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                child: TextFormField(
+                                  textInputAction: TextInputAction.next,
+                                  controller: productionNameController,
+                                  textCapitalization: TextCapitalization.words,
+                                  onChanged: (v) {
+                                    project['production_name'] = v;
+                                  },
+                                  decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: background1)),
+                                    labelText: "Production Name",
+                                    prefixIcon: Icon(
+                                      Icons.home_filled,
+                                      color: color,
+                                    ),
+                                    contentPadding: EdgeInsets.all(8),
+                                    labelStyle:
+                                    TextStyle(color: background1, fontSize: 14),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              flex: 1,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.only(top: 6, bottom: 6, left: 4),
+                                child: TextFormField(
+                                  textInputAction: TextInputAction.next,
+                                  controller: productionNumberController,
+                                  textCapitalization: TextCapitalization.words,
+                                  onChanged: (v) {
+                                    if (v.isEmpty) v = "0";
+                                    project['production_number'] = int.parse(v);
+                                  },
+                                  decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: background1)),
+                                    labelText: "Number",
+                                    contentPadding: EdgeInsets.all(8),
+                                    labelStyle:
+                                    TextStyle(color: background1, fontSize: 14),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: producerNameController,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              project['producer'] = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Producer",
+                              contentPadding: EdgeInsets.all(8),
+                              prefixIcon: Icon(
+                                FontAwesome.rupee,
+                                color: color,
+                              ),
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: directorNameController,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              project['director'] = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Director",
+                              prefixIcon: Icon(
+                                Ionicons.ios_megaphone,
+                                color: color,
+                              ),
+                              contentPadding: EdgeInsets.all(8),
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: dopNameController,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              project['dop'] = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              prefixIcon: Icon(
+                                Ionicons.ios_videocam,
+                                color: color,
+                              ),
+                              labelText: "D.O.P",
+                              contentPadding: EdgeInsets.all(8),
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: artDirectorNameController,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              project['art_director'] = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Art Director",
+                              contentPadding: EdgeInsets.all(8),
+                              prefixIcon: Icon(
+                                Ionicons.ios_brush,
+                                color: color,
+                              ),
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16, bottom: 16),
+                          child: Center(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: color,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8))),
+                                onPressed: () async {
+                                  if (formKey.currentState.validate()) {
+                                    if (edit) {
+                                      editProject();
+                                    } else {
+                                      addProject();
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  edit ? "Edit Project" : "Add Project",
+                                  style: TextStyle(
+                                      color: background1,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+                  : Column(
                 children: [
                   SizedBox(
                     height: 12,
@@ -586,7 +1366,7 @@ class _AddProject extends State<AddProject>
             ),
           ),
         ),
-      ),
+      ); }),
     );
   }
 

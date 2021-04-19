@@ -107,230 +107,146 @@ class _Register extends State<Register> {
               key: _formKey,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 30, 16, 0),
-                    child: Image(image: AssetImage('assets/images/logo.png')),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 30, 16, 0),
+                        child: Image(image: AssetImage('assets/images/logo.png')),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline),
-                    ),
-                  ),
-                  //Username
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0),
-                    child: TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: userNameController,
-                      textCapitalization: TextCapitalization.none,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'^[a-z0-9_.]+'),
-                            replacementString: ""),
-                      ],
-                      onChanged: (v) {
-                        username = v;
-                        validateUsername();
-                      },
-                      onFieldSubmitted: (v) {
-                        validateUsername();
-                      },
-                      validator: (v) {
-                        if (v.length < 6) {
-                          return "Username must be at least 6 characters.";
-                        } else if (usernameValid != 1) {
-                          return "Choose different username.";
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: background1)),
-                          labelText: "Username",
-                          contentPadding: EdgeInsets.all(8),
-                          labelStyle:
-                              TextStyle(color: background1, fontSize: 14),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 480),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline),
                           ),
-                          helperStyle: usernameValid == 2
-                              ? TextStyle(fontSize: 12, color: background1)
-                              : usernameValid == 1
-                                  ? TextStyle(fontSize: 12, color: Colors.green)
-                                  : usernameValid == -1
-                                      ? TextStyle(
-                                          fontSize: 12, color: Colors.red)
-                                      : TextStyle(
-                                          fontSize: 12, color: background1),
-                          helperText: usernameValid == 2
-                              ? "Checking.."
-                              : usernameValid == 1
-                                  ? "$username is valid"
-                                  : usernameValid == -1
-                                      ? "$username is already used."
-                                      : "",
-                          suffixIcon: usernameValid == 2
-                              ? Icon(
+                        ),
+                        //Username
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 0),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: userNameController,
+                            textCapitalization: TextCapitalization.none,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^[a-z0-9_.]+'),
+                                  replacementString: ""),
+                            ],
+                            onChanged: (v) {
+                              username = v;
+                              validateUsername();
+                            },
+                            onFieldSubmitted: (v) {
+                              validateUsername();
+                            },
+                            validator: (v) {
+                              if (v.length < 6) {
+                                return "Username must be at least 6 characters.";
+                              } else if (usernameValid != 1) {
+                                return "Choose different username.";
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: background1)),
+                                labelText: "Username",
+                                contentPadding: EdgeInsets.all(8),
+                                labelStyle:
+                                TextStyle(color: background1, fontSize: 14),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                helperStyle: usernameValid == 2
+                                    ? TextStyle(fontSize: 12, color: background1)
+                                    : usernameValid == 1
+                                    ? TextStyle(fontSize: 12, color: Colors.green)
+                                    : usernameValid == -1
+                                    ? TextStyle(
+                                    fontSize: 12, color: Colors.red)
+                                    : TextStyle(
+                                    fontSize: 12, color: background1),
+                                helperText: usernameValid == 2
+                                    ? "Checking.."
+                                    : usernameValid == 1
+                                    ? "$username is valid"
+                                    : usernameValid == -1
+                                    ? "$username is already used."
+                                    : "",
+                                suffixIcon: usernameValid == 2
+                                    ? Icon(
                                   Icons.refresh_rounded,
                                   color: background1,
                                 )
-                              : usernameValid == 1
-                                  ? InkWell(
-                                      onTap: () {
-                                        validateUsername();
-                                      },
-                                      child: Icon(
-                                        Icons.check_circle,
-                                        color: Colors.green,
-                                      ),
-                                    )
-                                  : usernameValid == -1
-                                      ? InkWell(
-                                          onTap: () {
-                                            validateUsername();
-                                          },
-                                          child: Icon(
-                                            Icons.cancel,
-                                            color: Colors.red,
-                                          ),
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            validateUsername();
-                                          },
-                                          child: Icon(
-                                            Icons.repeat,
-                                            color: Colors.blue,
-                                          ),
-                                        )),
-                    ),
-                  ),
-                  //Name
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      controller: nameController,
-                      onChanged: (v) {
-                        name = v;
-                      },
-                      validator: (v) {
-                        if (v.isEmpty) {
-                          return "Enter your name";
-                        } else {
-                          return null;
-                        }
-                      },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'^[a-zA-Z ]+$'),
-                            replacementString: "${name}"),
-                      ],
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background1)),
-                        labelText: 'Name',
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //Email
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextFormField(
-                      textInputAction: TextInputAction.next,
-                      validator: (v) {
-                        Pattern pattern =
-                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                        RegExp regex = new RegExp(pattern);
-                        if (v.length == 0) {
-                          return 'Please enter email id';
-                        } else {
-                          if (!regex.hasMatch(v)) {
-                            return 'Enter valid email';
-                          } else {
-                            return null;
-                          }
-                        }
-                      },
-                      controller: eMailController,
-                      onChanged: (value) {
-                        eMail = value;
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background1)),
-                        labelText: "Email",
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //Mobile
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 3,
-                          child: CountryCodePicker(
-                            initialSelection: 'IN',
-                            showDropDownButton: true,
-                            showFlag: true,
-                            showCountryOnly: true,
-                            favorite: ['+91', 'IN'],
-                            onChanged: (c) {
-                              countryCode = c.dialCode;
-                            },
+                                    : usernameValid == 1
+                                    ? InkWell(
+                                  onTap: () {
+                                    validateUsername();
+                                  },
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  ),
+                                )
+                                    : usernameValid == -1
+                                    ? InkWell(
+                                  onTap: () {
+                                    validateUsername();
+                                  },
+                                  child: Icon(
+                                    Icons.cancel,
+                                    color: Colors.red,
+                                  ),
+                                )
+                                    : InkWell(
+                                  onTap: () {
+                                    validateUsername();
+                                  },
+                                  child: Icon(
+                                    Icons.repeat,
+                                    color: Colors.blue,
+                                  ),
+                                )),
                           ),
                         ),
-                        Expanded(
-                          flex: 4,
+                        //Name
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
                           child: TextFormField(
-                            textCapitalization: TextCapitalization.none,
+                            textCapitalization: TextCapitalization.words,
                             textInputAction: TextInputAction.next,
-                            controller: phoneController,
+                            controller: nameController,
                             onChanged: (v) {
-                              phone = v;
+                              name = v;
                             },
                             validator: (v) {
                               if (v.isEmpty) {
-                                return "Enter your phone number";
+                                return "Enter your name";
                               } else {
-                                if (v.length != 10) {
-                                  return "Phone Number must be 10 digits";
-                                } else {
-                                  return null;
-                                }
+                                return null;
                               }
                             },
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'^[0-9]+$'),
-                                  replacementString: "${phone}"),
+                                  RegExp(r'^[a-zA-Z ]+$'),
+                                  replacementString: "${name}"),
                             ],
-                            keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: background1)),
-                              labelText: "Phone Number",
-                              labelStyle:
-                                  TextStyle(color: background1, fontSize: 14),
+                              labelText: 'Name',
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
                               contentPadding: EdgeInsets.all(8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -338,199 +254,296 @@ class _Register extends State<Register> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  //Gender
-                  Container(
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 0),
-                            child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16)),
-                                  primary: gender == 1 ? Colors.white : color,
-                                  elevation: gender == 1 ? 4 : 0,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    gender = 1;
-                                  });
-                                },
-                                icon: Icon(Icons.wb_sunny_outlined,
-                                    size: 22, color: background1),
-                                label: Text(
-                                  "Male",
-                                  style: TextStyle(
-                                      fontWeight: gender == 1
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      color: background1),
-                                )),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 0),
-                            child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16)),
-                                  primary: gender == 2 ? Colors.white : color,
-                                  elevation: gender == 2 ? 4 : 0,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    gender = 2;
-                                  });
-                                },
-                                icon: Icon(Icons.nightlight_round,
-                                    size: 22, color: background1),
-                                label: Text(
-                                  "Female",
-                                  style: TextStyle(
-                                      fontWeight: gender == 2
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      color: background1),
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  //Password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextFormField(
-                      obscureText: obscurePassword,
-                      controller: passwordController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      validator: (v) {
-                        if (v.length == 0) {
-                          return 'Please enter password.';
-                        } else if (v.length < 8) {
-                          return 'Password must be minimum 8 characters';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (v) {
-                        newPassword = v;
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background1)),
-                        labelText: "New Password",
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                            });
-                          },
-                          child: Icon(
-                            Icons.remove_red_eye,
-                            color: background1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //Confirm Password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextFormField(
-                      obscureText: obscureConfirmPassword,
-                      controller: confirmPasswordController,
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.text,
-                      validator: (v) {
-                        if (v.length == 0) {
-                          return 'Please enter password.';
-                        } else if (v.length < 8) {
-                          return 'Password must be minimum 8 characters';
-                        } else if (v != newPassword) {
-                          return 'Passwords doesn\'t match';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (v) {
-                        confirmPassword = v;
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background1)),
-                        labelText: "Confirm New Password",
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            setState(() {
-                              obscureConfirmPassword = !obscureConfirmPassword;
-                            });
-                          },
-                          child: Icon(
-                            Icons.remove_red_eye,
-                            color: background1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 16),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: color,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                          onPressed: () async {
-                            Utils.showLoadingDialog(context, "Signing Up");
-                            if (await validateUsername()) {
-                              if (_formKey.currentState.validate()) {
-                                await addUser();
+                        //Email
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            validator: (v) {
+                              Pattern pattern =
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                              RegExp regex = new RegExp(pattern);
+                              if (v.length == 0) {
+                                return 'Please enter email id';
                               } else {
-                                Navigator.pop(context);
+                                if (!regex.hasMatch(v)) {
+                                  return 'Enter valid email';
+                                } else {
+                                  return null;
+                                }
                               }
-                            } else {
-                              Navigator.pop(context);
-                              Utils.showErrorDialog(context, "Username",
-                                  "Username you have chosen is aleady used. Please choose a different username.");
-                            }
-                          },
-                          child: Text(
-                            "Join Us",
-                            style: TextStyle(
-                                color: background1,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
-                          )),
+                            },
+                            controller: eMailController,
+                            onChanged: (value) {
+                              eMail = value;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Email",
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        //Mobile
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: CountryCodePicker(
+                                  initialSelection: 'IN',
+                                  showDropDownButton: true,
+                                  showFlag: true,
+                                  showCountryOnly: true,
+                                  favorite: ['+91', 'IN'],
+                                  onChanged: (c) {
+                                    countryCode = c.dialCode;
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: TextFormField(
+                                  textCapitalization: TextCapitalization.none,
+                                  textInputAction: TextInputAction.next,
+                                  controller: phoneController,
+                                  onChanged: (v) {
+                                    phone = v;
+                                  },
+                                  validator: (v) {
+                                    if (v.isEmpty) {
+                                      return "Enter your phone number";
+                                    } else {
+                                      if (v.length != 10) {
+                                        return "Phone Number must be 10 digits";
+                                      } else {
+                                        return null;
+                                      }
+                                    }
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'^[0-9]+$'),
+                                        replacementString: "${phone}"),
+                                  ],
+                                  keyboardType: TextInputType.phone,
+                                  decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: background1)),
+                                    labelText: "Phone Number",
+                                    labelStyle:
+                                    TextStyle(color: background1, fontSize: 14),
+                                    contentPadding: EdgeInsets.all(8),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //Gender
+                        Padding(
+                          padding:  EdgeInsets.symmetric(vertical: 4),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 6),
+                                    child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(16)),
+                                          primary: gender == 1 ? Colors.white : color,
+                                          elevation: gender == 1 ? 4 : 0,
+                                        ),
+                                        icon: Icon(Icons.person,size: 22,color: background1,),
+                                        onPressed: () {
+                                          setState(() {
+                                            gender = 1;
+                                          });
+                                        },
+                                        label: Text(
+                                          "Male",
+                                          style: TextStyle(
+                                              fontWeight: gender == 1
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              color: background1),
+                                        )),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 6),
+                                    child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(16)),
+                                          primary: gender == 2 ? Colors.white : color,
+                                          elevation: gender == 2 ? 4 : 0,
+                                        ),
+                                        icon: Icon(Icons.person,size: 22,color: background1,),
+                                        onPressed: () {
+                                          setState(() {
+                                            gender = 2;
+                                          });
+                                        },
+                                        label: Text(
+                                          "Female",
+                                          style: TextStyle(
+                                              fontWeight: gender == 2
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              color: background1),
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        //Password
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: TextFormField(
+                            obscureText: obscurePassword,
+                            controller: passwordController,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.text,
+                            validator: (v) {
+                              if (v.length == 0) {
+                                return 'Please enter password.';
+                              } else if (v.length < 8) {
+                                return 'Password must be minimum 8 characters';
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (v) {
+                              newPassword = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "New Password",
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    obscurePassword = !obscurePassword;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.remove_red_eye,
+                                  color: background1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        //Confirm Password
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: TextFormField(
+                            obscureText: obscureConfirmPassword,
+                            controller: confirmPasswordController,
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.text,
+                            validator: (v) {
+                              if (v.length == 0) {
+                                return 'Please enter password.';
+                              } else if (v.length < 8) {
+                                return 'Password must be minimum 8 characters';
+                              } else if (v != newPassword) {
+                                return 'Passwords doesn\'t match';
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (v) {
+                              confirmPassword = v;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: "Confirm New Password",
+                              labelStyle: TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    obscureConfirmPassword = !obscureConfirmPassword;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.remove_red_eye,
+                                  color: background1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 16),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: color,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                ),
+                                onPressed: () async {
+                                  Utils.showLoadingDialog(context, "Signing Up");
+                                  if (await validateUsername()) {
+                                    if (_formKey.currentState.validate()) {
+                                      await addUser();
+                                    } else {
+                                      Navigator.pop(context);
+                                    }
+                                  } else {
+                                    Navigator.pop(context);
+                                    Utils.showErrorDialog(context, "Username",
+                                        "Username you have chosen is aleady used. Please choose a different username.");
+                                  }
+                                },
+                                child: Text(
+                                  "Join Us",
+                                  style: TextStyle(
+                                      color: background1,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                )),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
                 ],
               ),
             ),

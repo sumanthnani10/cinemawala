@@ -82,58 +82,64 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 4, vertical: 16),
-                      child: TextFormField(
-                        controller: emailFieldController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (v) {
-                          Pattern pattern =
-                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                          RegExp regex = new RegExp(pattern);
-                          if (v.length == 0) {
-                            return 'Please enter email id';
-                          } else {
-                            if (!regex.hasMatch(v)) {
-                              return 'Enter valid email';
+                      child: Container(
+                            constraints: BoxConstraints(maxWidth: 400),
+                        child: TextFormField(
+                          controller: emailFieldController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (v) {
+                            Pattern pattern =
+                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                            RegExp regex = new RegExp(pattern);
+                            if (v.length == 0) {
+                              return 'Please enter email id';
                             } else {
-                              return null;
+                              if (!regex.hasMatch(v)) {
+                                return 'Enter valid email';
+                              } else {
+                                return null;
+                              }
                             }
-                          }
-                        },
-                        decoration: InputDecoration(
-                          labelText: "Email",
-                          prefixIcon: Icon(Icons.person),
-                          contentPadding: EdgeInsets.all(8),
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            prefixIcon: Icon(Icons.person),
+                            contentPadding: EdgeInsets.all(8),
+                          ),
                         ),
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: TextFormField(
-                        obscureText: obscureText,
-                        controller: passwordFieldController,
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.text,
-                        validator: (v) {
-                          if (v.length == 0) {
-                            return 'Please enter password.';
-                          } else if (v.length < 8) {
-                            return 'Password must be minimum 8 characters';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          contentPadding: EdgeInsets.all(4),
-                          prefixIcon: Icon(Icons.lock),
-                          suffix: InkWell(
-                            onTap: () {
-                              setState(() {
-                                obscureText = !obscureText;
-                              });
-                            },
-                            child: Container(child: Icon(Icons.remove_red_eye)),
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 400),
+                        child: TextFormField(
+                          obscureText: obscureText,
+                          controller: passwordFieldController,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
+                          validator: (v) {
+                            if (v.length == 0) {
+                              return 'Please enter password.';
+                            } else if (v.length < 8) {
+                              return 'Password must be minimum 8 characters';
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            contentPadding: EdgeInsets.all(4),
+                            prefixIcon: Icon(Icons.lock),
+                            suffix: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                              child: Container(child: Icon(Icons.remove_red_eye)),
+                            ),
                           ),
                         ),
                       ),

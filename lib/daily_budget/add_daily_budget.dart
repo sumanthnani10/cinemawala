@@ -1311,12 +1311,12 @@ class _AddDailyBudget extends State<AddDailyBudget>
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
+                          child: Wrap(
+                            spacing: 8,
                               children: List<Widget>.generate(
                                   subCategories.length, (j) {
                             var subcategory =
                                 budget[categories[i]][subCategories[j]];
-
                             contactControllers.add(new TextEditingController(
                                 text: "${subcategory["contact"]}"));
                             quantityControllers.add(new TextEditingController(
@@ -1325,548 +1325,273 @@ class _AddDailyBudget extends State<AddDailyBudget>
                                 text: "${subcategory["rate"]}"));
                             callSheetControllers.add(new TextEditingController(
                                 text: "${subcategory["callSheet"]}"));
-                            return isPopUp ? Column(
-                              children: [
-                                Container(
-                                  constraints: BoxConstraints(maxWidth: 360),
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(
-                                              color: j != 0
-                                                  ? background1
-                                                  : background,
-                                              width: 1))),
-                                  child: Column(
+                            return Container(
+                              constraints: BoxConstraints(maxWidth: 360),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      top: BorderSide(
+                                          color: j != 0
+                                              ? background1
+                                              : background,
+                                          width: 1))),
+                              child: Column( /////..................
+                                children: [
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Transform.scale(
-                                            scale: 1.1,
-                                            child: Checkbox(
-                                                value: budget[categories[i]][
-                                                    budget[categories[i]]
-                                                        .keys
-                                                        .elementAt(j)]["use"],
-                                                activeColor: color,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    budget[categories[i]][
-                                                            budget[categories[
-                                                                    i]]
-                                                                .keys
-                                                                .elementAt(j)]
-                                                        ["use"] = value;
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                }),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              "${reFormatKey(subCategories[j])}",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: subheading,
-                                            ),
-                                          ),
-                                        ],
+                                      Transform.scale(
+                                        scale: 1.1,
+                                        child: Checkbox(
+                                            value: budget[categories[i]][
+                                            budget[categories[i]]
+                                                .keys
+                                                .elementAt(j)]["use"],
+                                            activeColor: color,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                budget[categories[i]][
+                                                budget[categories[
+                                                i]]
+                                                    .keys
+                                                    .elementAt(j)]
+                                                ["use"] = value;
+                                                dailyBudget['budget'] =
+                                                    budget;
+                                              });
+                                            }),
                                       ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(4),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  budget[categories[i]][
-                                                          budget[categories[i]]
-                                                              .keys
-                                                              .elementAt(j)]
-                                                      ["contact"] = value;
-                                                  dailyBudget['budget'] =
-                                                      budget;
-                                                },
-                                                controller:
-                                                    contactControllers.last,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background1)),
-                                                  labelText: 'Contact#',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                      EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                              padding: const EdgeInsets.all(4),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  budget[categories[i]][
-                                                          budget[categories[i]]
-                                                              .keys
-                                                              .elementAt(j)]
-                                                      ["callSheet"] = value;
-                                                  dailyBudget['budget'] =
-                                                      budget;
-                                                },
-                                                controller:
-                                                    callSheetControllers.last,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background1)),
-                                                  labelText: 'Call Sheet',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                      EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Subtotal: ${budget[categories[i]][budget[categories[i]].keys.elementAt(j)]["subtotal"]}",
-                                                style: subheading,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4,
-                                                      vertical: 8),
-                                              child: TextField(
-                                                onSubmitted: (a) {
-                                                  if (a.isEmpty) {
-                                                    a = '0';
-                                                  }
-                                                  setState(() {
-                                                    budget[categories[
-                                                            i]][budget[
-                                                                categories[i]]
-                                                            .keys
-                                                            .elementAt(
-                                                                j)]["quantity"] =
-                                                        int.parse(a);
-                                                    budget[categories[i]][
-                                                            budget[categories[i]]
-                                                                .keys
-                                                                .elementAt(j)]
-                                                        ["subtotal"] = int.parse(
-                                                            a) *
-                                                        budget[categories[i]][
-                                                                budget[categories[i]]
-                                                                    .keys
-                                                                    .elementAt(j)]
-                                                            ["rate"];
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                },
-                                                controller:
-                                                    quantityControllers.last,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background1)),
-                                                  labelText: 'Quantity',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                      EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4,
-                                                      vertical: 8),
-                                              child: TextField(
-                                                onSubmitted: (a) {
-                                                  if (a.isEmpty) {
-                                                    a = '0';
-                                                  }
-                                                  setState(() {
-                                                    budget[categories[i]][
-                                                            budget[categories[
-                                                                    i]]
-                                                                .keys
-                                                                .elementAt(j)]
-                                                        ["rate"] = int.parse(a);
-                                                    budget[categories[i]][
-                                                            budget[categories[i]]
-                                                                .keys
-                                                                .elementAt(j)]
-                                                        ["subtotal"] = int.parse(
-                                                            a) *
-                                                        budget[categories[i]][
-                                                                budget[categories[i]]
-                                                                    .keys
-                                                                    .elementAt(j)]
-                                                            ["quantity"];
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                },
-                                                controller:
-                                                    rateControllers.last,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background1)),
-                                                  labelText: 'Rate',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                      EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                      Flexible(
+                                        child: Text(
+                                          "${reFormatKey(subCategories[j])}",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: subheading,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ):
-                            Wrap(
-                              direction: Axis.horizontal,
-                              children: [
-                                Container(
-                                  constraints: BoxConstraints(maxWidth: 360),
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(
-                                              color: j != 0
-                                                  ? background1
-                                                  : background,
-                                              width: 1))),
-                                  child: Column( /////..................
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Transform.scale(
-                                            scale: 1.1,
-                                            child: Checkbox(
-                                                value: budget[categories[i]][
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: TextField(
+                                            onChanged: (value) {
+                                              budget[categories[i]][
+                                              budget[categories[i]]
+                                                  .keys
+                                                  .elementAt(j)]
+                                              ["contact"] = value;
+                                              dailyBudget['budget'] =
+                                                  budget;
+                                            },
+                                            controller:
+                                            contactControllers.last,
+                                            keyboardType:
+                                            TextInputType.number,
+                                            decoration: InputDecoration(
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                      background1)),
+                                              labelText: 'Contact#',
+                                              labelStyle: TextStyle(
+                                                  color: background1,
+                                                  fontSize: 14),
+                                              contentPadding:
+                                              EdgeInsets.all(8),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    8),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              4,
+                                          padding: const EdgeInsets.all(4),
+                                          child: TextField(
+                                            onChanged: (value) {
+                                              budget[categories[i]][
+                                              budget[categories[i]]
+                                                  .keys
+                                                  .elementAt(j)]
+                                              ["callSheet"] = value;
+                                              dailyBudget['budget'] =
+                                                  budget;
+                                            },
+                                            controller:
+                                            callSheetControllers.last,
+                                            keyboardType:
+                                            TextInputType.number,
+                                            decoration: InputDecoration(
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                      background1)),
+                                              labelText: 'Call Sheet',
+                                              labelStyle: TextStyle(
+                                                  color: background1,
+                                                  fontSize: 14),
+                                              contentPadding:
+                                              EdgeInsets.all(8),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    8),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Subtotal: ${budget[categories[i]][budget[categories[i]].keys.elementAt(j)]["subtotal"]}",
+                                            style: subheading,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 4,
+                                              vertical: 8),
+                                          child: TextField(
+                                            onSubmitted: (a) {
+                                              if (a.isEmpty) {
+                                                a = '0';
+                                              }
+                                              setState(() {
+                                                budget[categories[
+                                                i]][budget[
+                                                categories[i]]
+                                                    .keys
+                                                    .elementAt(
+                                                    j)]["quantity"] =
+                                                    int.parse(a);
+                                                budget[categories[i]][
                                                 budget[categories[i]]
                                                     .keys
-                                                    .elementAt(j)]["use"],
-                                                activeColor: color,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    budget[categories[i]][
-                                                    budget[categories[
-                                                    i]]
-                                                        .keys
-                                                        .elementAt(j)]
-                                                    ["use"] = value;
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                }),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              "${reFormatKey(subCategories[j])}",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: subheading,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(4),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  budget[categories[i]][
-                                                  budget[categories[i]]
-                                                      .keys
-                                                      .elementAt(j)]
-                                                  ["contact"] = value;
-                                                  dailyBudget['budget'] =
-                                                      budget;
-                                                },
-                                                controller:
-                                                contactControllers.last,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                          background1)),
-                                                  labelText: 'Contact#',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                  EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                                  4,
-                                              padding: const EdgeInsets.all(4),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  budget[categories[i]][
-                                                  budget[categories[i]]
-                                                      .keys
-                                                      .elementAt(j)]
-                                                  ["callSheet"] = value;
-                                                  dailyBudget['budget'] =
-                                                      budget;
-                                                },
-                                                controller:
-                                                callSheetControllers.last,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                          background1)),
-                                                  labelText: 'Call Sheet',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                  EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Subtotal: ${budget[categories[i]][budget[categories[i]].keys.elementAt(j)]["subtotal"]}",
-                                                style: subheading,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 4,
-                                                  vertical: 8),
-                                              child: TextField(
-                                                onSubmitted: (a) {
-                                                  if (a.isEmpty) {
-                                                    a = '0';
-                                                  }
-                                                  setState(() {
-                                                    budget[categories[
-                                                    i]][budget[
-                                                    categories[i]]
-                                                        .keys
-                                                        .elementAt(
-                                                        j)]["quantity"] =
-                                                        int.parse(a);
+                                                    .elementAt(j)]
+                                                ["subtotal"] = int.parse(
+                                                    a) *
                                                     budget[categories[i]][
                                                     budget[categories[i]]
                                                         .keys
                                                         .elementAt(j)]
-                                                    ["subtotal"] = int.parse(
-                                                        a) *
-                                                        budget[categories[i]][
-                                                        budget[categories[i]]
-                                                            .keys
-                                                            .elementAt(j)]
-                                                        ["rate"];
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                },
-                                                controller:
-                                                quantityControllers.last,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                          background1)),
-                                                  labelText: 'Quantity',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                  EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8),
-                                                  ),
-                                                ),
+                                                    ["rate"];
+                                                dailyBudget['budget'] =
+                                                    budget;
+                                              });
+                                            },
+                                            controller:
+                                            quantityControllers.last,
+                                            keyboardType:
+                                            TextInputType.number,
+                                            decoration: InputDecoration(
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                      background1)),
+                                              labelText: 'Quantity',
+                                              labelStyle: TextStyle(
+                                                  color: background1,
+                                                  fontSize: 14),
+                                              contentPadding:
+                                              EdgeInsets.all(8),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    8),
                                               ),
                                             ),
                                           ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 4,
-                                                  vertical: 8),
-                                              child: TextField(
-                                                onSubmitted: (a) {
-                                                  if (a.isEmpty) {
-                                                    a = '0';
-                                                  }
-                                                  setState(() {
-                                                    budget[categories[i]][
-                                                    budget[categories[
-                                                    i]]
-                                                        .keys
-                                                        .elementAt(j)]
-                                                    ["rate"] = int.parse(a);
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 4,
+                                              vertical: 8),
+                                          child: TextField(
+                                            onSubmitted: (a) {
+                                              if (a.isEmpty) {
+                                                a = '0';
+                                              }
+                                              setState(() {
+                                                budget[categories[i]][
+                                                budget[categories[
+                                                i]]
+                                                    .keys
+                                                    .elementAt(j)]
+                                                ["rate"] = int.parse(a);
+                                                budget[categories[i]][
+                                                budget[categories[i]]
+                                                    .keys
+                                                    .elementAt(j)]
+                                                ["subtotal"] = int.parse(
+                                                    a) *
                                                     budget[categories[i]][
                                                     budget[categories[i]]
                                                         .keys
                                                         .elementAt(j)]
-                                                    ["subtotal"] = int.parse(
-                                                        a) *
-                                                        budget[categories[i]][
-                                                        budget[categories[i]]
-                                                            .keys
-                                                            .elementAt(j)]
-                                                        ["quantity"];
-                                                    dailyBudget['budget'] =
-                                                        budget;
-                                                  });
-                                                },
-                                                controller:
-                                                rateControllers.last,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                          background1)),
-                                                  labelText: 'Rate',
-                                                  labelStyle: TextStyle(
-                                                      color: background1,
-                                                      fontSize: 14),
-                                                  contentPadding:
-                                                  EdgeInsets.all(8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8),
-                                                  ),
-                                                ),
+                                                    ["quantity"];
+                                                dailyBudget['budget'] =
+                                                    budget;
+                                              });
+                                            },
+                                            controller:
+                                            rateControllers.last,
+                                            keyboardType:
+                                            TextInputType.number,
+                                            decoration: InputDecoration(
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                      background1)),
+                                              labelText: 'Rate',
+                                              labelStyle: TextStyle(
+                                                  color: background1,
+                                                  fontSize: 14),
+                                              contentPadding:
+                                              EdgeInsets.all(8),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    8),
                                               ),
                                             ),
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            )
-                            ;
+                                ],
+                              ),
+                            );
+
                           })),
                         ),
                       ],

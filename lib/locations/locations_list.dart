@@ -296,7 +296,11 @@ class _LocationsList extends State<LocationsList>
         if(maxWidth>Utils.mobileWidth)
           Flexible(
             flex: 4,
-              child:  Scaffold(body: sideWidget ?? Center(child: Container(child: Text("No Data Selected"),),),)
+            child: Scaffold(body: sideWidget ?? SizedBox.expand(child: Container(
+              decoration: BoxDecoration(
+                  border: Border(left: BorderSide(color: Colors.black))
+              ),
+              child: Center(child: Text("No Field Selected")),)),),
           )
       ],
     );});

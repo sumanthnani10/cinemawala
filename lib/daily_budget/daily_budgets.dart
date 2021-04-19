@@ -96,37 +96,36 @@ class _DailyBudgetsState extends State<DailyBudgets>
       ),
     );
   }
-  Widget widget2(){
-    return SizedBox.expand(
-        child: DailyBudgetPage(
-          project: project,
-          dailyBudget: selectedDailyBudget,
-          date: selectedDate,
-          id: selectedDateId,
-          getDailyBudgets: () {
-            dailyBudgets = Utils.dailyBudgetsMap;
-            setState(() {});
-          },
-          budget:
-          selectedDailyBudget != null ? selectedDailyBudget.budget : {},
-          nextDate: () async {
-            selectedDate = selectedDate.add(Duration(days: 1));
-            selectedDateId =
-            "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-            selectedDailyBudget = dailyBudgets[selectedDateId];
-            calendarController.setSelectedDay(selectedDate);
-            setState(() {});
-          },
-          prevDate: () async {
-            selectedDate = selectedDate.subtract(Duration(days: 1));
-            selectedDateId =
-            "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-            selectedDailyBudget = dailyBudgets[selectedDateId];
-            calendarController.setSelectedDay(selectedDate);
-            setState(() {});
-          },
-          key: UniqueKey(),
-        )
+  Widget widget2(ScrollController scrollController){
+    return DailyBudgetPage(
+      project: project,
+      scrollController: scrollController,
+      dailyBudget: selectedDailyBudget,
+      date: selectedDate,
+      id: selectedDateId,
+      getDailyBudgets: () {
+        dailyBudgets = Utils.dailyBudgetsMap;
+        setState(() {});
+      },
+      budget:
+      selectedDailyBudget != null ? selectedDailyBudget.budget : {},
+      nextDate: () async {
+        selectedDate = selectedDate.add(Duration(days: 1));
+        selectedDateId =
+        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+        selectedDailyBudget = dailyBudgets[selectedDateId];
+        calendarController.setSelectedDay(selectedDate);
+        setState(() {});
+      },
+      prevDate: () async {
+        selectedDate = selectedDate.subtract(Duration(days: 1));
+        selectedDateId =
+        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+        selectedDailyBudget = dailyBudgets[selectedDateId];
+        calendarController.setSelectedDay(selectedDate);
+        setState(() {});
+      },
+      key: UniqueKey(),
     );
   }
   @override
@@ -182,45 +181,22 @@ class _DailyBudgetsState extends State<DailyBudgets>
                   child: widget1()),
               Flexible(
                   flex: 5,
-                  child: SizedBox.expand(
-                    child: DailyBudgetPage(
-                      project: project,
-                      dailyBudget: selectedDailyBudget,
-                      date: selectedDate,
-                      id: selectedDateId,
-                      isPopUp: false,
-                      getDailyBudgets: () {
-                        dailyBudgets = Utils.dailyBudgetsMap;
-                        setState(() {});
-                      },
-                      budget:
-                      selectedDailyBudget != null ? selectedDailyBudget.budget : {},
-                      nextDate: () async {
-                        selectedDate = selectedDate.add(Duration(days: 1));
-                        selectedDateId =
-                        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-                        selectedDailyBudget = dailyBudgets[selectedDateId];
-                        calendarController.setSelectedDay(selectedDate);
-                        setState(() {});
-                      },
-                      prevDate: () async {
-                        selectedDate = selectedDate.subtract(Duration(days: 1));
-                        selectedDateId =
-                        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-                        selectedDailyBudget = dailyBudgets[selectedDateId];
-                        calendarController.setSelectedDay(selectedDate);
-                        setState(() {});
-                      },
-                      key: UniqueKey(),
-                    ),
-                  ),)
+                  child: widget2(new ScrollController()),)
             ],
           );
         }else{
           return Stack(
             children: [
               widget1(),
-              widget2()
+              DraggableScrollableSheet(
+                  initialChildSize: 300 / MediaQuery.of(context).size.height,
+                  minChildSize: 300 / MediaQuery.of(context).size.height,
+                  maxChildSize: 1,
+                  builder: (_,sc){
+                    return widget2(sc);
+                  }
+
+              )
             ],
           );
 

@@ -20,19 +20,20 @@ import 'select_actors.dart';
 class AddScene extends StatefulWidget {
   final Project project;
   final Map<dynamic, dynamic> scene;
+  final bool isPopUp;
 
-  AddScene({Key key, @required this.project, @required this.scene})
+  AddScene({Key key, @required this.project, @required this.scene,this.isPopUp})
       : super(key: key);
 
   @override
-  _AddScene createState() => _AddScene(this.project, this.scene);
+  _AddScene createState() => _AddScene(this.project, this.scene,this.isPopUp);
 }
 
 class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
   final Project project;
   Map<dynamic, dynamic> scene;
-
-  _AddScene(this.project, this.scene);
+  bool isPopUp;
+  _AddScene(this.project, this.scene, this.isPopUp);
 
   Color background, background1, color;
   List<Actor> selectedArtists = [], oldArtists = [];
@@ -58,6 +59,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     languages = project.languages;
     if (scene == null) {
       scene = {
@@ -358,711 +360,717 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                color: Colors.grey.shade400,
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Container(
-                  color: Colors.white,
-                  child: SingleChildScrollView(
-                      controller: cardScrollController,
-                      physics: NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List<Widget>.generate(languages.length, (i) {
-                          return Container(
-                            color: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 16),
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              children: [
-                                TextField(
-                                  textInputAction: TextInputAction.done,
-                                  textCapitalization: TextCapitalization.words,
-                                  onChanged: (v) {
-                                    scene['titles'][languages[i]] = v;
-                                  },
-                                  controller: titleControllers[i],
-                                  decoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: background1)),
-                                    labelText: 'Scene Title',
-                                    labelStyle: TextStyle(
-                                        color: background1, fontSize: 14),
-                                    contentPadding: EdgeInsets.all(8),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 16,
-                                ),
-                                TextField(
-                                  textInputAction: TextInputAction.done,
-                                  textCapitalization: TextCapitalization.words,
-                                  onChanged: (v) {
-                                    scene['gists'][languages[i]] = v;
-                                  },
-                                  maxLines: null,
-                                  controller: gistControllers[i],
-                                  decoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: background1)
-                                        //borderSide: const BorderSide(color: Colors.white)
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 480),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey.shade400,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Container(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                          controller: cardScrollController,
+                          physics: NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: List<Widget>.generate(languages.length, (i) {
+                              return Container(
+                                constraints: BoxConstraints(maxWidth: 480),
+                                color: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                //width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      textInputAction: TextInputAction.done,
+                                      textCapitalization: TextCapitalization.words,
+                                      onChanged: (v) {
+                                        scene['titles'][languages[i]] = v;
+                                      },
+                                      controller: titleControllers[i],
+                                      decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: background1)),
+                                        labelText: 'Scene Title',
+                                        labelStyle: TextStyle(
+                                            color: background1, fontSize: 14),
+                                        contentPadding: EdgeInsets.all(8),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                    labelText: 'Gist/Synopsis',
-                                    labelStyle: TextStyle(
-                                        color: background1, fontSize: 14),
-                                    contentPadding: EdgeInsets.all(8),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    TextField(
+                                      textInputAction: TextInputAction.done,
+                                      textCapitalization: TextCapitalization.words,
+                                      onChanged: (v) {
+                                        scene['gists'][languages[i]] = v;
+                                      },
+                                      maxLines: null,
+                                      controller: gistControllers[i],
+                                      decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: background1)
+                                            //borderSide: const BorderSide(color: Colors.white)
+                                            ),
+                                        labelText: 'Gist/Synopsis',
+                                        labelStyle: TextStyle(
+                                            color: background1, fontSize: 14),
+                                        contentPadding: EdgeInsets.all(8),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        }),
-                      )),
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: InkWell(
-                  onTap: () async {
-                    Utils.showLoadingDialog(context, 'Loading');
-                    var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectLocation(
-                                  project: project,
-                                ),
-                                Utils.DTU)) ??
-                        null;
-                    if (selected != null) {
-                      scene["location"] = selected.id;
-                      selectedLocation = selected;
-                      setState(() {});
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
+                              );
+                            }),
+                          )),
                     ),
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: scene['location'] == ""
-                            ? Container(
-                                width: 60,
-                                height: 50,
-                                color: color,
-                                child: Text('',
-                                    style: TextStyle(
-                                        color: background, fontSize: 12)),
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: selectedLocation.images.length > 0
-                                    ? selectedLocation.images[0]
-                                    : '',
-                                width: 60,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => const Icon(
-                                    Icons.image_not_supported_outlined),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, 'Loading');
+                        var selected = await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    SelectLocation(
+                                      project: project,
+                                    ),
+                                    Utils.DTU)) ??
+                            null;
+                        if (selected != null) {
+                          scene["location"] = selected.id;
+                          selectedLocation = selected;
+                          setState(() {});
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: scene['location'] == ""
+                                ? Container(
+                                    width: 60,
+                                    height: 50,
+                                    color: color,
+                                    child: Text('',
+                                        style: TextStyle(
+                                            color: background, fontSize: 12)),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: selectedLocation.images.length > 0
+                                        ? selectedLocation.images[0]
+                                        : '',
+                                    width: 60,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => const Icon(
                                         Icons.image_not_supported_outlined),
-                              ),
-                      ),
-                      title: Text(
-                          scene['location'] == ""
-                              ? ""
-                              : "${selectedLocation.location}",
-                          style: TextStyle(
-                              color: background1, fontWeight: FontWeight.bold),
-                          maxLines: 1),
-                      subtitle: Text(
-                        scene['location'] == ""
-                            ? "Select Location"
-                            : "@ ${selectedLocation.shootLocation}",
-                        style: TextStyle(color: background1),
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Day/Night
-              Container(
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 0),
-                        child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              primary: scene['day'] ? Colors.white : color,
-                              elevation: scene['day'] ? 4 : 0,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                scene['day'] = true;
-                              });
-                            },
-                            icon: Icon(Icons.wb_sunny_outlined,
-                                size: 22, color: background1),
-                            label: Text(
-                              "Day",
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                            Icons.image_not_supported_outlined),
+                                  ),
+                          ),
+                          title: Text(
+                              scene['location'] == ""
+                                  ? ""
+                                  : "${selectedLocation.location}",
                               style: TextStyle(
-                                  fontWeight: scene['day']
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: background1),
-                            )),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 0),
-                        child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              primary: !scene['day'] ? Colors.white : color,
-                              elevation: !scene['day'] ? 4 : 0,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                scene['day'] = false;
-                              });
-                            },
-                            icon: Icon(Icons.nightlight_round,
-                                size: 22, color: background1),
-                            label: Text(
-                              "Night",
-                              style: TextStyle(
-                                  fontWeight: !scene['day']
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: background1),
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Interior/Exterior
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 0),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              primary: scene['interior'] ? Colors.white : color,
-                              elevation: scene['interior'] ? 4 : 0,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                scene['interior'] = true;
-                              });
-                            },
-                            child: Text(
-                              "Interior",
-                              style: TextStyle(
-                                  fontWeight: scene['interior']
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: background1),
-                            )),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 0),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              primary:
-                                  !scene['interior'] ? Colors.white : color,
-                              elevation: !scene['interior'] ? 4 : 0,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                scene['interior'] = false;
-                              });
-                            },
-                            child: Text(
-                              "Exterior",
-                              style: TextStyle(
-                                  fontWeight: !scene['interior']
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: background1),
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Makeup & Hair
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  textInputAction: TextInputAction.newline,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) {
-                    scene['make_up'] = v;
-                  },
-                  controller: makeUpTextController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: background1)),
-                    labelText: 'Makeup/Hair',
-                    labelStyle: TextStyle(color: background1, fontSize: 14),
-                    contentPadding: EdgeInsets.all(8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              // Spl Equipments
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 4),
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                      horizontal: BorderSide(color: color, width: 2)),
-                  // borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-                      child: TextField(
-                        textInputAction: TextInputAction.newline,
-                        textCapitalization: TextCapitalization.words,
-                        onChanged: (v) {
-                          scene['special_equipment'] = v;
-                        },
-                        controller: specialEquipmentTextController,
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: background1)),
-                          labelText: 'Special Equipment',
-                          labelStyle:
-                              TextStyle(color: background1, fontSize: 14),
-                          contentPadding: EdgeInsets.all(8),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                                  color: background1, fontWeight: FontWeight.bold),
+                              maxLines: 1),
+                          subtitle: Text(
+                            scene['location'] == ""
+                                ? "Select Location"
+                                : "@ ${selectedLocation.shootLocation}",
+                            style: TextStyle(color: background1),
+                            maxLines: 1,
                           ),
                         ),
                       ),
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List<Widget>.generate(
-                            specialEquipments.length, (i) {
-                          return InkWell(
-                            onTap: () {
-                              if (specialEquipmentTextController.text != "" &&
-                                  !specialEquipmentTextController.text
-                                      .endsWith(",")) {
-                                specialEquipmentTextController.text =
-                                    specialEquipmentTextController.text + ",";
-                              }
-                              specialEquipmentTextController.text =
-                                  specialEquipmentTextController.text +
-                                      " ${specialEquipments[i]},";
-                              specialEquipmentTextController.selection =
-                                  TextSelection.fromPosition(TextPosition(
-                                      offset: specialEquipmentTextController
-                                          .text.length));
-                              scene['special_equipment'] =
-                                  specialEquipmentTextController.text;
+                  ),
+                  // Day/Night
+                  Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: scene['day'] ? Colors.white : color,
+                                  elevation: isPopUp ? scene['day'] ? 4 : 0 : scene['day'] ? 2 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    scene['day'] = true;
+                                  });
+                                },
+                                icon: Icon(Icons.wb_sunny_outlined,
+                                    size: 22, color: background1),
+                                label: Text(
+                                  "Day",
+                                  style: TextStyle(
+                                      fontWeight: scene['day']
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding:  EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: !scene['day'] ? Colors.white : color,
+                                  elevation: isPopUp ? !scene['day'] ? 4 : 0 : !scene['day'] ? 2 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    scene['day'] = false;
+                                  });
+                                },
+                                icon: Icon(Icons.nightlight_round,
+                                    size: 22, color: background1),
+                                label: Text(
+                                  "Night",
+                                  style: TextStyle(
+                                      fontWeight: !scene['day']
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Interior/Exterior
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:  EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: scene['interior'] ? Colors.white : color,
+                                  elevation: isPopUp ? scene['interior'] ? 4 : 0 : scene['interior'] ? 2 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    scene['interior'] = true;
+                                  });
+                                },
+                                child: Text(
+                                  "Interior",
+                                  style: TextStyle(
+                                      fontWeight: scene['interior']
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary:
+                                      !scene['interior'] ? Colors.white : color,
+                                  elevation: isPopUp ? !scene['interior'] ? 4 : 0 : !scene['interior'] ? 2 : 0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    scene['interior'] = false;
+                                  });
+                                },
+                                child: Text(
+                                  "Exterior",
+                                  style: TextStyle(
+                                      fontWeight: !scene['interior']
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Makeup & Hair
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: TextField(
+                      textInputAction: TextInputAction.newline,
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) {
+                        scene['make_up'] = v;
+                      },
+                      controller: makeUpTextController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'Makeup/Hair',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Spl Equipments
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.symmetric(
+                          horizontal: BorderSide(color: color, width: 2)),
+                      // borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+                          child: TextField(
+                            textInputAction: TextInputAction.newline,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: (v) {
+                              scene['special_equipment'] = v;
                             },
-                            splashColor: background1.withOpacity(0.2),
-                            child: Container(
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(300),
+                            controller: specialEquipmentTextController,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: background1)),
+                              labelText: 'Special Equipment',
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Text('${specialEquipments[i]}'),
                             ),
-                          );
-                        }),
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: List<Widget>.generate(
+                                specialEquipments.length, (i) {
+                              return InkWell(
+                                onTap: () {
+                                  if (specialEquipmentTextController.text != "" &&
+                                      !specialEquipmentTextController.text
+                                          .endsWith(",")) {
+                                    specialEquipmentTextController.text =
+                                        specialEquipmentTextController.text + ",";
+                                  }
+                                  specialEquipmentTextController.text =
+                                      specialEquipmentTextController.text +
+                                          " ${specialEquipments[i]},";
+                                  specialEquipmentTextController.selection =
+                                      TextSelection.fromPosition(TextPosition(
+                                          offset: specialEquipmentTextController
+                                              .text.length));
+                                  scene['special_equipment'] =
+                                      specialEquipmentTextController.text;
+                                },
+                                splashColor: background1.withOpacity(0.2),
+                                child: Container(
+                                  margin: EdgeInsets.all(2),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    borderRadius: BorderRadius.circular(300),
+                                  ),
+                                  child: Text('${specialEquipments[i]}'),
+                                ),
+                              );
+                            }),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  // SFX
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: TextField(
+                      textInputAction: TextInputAction.newline,
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) {
+                        scene['sfx'] = v;
+                      },
+                      controller: sfxTextController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'SFX',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              ),
-              // SFX
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  textInputAction: TextInputAction.newline,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) {
-                    scene['sfx'] = v;
-                  },
-                  controller: sfxTextController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: background1)),
-                    labelText: 'SFX',
-                    labelStyle: TextStyle(color: background1, fontSize: 14),
-                    contentPadding: EdgeInsets.all(8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ),
-              ),
-              // VFX
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  textInputAction: TextInputAction.newline,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) {
-                    scene['vfx'] = v;
-                  },
-                  controller: vfxTextController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: background1)),
-                    labelText: 'VFX',
-                    labelStyle: TextStyle(color: background1, fontSize: 14),
-                    contentPadding: EdgeInsets.all(8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  // VFX
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: TextField(
+                      textInputAction: TextInputAction.newline,
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) {
+                        scene['vfx'] = v;
+                      },
+                      controller: vfxTextController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'VFX',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              // Choreographer
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) {
-                    scene['choreographer'] = v;
-                  },
-                  controller: choreographerTextController,
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: background1)),
-                    labelText: 'Choreographer',
-                    labelStyle: TextStyle(color: background1, fontSize: 14),
-                    contentPadding: EdgeInsets.all(8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  // Choreographer
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: TextField(
+                      textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) {
+                        scene['choreographer'] = v;
+                      },
+                      controller: choreographerTextController,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'Choreographer',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              // Fighter
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: TextField(
-                  textInputAction: TextInputAction.done,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) {
-                    scene['fighter'] = v;
-                  },
-                  controller: fighterTextController,
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: background1)),
-                    labelText: 'Fighter',
-                    labelStyle: TextStyle(color: background1, fontSize: 14),
-                    contentPadding: EdgeInsets.all(8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  // Fighter
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: TextField(
+                      textInputAction: TextInputAction.done,
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) {
+                        scene['fighter'] = v;
+                      },
+                      controller: fighterTextController,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: background1)),
+                        labelText: 'Fighter',
+                        labelStyle: TextStyle(color: background1, fontSize: 14),
+                        contentPadding: EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              // Artists
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: InkWell(
-                  onTap: () async {
-                    Utils.showLoadingDialog(context, 'Loading');
-                    var selected = await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            SelectActors(
-                              project: project,
-                              selectedActors: selectedArtists,
-                            ),
-                            Utils.DTU));
-                    if (selected != null) {
-                      scene['artists'] = selected[0];
-                      selectedArtists = selected[1];
-                      artistsImages = [];
-                      var costumes = [];
-                      for (var i in selectedArtists) {
-                        artistsImages.add(i.image ?? '');
-                      }
-                      int ind = 0;
-                      scene['artists'].forEach((a) {
-                        costumes.add({"id": a});
-                        var oldCostume = scene['costumes'].firstWhere(
-                            (e) => e['id'] == a,
-                            orElse: () => null);
-                        if (oldCostume != null) {
-                          costumes[ind]['costumes'] = oldCostume["costumes"];
+                  // Artists
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, 'Loading');
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectActors(
+                                  project: project,
+                                  selectedActors: selectedArtists,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['artists'] = selected[0];
+                          selectedArtists = selected[1];
+                          artistsImages = [];
+                          var costumes = [];
+                          for (var i in selectedArtists) {
+                            artistsImages.add(i.image ?? '');
+                          }
+                          int ind = 0;
+                          scene['artists'].forEach((a) {
+                            costumes.add({"id": a});
+                            var oldCostume = scene['costumes'].firstWhere(
+                                (e) => e['id'] == a,
+                                orElse: () => null);
+                            if (oldCostume != null) {
+                              costumes[ind]['costumes'] = oldCostume["costumes"];
+                            } else {
+                              costumes[ind]['costumes'] = [];
+                            }
+                            ind++;
+                          });
+                          scene['costumes'] = costumes;
+
+                          for (var i in scene['costumes']) {
+                            for (var j in i['costumes']) {
+                              Costume costume = Utils.costumesMap[j];
+                              selectedCostumes.add(costume);
+                              costumesImages.add(costume.referenceImage ?? '');
+                            }
+                          }
+
+                          Navigator.pop(context);
+                          setState(() {});
                         } else {
-                          costumes[ind]['costumes'] = [];
+                          Navigator.pop(context);
                         }
-                        ind++;
-                      });
-                      scene['costumes'] = costumes;
-
-                      for (var i in scene['costumes']) {
-                        for (var j in i['costumes']) {
-                          Costume costume = Utils.costumesMap[j];
-                          selectedCostumes.add(costume);
-                          costumesImages.add(costume.referenceImage ?? '');
-                        }
-                      }
-
-                      Navigator.pop(context);
-                      setState(() {});
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Artists",
-                          style: TextStyle(
-                              color: background1, fontWeight: FontWeight.bold),
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        Spacer(),
-                        imagesInCircles(artistsImages)
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Additional Artists
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: InkWell(
-                  onTap: () async {
-                    // print(scene['addl_artists']);
-                    var addlArtists = Utils.additionalArtists;
-                    for (var k in addlArtists.keys) {
-                      addlArtists['$k']['field_values'] =
-                          scene['addl_artists']['$k'];
-                    }
-                    var selected = await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            AddCompanyArtists(
-                              additionalArtists: addlArtists,
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Artists",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
                             ),
-                            Utils.DTU));
-                    if (selected != null) {
-                      for (var k in selected.keys) {
-                        scene['addl_artists']['$k'] =
-                            selected['$k']['field_values'];
-                      }
-                      setState(() {});
-                    }
-                  },
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(8),
+                            Spacer(),
+                            imagesInCircles(artistsImages)
+                          ],
+                        ),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      child: Text(
-                        'Company/Additional Artists',
-                        style: TextStyle(
-                            color: background1, fontWeight: FontWeight.bold),
-                      )),
-                ),
-              ),
-              // Costumes
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: InkWell(
-                  onTap: () async {
-                    Utils.showLoadingDialog(context, "Loading");
-                    var selected = await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            SelectCostumes(
-                              project: project,
-                              selectedActors: selectedArtists,
-                              costumes: scene['costumes'],
-                            ),
-                            Utils.DTU));
-                    if (selected != null) {
-                      scene['costumes'] = selected;
-                      selectedCostumes.clear();
-                      selectedCostumes = [];
-                      costumesImages.clear();
-                      costumesImages = [];
-                      for (var i in scene['costumes']) {
-                        for (var j in i['costumes']) {
-                          Costume costume = Utils.costumesMap[j];
-                          selectedCostumes.add(costume);
-                          costumesImages.add(costume.referenceImage ?? '');
+                    ),
+                  ),
+                  // Additional Artists
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        // print(scene['addl_artists']);
+                        var addlArtists = Utils.additionalArtists;
+                        for (var k in addlArtists.keys) {
+                          addlArtists['$k']['field_values'] =
+                              scene['addl_artists']['$k'];
                         }
-                      }
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                AddCompanyArtists(
+                                  additionalArtists: addlArtists,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          for (var k in selected.keys) {
+                            scene['addl_artists']['$k'] =
+                                selected['$k']['field_values'];
+                          }
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          child: Text(
+                            'Company/Additional Artists',
+                            style: TextStyle(
+                                color: background1, fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ),
+                  // Costumes
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, "Loading");
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectCostumes(
+                                  project: project,
+                                  selectedActors: selectedArtists,
+                                  costumes: scene['costumes'],
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['costumes'] = selected;
+                          selectedCostumes.clear();
+                          selectedCostumes = [];
+                          costumesImages.clear();
+                          costumesImages = [];
+                          for (var i in scene['costumes']) {
+                            for (var j in i['costumes']) {
+                              Costume costume = Utils.costumesMap[j];
+                              selectedCostumes.add(costume);
+                              costumesImages.add(costume.referenceImage ?? '');
+                            }
+                          }
 
-                      Navigator.pop(context);
-                      setState(() {});
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Costumes",
-                          style: TextStyle(
-                              color: background1, fontWeight: FontWeight.bold),
+                          Navigator.pop(context);
+                          setState(() {});
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        Spacer(),
-                        imagesInSquares(costumesImages),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Props
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: InkWell(
-                  onTap: () async {
-                    Utils.showLoadingDialog(context, 'Loading');
-                    var selected = await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            SelectProps(
-                              project: project,
-                              selectedProps: selectedProps,
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Costumes",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
                             ),
-                            Utils.DTU));
-                    if (selected != null) {
-                      scene['props'] = selected[0];
-                      selectedProps = selected[1];
-                      propsImages = [];
-                      for (var i in selectedProps) {
-                        propsImages.add(i.referenceImage ?? '');
-                      }
-                      Navigator.pop(context);
-                      setState(() {});
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Props",
-                          style: TextStyle(
-                              color: background1, fontWeight: FontWeight.bold),
+                            Spacer(),
+                            imagesInSquares(costumesImages),
+                          ],
                         ),
-                        Spacer(),
-                        imagesInSquares(propsImages),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  // Props
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, 'Loading');
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectProps(
+                                  project: project,
+                                  selectedProps: selectedProps,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['props'] = selected[0];
+                          selectedProps = selected[1];
+                          propsImages = [];
+                          for (var i in selectedProps) {
+                            propsImages.add(i.referenceImage ?? '');
+                          }
+                          Navigator.pop(context);
+                          setState(() {});
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Props",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            imagesInSquares(propsImages),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

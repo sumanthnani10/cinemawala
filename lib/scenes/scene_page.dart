@@ -19,7 +19,6 @@ class ScenePage extends StatefulWidget {
   final Project project;
   final Scene scene;
   bool popUp;
-
   ScenePage({Key key, @required this.project, @required this.scene, this.popUp})
       : super(key: key);
 
@@ -31,7 +30,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
   final Project project;
   Scene scene;
   bool popUp;
-
   _ScenePage(this.project, this.scene, this.popUp);
 
   Color background, background1, color;
@@ -60,7 +58,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     popUp = popUp ?? false;
-
     if (popUp) {
       minus = 48;
     }
@@ -230,9 +227,12 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
               )
             : AppBar(
                 flexibleSpace: Container(
-                  decoration: BoxDecoration(
+
+                  decoration: popUp ? BoxDecoration(
                     gradient: Utils.linearGradient,
-                  ),
+                  ) : BoxDecoration(
+                      border: Border(left:BorderSide(color: Colors.black)),
+                      color: Colors.white),
                 ),
                 backgroundColor: color,
                 bottom: PreferredSize(
@@ -321,13 +321,14 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
         body: GestureDetector(
           onTap: () {},
           child: Container(
+
             margin: popUp
                 ? const EdgeInsets.symmetric(horizontal: 24, vertical: 40)
                 : const EdgeInsets.all(0),
             decoration: popUp
                 ? BoxDecoration(
                     color: background, borderRadius: BorderRadius.circular(8))
-                : BoxDecoration(),
+                : BoxDecoration(border: Border(left: BorderSide(color: Colors.black)),),
             child: Column(
               children: [
                 if (popUp)
@@ -586,15 +587,15 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                             children: [
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: popUp ? 0 : 4),
                                   child: ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(32)),
                                         primary: Colors.white,
-                                        elevation: 4,
+                                        elevation: popUp ? 4 : 2,
                                       ),
                                       onPressed: () {},
                                       icon: Icon(Icons.wb_sunny_outlined,
@@ -609,15 +610,15 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: popUp ? 0 : 4),
                                   child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(16)),
                                         primary: Colors.white,
-                                        elevation: 4,
+                                        elevation: popUp ? 4 : 2,
                                       ),
                                       onPressed: () {},
                                       child: Text(
