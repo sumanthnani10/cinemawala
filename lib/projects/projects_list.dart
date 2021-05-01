@@ -1,7 +1,9 @@
+import 'package:cinemawala/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../utils.dart';
 import 'add_project.dart';
@@ -25,6 +27,7 @@ class _ProjectsList extends State<ProjectsList> {
   @override
   void initState() {
     loading = true;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getProjects();
     });
@@ -43,7 +46,6 @@ class _ProjectsList extends State<ProjectsList> {
     });
     Navigator.pop(context);
   }
-
   getProject(Project proj) async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting ${proj.name}');
@@ -109,21 +111,44 @@ class _ProjectsList extends State<ProjectsList> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Text(
-                        "My Projects",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: const Color(0xff309f86),
-                          fontWeight: FontWeight.w600,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: Text(
+                            "My Projects",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: const Color(0xff309f86),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                        textAlign: TextAlign.left,
                       ),
-                    ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: InkWell(
+                              onTap: (){
+                                Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        PersonalCalendar(),
+                                        Utils.DTU));
+                              },
+                              child: Icon(Icons.calendar_today)),
+                        ),
+                      ),
+                    ],
                   ),
+
                   Flexible(
                     child: Align(
                       alignment: Alignment.centerLeft,

@@ -308,6 +308,7 @@ class _ActorsListState extends State<ActorsList>
                           setState(() {
                             sideWidget =
                                     ActorPage(
+                                      key: UniqueKey(),
                                       actor: artists[i],
                                       isPopUp: maxWidth>Utils.mobileWidth? false : true,
                                       project: project,

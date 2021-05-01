@@ -368,6 +368,7 @@ class _ActorPage extends State<ActorPage> {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: isPopUp ? true : false,
         flexibleSpace: Container(
           decoration: isPopUp? BoxDecoration(
             gradient: Utils.linearGradient,
