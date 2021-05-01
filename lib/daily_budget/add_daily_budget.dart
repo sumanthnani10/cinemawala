@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -1150,6 +1151,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
         key: _scaffoldKey,
         backgroundColor: background,
         appBar: AppBar(
+          automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,

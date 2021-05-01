@@ -1,6 +1,7 @@
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';

@@ -19,7 +19,7 @@ import 'utils.dart';
 class PdfGenerator {
   static Future<Uint8List> getImageBytes(String link) async {
     Uint8List response =
-        (await NetworkAssetBundle(Uri.parse("${link}")).load("${link}"))
+        (await NetworkAssetBundle(Uri.parse("$link")).load("$link"))
             .buffer
             .asUint8List();
     return response;
@@ -58,7 +58,7 @@ class PdfGenerator {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(text: 'Date: ', style: labelStyle),
-                          TextSpan(text: '${date}', style: valueStyle),
+                          TextSpan(text: '$date', style: valueStyle),
                         ],
                       ),
                     ),

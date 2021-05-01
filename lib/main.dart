@@ -30,6 +30,9 @@ class _CinemawalaState extends State<Cinemawala> {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8))),
       ),
       home: SplashScreen(),
     );
@@ -94,6 +97,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,

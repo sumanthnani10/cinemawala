@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/schedule/schedule_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -120,6 +121,7 @@ class _SchedulesState extends State<Schedules>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

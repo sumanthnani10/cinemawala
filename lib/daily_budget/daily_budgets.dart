@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -84,6 +85,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,
@@ -170,39 +172,5 @@ class _DailyBudgetsState extends State<DailyBudgets>
         ],
       ),
     );
-  }
-
-  _showDialog() {
-    var _textController = new TextEditingController();
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: TextField(
-                controller: _textController,
-              ),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () {
-                      if (_textController.text.isEmpty) return;
-                      setState(() {
-                        if (calendarController.selectedDay != null) {
-                          if (calenderDailyBudget[
-                                  calendarController.selectedDay] ==
-                              null) {
-                            calenderDailyBudget[
-                                calendarController.selectedDay] = [];
-                          }
-                          calenderDailyBudget[calendarController.selectedDay]
-                              .add(_textController.text);
-                        } else {
-                          calenderDailyBudget[calendarController.selectedDay] =
-                              [_textController.text];
-                        }
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Add"))
-              ],
-            ));
   }
 }

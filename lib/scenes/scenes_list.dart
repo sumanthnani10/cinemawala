@@ -6,6 +6,7 @@ import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/scenes/scene_page.dart';
 import 'package:cinemawala/scenes/select_actors.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -186,6 +187,7 @@ class _ScenesList extends State<ScenesList>
     }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

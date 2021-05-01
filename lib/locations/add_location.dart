@@ -84,6 +84,7 @@ class _AddLocation extends State<AddLocation>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,
@@ -117,10 +118,9 @@ class _AddLocation extends State<AddLocation>
                         children: [
                           InkWell(
                             onTap: () async {
-                              String image_path =
-                                  await Utils.askSource(context);
-                              if (image_path != null) {
-                                locationImages[i] = File(image_path);
+                              String imagePath = await Utils.askSource(context);
+                              if (imagePath != null) {
+                                locationImages[i] = File(imagePath);
                               }
                               setState(() {});
                             },
@@ -203,10 +203,10 @@ class _AddLocation extends State<AddLocation>
                                 maxRadius: 14,
                                 child: IconButton(
                                   onPressed: () async {
-                                    String image_path =
+                                    String imagePath =
                                         await Utils.askSource(context);
-                                    if (image_path != null) {
-                                      locationImages[i] = File(image_path);
+                                    if (imagePath != null) {
+                                      locationImages[i] = File(imagePath);
                                     }
                                     setState(() {});
                                   },

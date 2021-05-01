@@ -10,6 +10,7 @@ import 'package:cinemawala/scenes/additional_artists.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
 import 'package:cinemawala/scenes/select_props.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -229,6 +230,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                 child: Container(),
               )
             : AppBar(
+          automaticallyImplyLeading: !kIsWeb,
                 flexibleSpace: Container(
                   decoration: BoxDecoration(
                     gradient: Utils.linearGradient,
@@ -240,11 +242,11 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: List<Widget>.generate(langsInLang.length, (i) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: i == selectedLanguage ? Colors.white : color,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List<Widget>.generate(langsInLang.length, (i) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: i == selectedLanguage ? Colors.white : color,
                       borderRadius: BorderRadius.circular(32),
                     ),
                     margin: const EdgeInsets.symmetric(
@@ -273,11 +275,11 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                     fontFamily: 'Poppins')),
                             TextSpan(
                                 text:
-                                          '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontFamily: 'Poppins',
-                                          color: background1)),
+                                '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'Poppins',
+                                    color: background1)),
                           ],
                         ),
                       ),
@@ -295,17 +297,17 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
           actions: [
             TextButton.icon(
               onPressed: () async {
-                      await Navigator.push(
-                          context,
-                          Utils.createRoute(
-                              AddScene(project: project, scene: scene.toJson()),
-                              Utils.RTL));
-                      Navigator.pop(context);
-                      // print(Utils.scenesMap[scene.id].gists);
-                      // scene = Utils.scenesMap[scene.id];
-                      // await setScene();
-                      // setState(() {});
-                    },
+                await Navigator.push(
+                    context,
+                    Utils.createRoute(
+                        AddScene(project: project, scene: scene.toJson()),
+                        Utils.RTL));
+                Navigator.pop(context);
+                // print(Utils.scenesMap[scene.id].gists);
+                // scene = Utils.scenesMap[scene.id];
+                // await setScene();
+                // setState(() {});
+              },
               label: Text(
                 "Edit",
                 style: TextStyle(color: Colors.indigo),

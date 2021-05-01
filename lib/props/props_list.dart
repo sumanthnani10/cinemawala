@@ -5,6 +5,7 @@ import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/scenes/select_props.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -59,6 +60,7 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,

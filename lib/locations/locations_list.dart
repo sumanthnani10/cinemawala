@@ -4,6 +4,7 @@ import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/locations/location_page.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -69,6 +70,7 @@ class _LocationsList extends State<LocationsList>
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,

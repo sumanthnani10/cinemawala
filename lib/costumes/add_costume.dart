@@ -75,6 +75,7 @@ class _AddCostume extends State<AddCostume>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

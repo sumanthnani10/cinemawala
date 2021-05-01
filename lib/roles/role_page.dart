@@ -1,4 +1,5 @@
 import 'package:cinemawala/projects/project.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -47,6 +48,7 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

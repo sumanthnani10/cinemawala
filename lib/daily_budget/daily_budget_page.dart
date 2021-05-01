@@ -53,7 +53,6 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   _DailyBudgetPage(this.project, this.budget, this.dailyBudget, this.date,
       this.id, this.getDailyBudgets, this.nextDate, this.prevDate);
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Color background, background1, color;
   var categoryHeading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   var subheading = TextStyle(fontSize: 18);
@@ -70,7 +69,6 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   int viewCats = 3;
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
-  TimeOfDay _timeOfDay = TimeOfDay.now();
 
   @override
   void initState() {

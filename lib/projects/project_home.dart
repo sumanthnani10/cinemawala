@@ -7,6 +7,7 @@ import 'package:cinemawala/roles/roles_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:cinemawala/schedule/schedules.dart';
 import 'package:cinemawala/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'add_project.dart';
@@ -140,6 +141,7 @@ class _ProjectHome extends State<ProjectHome> {
     var padding = EdgeInsets.all(8);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

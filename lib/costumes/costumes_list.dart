@@ -4,6 +4,7 @@ import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -71,6 +72,7 @@ class _CostumesListState extends State<CostumesList>
       child: Scaffold(
         backgroundColor: background,
         appBar: AppBar(
+          automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,
