@@ -266,7 +266,6 @@ class Utils {
   static const String DOMAIN =
       "us-central1-cinemawala-2021b.cloudfunctions.net";
   static const String URL_PATH = "/cinemawala";
-
   static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
   static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
   static Uri VALIDATE_USERNAME =
