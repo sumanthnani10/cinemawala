@@ -68,6 +68,7 @@ class _SelectProps extends State<SelectProps> {
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
@@ -235,27 +236,28 @@ class _SelectProps extends State<SelectProps> {
 class SelectedProps extends StatefulWidget {
   final Project project;
   final List<Prop> selectedProps;
-
-  SelectedProps({Key key, @required this.project, @required this.selectedProps})
+  final bool isPopUp;
+  SelectedProps({Key key, @required this.project, @required this.selectedProps,this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedProps createState() =>
-      _SelectedProps(this.project, this.selectedProps);
+      _SelectedProps(this.project, this.selectedProps,this.isPopUp);
 }
 
 class _SelectedProps extends State<SelectedProps>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   Color background, background1, color;
   final List<Prop> selectedProps;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
-  _SelectedProps(this.project, this.selectedProps);
-
+  _SelectedProps(this.project, this.selectedProps,this.isPopUp);
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
   }
 
@@ -274,117 +276,123 @@ class _SelectedProps extends State<SelectedProps>
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        if(isPopUp){
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
-        body: Center(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              height: MediaQuery.of(context).size.height - (48 * 2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.arrow_back_rounded),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                      Text(
-                        "Selected Props",
-                        style: TextStyle(fontSize: 20, color: background1),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    controller: searchController,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.search,
-                    onChanged: (s) {},
-                    onSubmitted: (v) {
-                      setState(() {
-                        search = v;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchController.text = '';
-                              search = '';
-                            });
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: search == '' ? Colors.white : Colors.black,
-                            size: 16,
-                          ),
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
+        body: Container(
+          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.black))),
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+                constraints: BoxConstraints(maxWidth: 480),
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                height: MediaQuery.of(context).size.height - (48 * 2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        isPopUp ? IconButton(
+                            icon: Icon(Icons.arrow_back_rounded),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }):Container(),
+                        Text(
+                          "Selected Props",
+                          style: TextStyle(fontSize: 20, color: background1),
+                          textAlign: TextAlign.center,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 8),
-                        labelText: 'Search Prop',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        fillColor: Colors.white),
-                  ),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          children:
-                              List<Widget>.generate(showProps.length, (i) {
-                            Prop prop = showProps[i];
-                            return InkWell(
-                              onLongPress: () async {
-                                await Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        PropPage(
-                                          prop: prop,
-                                          project: project,
-                                        ),
-                                        Utils.DTU));
-                              },
-                              splashColor: background1.withOpacity(0.2),
-                              child: Container(
-                                //color: color,
-                                margin: EdgeInsets.all(2),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius: BorderRadius.circular(300),
+                      ],
+                    ),
+                    TextField(
+                      controller: searchController,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (s) {},
+                      onSubmitted: (v) {
+                        setState(() {
+                          search = v;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () {
+                              setState(() {
+                                searchController.text = '';
+                                search = '';
+                              });
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              color: search == '' ? Colors.white : Colors.black,
+                              size: 16,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          labelStyle: TextStyle(color: Colors.black),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
+                          labelText: 'Search Prop',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          fillColor: Colors.white),
+                    ),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            children:
+                                List<Widget>.generate(showProps.length, (i) {
+                              Prop prop = showProps[i];
+                              return InkWell(
+                                onLongPress: () async {
+                                  await Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          PropPage(
+                                            prop: prop,
+                                            project: project,
+                                          ),
+                                          Utils.DTU));
+                                },
+                                splashColor: background1.withOpacity(0.2),
+                                child: Container(
+                                  //color: color,
+                                  margin: EdgeInsets.all(2),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    borderRadius: BorderRadius.circular(300),
+                                  ),
+                                  child: Text('${prop.title}'),
                                 ),
-                                child: Text('${prop.title}'),
-                              ),
-                            );
-                          }),
+                              );
+                            }),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

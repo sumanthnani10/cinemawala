@@ -67,6 +67,7 @@ class _SelectLocation extends State<SelectLocation>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: Colors.white,

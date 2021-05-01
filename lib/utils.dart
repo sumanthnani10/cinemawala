@@ -411,33 +411,36 @@ class Utils {
         builder: (context) {
           return AlertDialog(
             title: Text("Select Source"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextButton.icon(
-                    onPressed: () async {
-                      String s = await openCamera();
-                      Navigator.of(context).pop(s);
-                    },
-                    label: Text('Camera'),
-                    icon: Icon(Icons.camera),
+            content: Container(
+              constraints: BoxConstraints(maxWidth: 400),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        String s = await openCamera();
+                        Navigator.of(context).pop(s);
+                      },
+                      label: Text('Camera'),
+                      icon: Icon(Icons.camera),
+                    ),
                   ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextButton.icon(
-                    onPressed: () async {
-                      String s = await openGallery();
-                      Navigator.of(context).pop(s);
-                    },
-                    label: Text('Gallery'),
-                    icon: Icon(Icons.image_outlined),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        String s = await openGallery();
+                        Navigator.of(context).pop(s);
+                      },
+                      label: Text('Gallery'),
+                      icon: Icon(Icons.image_outlined),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             actions: <Widget>[
               MaterialButton(
@@ -965,6 +968,8 @@ class Utils {
         "yo": 'Yoruba',
         "zu": 'Zulu',
       };
+
+  static final mobileWidth = 480;
 
   static final linearGradient = LinearGradient(
     begin: Alignment(-1.0, 0.0),

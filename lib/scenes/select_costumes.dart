@@ -74,6 +74,7 @@ class _SelectCostumes extends State<SelectCostumes>
           child: Center(
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
@@ -193,9 +194,9 @@ class _SelectCostumes extends State<SelectCostumes>
                                     context,
                                     Utils.createRoute(
                                         SelectCostume(
-                                          actor: '${actor.names['en']}',
+                                          actor: '${actor.names['English']}',
                                           character:
-                                              '${actor.characters['en']}',
+                                              '${actor.characters['English']}',
                                           project: project,
                                           selectedCostumes: selectedCostumes,
                                           sceneTitle: '',
@@ -219,9 +220,9 @@ class _SelectCostumes extends State<SelectCostumes>
                                         Utils.DTU));
                               },
                               title: Text(
-                                "${actor.names['en']}",
+                                "${actor.names['English']}",
                               ),
-                              subtitle: Text("${actor.characters['en']}",
+                              subtitle: Text("${actor.characters['English']}",
                                   style: characterStyle),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -299,18 +300,19 @@ class _SelectCostumes extends State<SelectCostumes>
 class SelectedCostumes extends StatefulWidget {
   final Project project;
   final List<dynamic> costumes;
-
-  SelectedCostumes({Key key, @required this.project, @required this.costumes})
+  final bool isPopUp;
+  SelectedCostumes({Key key, @required this.project, @required this.costumes,this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedCostumes createState() =>
-      _SelectedCostumes(this.project, this.costumes);
+      _SelectedCostumes(this.project, this.costumes,this.isPopUp);
 }
 
 class _SelectedCostumes extends State<SelectedCostumes>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   List<dynamic> costumes;
   Color background, background1, color;
   TextEditingController searchController = new TextEditingController();
@@ -318,10 +320,11 @@ class _SelectedCostumes extends State<SelectedCostumes>
 
   TextStyle nameStyle, characterStyle;
 
-  _SelectedCostumes(this.project, this.costumes);
+  _SelectedCostumes(this.project, this.costumes,this.isPopUp);
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
   }
 
@@ -342,162 +345,168 @@ class _SelectedCostumes extends State<SelectedCostumes>
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        if(isPopUp) {
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              height: MediaQuery.of(context).size.height - (48 * 2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.arrow_back_rounded),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                      Text(
-                        "Selected Costumes",
-                        style: TextStyle(fontSize: 20, color: background1),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    controller: searchController,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.search,
-                    onSubmitted: (v) {
-                      setState(() {
-                        search = v;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchController.text = '';
-                              search = '';
-                            });
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: search == '' ? Colors.white : Colors.black,
-                            size: 16,
-                          ),
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
+        body: Container(
+          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.black))),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+                constraints: BoxConstraints(maxWidth: 480),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                height: MediaQuery.of(context).size.height - (48 * 2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        isPopUp ? IconButton(
+                            icon: Icon(Icons.arrow_back_rounded),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }): Container(),
+                        Text(
+                          "Selected Costumes",
+                          style: TextStyle(fontSize: 20, color: background1),
+                          textAlign: TextAlign.center,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 8),
-                        labelText: 'Search Artist',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        fillColor: Colors.white),
-                  ),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children:
-                              List<Widget>.generate(showActors.length, (i) {
-                            var actor = Utils.artistsMap[showActors[i]['id']];
-                            var actorCostumes = showActors[i];
-                            return ListTile(
-                              onLongPress: () async {
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        ActorPopUp(
-                                          actor: actor,
-                                          project: project,
-                                        ),
-                                        Utils.DTU));
-                              },
-                              title: Text(
-                                "${actor.names['en']}",
-                              ),
-                              subtitle: Text("${actor.characters['en']}",
-                                  style: characterStyle),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: List<Widget>.generate(
-                                    actorCostumes['costumes'].length, (j) {
-                                  Costume costume = Utils.costumesMap[
-                                      '${actorCostumes['costumes'][j]}'];
-                                  return InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          Utils.createRoute(
-                                              CostumesPage(
-                                                project: project,
-                                                costume: costume,
-                                              ),
-                                              Utils.DTU));
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 4),
-                                      padding: EdgeInsets.all(1),
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        color: color,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(4),
-                                        child: CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                            progressIndicatorBuilder:
-                                                (context, url, progress) =>
-                                                    LinearProgressIndicator(
-                                                      value: progress.progress,
-                                                    ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Container(
-                                                      color: background,
-                                                      child: Center(
-                                                          child: Text(
-                                                        '${costume.title}',
-                                                        style: TextStyle(
-                                                            color: background1,
-                                                            fontSize: 8),
-                                                      )),
-                                                    ),
-                                            useOldImageOnUrlChange: true,
-                                            imageUrl:
-                                                costume.referenceImage ?? ''),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              ),
-                            );
-                          })),
+                      ],
                     ),
-                  ),
-                ],
+                    TextField(
+                      controller: searchController,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (v) {
+                        setState(() {
+                          search = v;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () {
+                              setState(() {
+                                searchController.text = '';
+                                search = '';
+                              });
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              color: search == '' ? Colors.white : Colors.black,
+                              size: 16,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          labelStyle: TextStyle(color: Colors.black),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
+                          labelText: 'Search Artist',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          fillColor: Colors.white),
+                    ),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children:
+                                List<Widget>.generate(showActors.length, (i) {
+                              var actor = Utils.artistsMap[showActors[i]['id']];
+                              var actorCostumes = showActors[i];
+                              return ListTile(
+                                onLongPress: () async {
+                                  Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          ActorPopUp(
+                                            actor: actor,
+                                            project: project,
+                                          ),
+                                          Utils.DTU));
+                                },
+                                title: Text(
+                                  "${actor.names['English']}",
+                                ),
+                                subtitle: Text("${actor.characters['English']}",
+                                    style: characterStyle),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: List<Widget>.generate(
+                                      actorCostumes['costumes'].length, (j) {
+                                    Costume costume = Utils.costumesMap[
+                                        '${actorCostumes['costumes'][j]}'];
+                                    return InkWell(
+                                      onTap: () async {
+                                        await Navigator.push(
+                                            context,
+                                            Utils.createRoute(
+                                                CostumesPage(
+                                                  project: project,
+                                                  costume: costume,
+                                                ),
+                                                Utils.DTU));
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 4),
+                                        padding: EdgeInsets.all(1),
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                          color: color,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(4),
+                                          child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              progressIndicatorBuilder:
+                                                  (context, url, progress) =>
+                                                      LinearProgressIndicator(
+                                                        value: progress.progress,
+                                                      ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Container(
+                                                        color: background,
+                                                        child: Center(
+                                                            child: Text(
+                                                          '${costume.title}',
+                                                          style: TextStyle(
+                                                              color: background1,
+                                                              fontSize: 8),
+                                                        )),
+                                                      ),
+                                              useOldImageOnUrlChange: true,
+                                              imageUrl:
+                                                  costume.referenceImage ?? ''),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              );
+                            })),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

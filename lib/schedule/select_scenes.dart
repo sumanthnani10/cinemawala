@@ -67,6 +67,7 @@ class _SelectScenes extends State<SelectScenes>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
@@ -292,6 +293,7 @@ class _SelectedScenes extends State<SelectedScenes>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(

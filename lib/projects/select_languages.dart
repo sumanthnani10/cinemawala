@@ -64,6 +64,7 @@ class _SelectLanguages extends State<SelectLanguages>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: 480),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 0),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
@@ -171,28 +172,30 @@ class _SelectLanguages extends State<SelectLanguages>
 class SelectedActors extends StatefulWidget {
   final Project project;
   final List<Actor> selectedArtists;
-
+  final bool isPopUp;
   SelectedActors(
-      {Key key, @required this.project, @required this.selectedArtists})
+      {Key key, @required this.project, @required this.selectedArtists,this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedActors createState() =>
-      _SelectedActors(this.project, this.selectedArtists);
+      _SelectedActors(this.project, this.selectedArtists,this.isPopUp);
 }
 
 class _SelectedActors extends State<SelectedActors>
     with SingleTickerProviderStateMixin {
   final Project project;
+  bool isPopUp;
   Color background, background1, color;
   final List<Actor> selectedArtists;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
-  _SelectedActors(this.project, this.selectedArtists);
+  _SelectedActors(this.project, this.selectedArtists,this.isPopUp);
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     super.initState();
   }
 
@@ -220,112 +223,88 @@ class _SelectedActors extends State<SelectedActors>
         Navigator.of(context).pop();
       },
       child: Scaffold(
-        backgroundColor: Colors.black26,
-        body: Center(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              height: MediaQuery.of(context).size.height - (48 * 2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.arrow_back_rounded),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                      Text(
-                        "Selected Artists",
-                        style: TextStyle(fontSize: 20, color: background1),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    controller: searchController,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.search,
-                    onChanged: (s) {},
-                    onSubmitted: (v) {
-                      setState(() {
-                        search = v;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchController.text = '';
-                              search = '';
-                            });
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: search == '' ? Colors.white : Colors.black,
-                            size: 16,
-                          ),
+        backgroundColor: isPopUp ? Colors.black26 : Colors.white,
+        body: Container(
+          decoration: BoxDecoration(border: Border(left:BorderSide(color: Colors.black))),
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: isPopUp ? 48 : 8, horizontal: isPopUp ? 24 : 4),
+                constraints: BoxConstraints(maxWidth: 480),
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                height: MediaQuery.of(context).size.height - (48 * 2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.arrow_back_rounded),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        Text(
+                          "Selected Artists",
+                          style: TextStyle(fontSize: 20, color: background1),
+                          textAlign: TextAlign.center,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 8),
-                        labelText: 'Search Artist',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.black)),
-                        fillColor: Colors.white),
-                  ),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          children:
-                              /*<Widget>[InkWell(
+                      ],
+                    ),
+                    TextField(
+                      controller: searchController,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (s) {},
+                      onSubmitted: (v) {
+                        setState(() {
+                          search = v;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          suffixIcon: InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddActor(project: project,),));
+                              setState(() {
+                                searchController.text = '';
+                                search = '';
+                              });
                             },
-                            splashColor: background1.withOpacity(0.2),
-                            child: Container(
-                              //color: color,
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(300),
-                              ),
-                              child: Text('+ Add Artist'),
+                            child: Icon(
+                              Icons.clear,
+                              color: search == '' ? Colors.white : Colors.black,
+                              size: 16,
                             ),
-                          )]+*/
-                              List<Widget>.generate(selectedLanguages.length,
-                                  (i) {
-                            Actor actor = selectedLanguages[i];
-                            return InkWell(
-                              onLongPress: () {
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        ActorPopUp(
-                                          actor: actor,
-                                          project: project,
-                                        ),
-                                        Utils.DTU));
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          labelStyle: TextStyle(color: Colors.black),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
+                          labelText: 'Search Artist',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.black)),
+                          fillColor: Colors.white),
+                    ),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            children:
+                                /*<Widget>[InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => AddActor(project: project,),));
                               },
                               splashColor: background1.withOpacity(0.2),
                               child: Container(
@@ -337,16 +316,45 @@ class _SelectedActors extends State<SelectedActors>
                                   color: color,
                                   borderRadius: BorderRadius.circular(300),
                                 ),
-                                child:
-                                    Text('${selectedLanguages[i].names['en']}'),
+                                child: Text('+ Add Artist'),
                               ),
-                            );
-                          }),
+                            )]+*/
+                                List<Widget>.generate(selectedLanguages.length,
+                                    (i) {
+                              Actor actor = selectedLanguages[i];
+                              print("actor :: ${actor.names},${selectedLanguages[i].names['en']},${selectedLanguages[i].names['English']}");
+                              return InkWell(
+                                onLongPress: () {
+                                  Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          ActorPopUp(
+                                            actor: actor,
+                                            project: project,
+                                          ),
+                                          Utils.DTU));
+                                },
+                                splashColor: background1.withOpacity(0.2),
+                                child: Container(
+                                  //color: color,
+                                  margin: EdgeInsets.all(2),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    borderRadius: BorderRadius.circular(300),
+                                  ),
+                                  child: selectedLanguages[i].names['en']!=null ?
+                                      Text('${selectedLanguages[i].names['en']}') : Text('${selectedLanguages[i].names['English']}'),
+                                ),
+                              );
+                            }),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

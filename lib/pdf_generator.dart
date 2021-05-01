@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cinemawala/daily_budget/daily_budget.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/scenes/scene.dart';
@@ -24,7 +25,6 @@ class PdfGenerator {
             .asUint8List();
     return response;
   }
-
   static Widget sceneDetails(
     Project project,
     Scene scene,
@@ -212,7 +212,81 @@ class PdfGenerator {
       ],
     );
   }
-
+  static savePdf(dynamic fileName,dynamic pdf) async{
+    Directory documentDirectory = await path.getExternalStorageDirectory();
+    String documentPath = documentDirectory.path;
+    File file = File("$documentPath/${fileName}.pdf");
+    file.writeAsBytesSync(await pdf.save());
+    return;
+  }
+  static dailyReportCallSheet(
+      DailyBudget dailyReport,
+      ) async{
+    Map dailyReportMap = dailyReport.budget;
+    List<dynamic> categories,subcategories;
+    Document pdf = Document();
+    categories = dailyReportMap.keys.toList();
+    pdf.addPage(
+      Page(
+        margin: const EdgeInsets.all(16),
+        pageFormat: PdfPageFormat(595.2, double.infinity),
+          build: (context) {
+          return Container(
+            child: Column(
+              children: List.generate(categories.length, (i){
+                subcategories = dailyReportMap[categories[i]].keys.toList();
+                return Column(
+                  children: [
+                    Table(
+                      children: [
+                        TableRow(children: [
+                          Text("${categories[i]}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                        ])
+                      ]
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Wrap(
+                          children: List.generate(subcategories.length, (j){
+                            return dailyReportMap[categories[i]][subcategories[j]]["use"] ? Container(
+                                margin: EdgeInsets.symmetric(horizontal: 4,vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 6,vertical: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: PdfColors.black),
+                                ),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(text: '${subcategories[j]}\n\n',style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),
+                                      TextSpan(text: 'Contact', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["contact"]}\n'),
+                                      TextSpan(text: 'Quantity', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["quantity"]}\n'),
+                                      TextSpan(text: 'Rate', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["rate"]}\n'),
+                                      TextSpan(text: 'Subtotal', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["subtotal"]}\n'),
+                                      TextSpan(text: 'CallSheet', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["callSheet"]}\n'),
+                                    ],
+                                  ),
+                                )
+                            ) : Container();
+                          })
+                      ),
+                    ),
+                    Divider(height: 2,color: PdfColors.black),
+                    SizedBox(height: 8),
+                  ]
+                );
+              })
+            ),
+          );
+          },
+      )
+    );
+    savePdf(dailyReport.id,pdf);
+  }
   static sceneCallSheet(
       Project project,
       context,
@@ -841,14 +915,7 @@ class PdfGenerator {
             );
           }),
     );
-
-    Directory documentDirectory = await path.getExternalStorageDirectory();
-    String documentPath = documentDirectory.path;
-    // print(documentPath);
-    // File file = File("$documentPath/${schedule.id}_${now.millisecondsSinceEpoch}.pdf");
-    File file = File("$documentPath/${schedule.id}.pdf");
-    file.writeAsBytesSync(await pdf.save());
-    return;
+    savePdf(schedule.id, pdf);
   }
 
   static artistCallSheet(Project project, context, Scene scene,
@@ -1085,13 +1152,7 @@ class PdfGenerator {
             );
           }),
     );
-    Directory documentDirectory = await path.getExternalStorageDirectory();
-    String documentPath = documentDirectory.path;
-    // print(documentPath);
-    // File file = File("$documentPath/${schedule.id}_${now.millisecondsSinceEpoch}.pdf");
-    File file = File("$documentPath/${schedule.id}.pdf");
-    file.writeAsBytesSync(await pdf.save());
-    return;
+    savePdf(schedule.id, pdf);
   }
 
   static costumeCallSheet(
@@ -1339,36 +1400,6 @@ class PdfGenerator {
                       }
                     }),
                   ),
-                  // VFX
-                  /*Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "VFX: From ${oneDigitToTwo(vfxTimings['start'][0])}:${vfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['start'][1])} ${vfxTimings['start'][2] == 0 ? "AM" : "PM"} to ${oneDigitToTwo(vfxTimings['end'][0])}:${vfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(vfxTimings['end'][1])} ${vfxTimings['end'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.vfx}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),*/
                   Padding(padding: headingPadding),
                   Table(border: TableBorder.all(), children: [
                     TableRow(
@@ -1392,113 +1423,6 @@ class PdfGenerator {
                     ),
                   ]),
                   Padding(padding: headingPadding),
-                  // SFX
-                  /*Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "SFX: From ${oneDigitToTwo(sfxTimings['start'][0])}:${sfxTimings['start'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['start'][1])} ${sfxTimings['start'][2] == 0 ? "AM" : "PM"} to ${oneDigitToTwo(sfxTimings['end'][0])}:${sfxTimings['end'][1] == 0 ? "00" : oneDigitToTwo(sfxTimings['end'][1])} ${sfxTimings['end'][2] == 0 ? "AM" : "PM"}",
-                              style: tableHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.sfx}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),*/
-                  //Padding(padding: headingPadding),
-                  // Special Equipments & Hair and Make Up
-                  /*Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "Special Equipments",
-                              style: tableHeader,
-                            ),
-                          ),
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.specialEquipment}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "Hair and Make Up",
-                              style: tableHeader,
-                            ),
-                          ),
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "${scene.makeUp}",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),*/
-                  //Padding(padding: headingPadding),
-                  // Props
-                  /*Table(
-                    border: TableBorder.all(),
-                    children: [
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: headingPadding,
-                            child: Text(
-                              "Properties",
-                              style: tableHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          Padding(
-                            padding: rowPadding,
-                            child: Text(
-                              "$propsNames",
-                              style: tableRow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),*/
-                  //Padding(padding: headingPadding),
                   footer,
                 ],
               ),
@@ -1572,15 +1496,8 @@ class PdfGenerator {
             );
           }),
     );
-    Directory documentDirectory = await path.getExternalStorageDirectory();
-    String documentPath = documentDirectory.path;
-    // print(documentPath);
-    // File file = File("$documentPath/${schedule.id}_${now.millisecondsSinceEpoch}.pdf");
-    File file = File("$documentPath/${schedule.id}.pdf");
-    file.writeAsBytesSync(await pdf.save());
-    return;
+    savePdf(schedule.id, pdf);
   }
-
   static makeupCallSheet(
       Project project,
       context,
@@ -1886,11 +1803,7 @@ class PdfGenerator {
             );
           }),
     );
-    Directory documentDirectory = await path.getExternalStorageDirectory();
-    String documentPath = documentDirectory.path;
-    File file = File("$documentPath/${schedule.id}.pdf");
-    file.writeAsBytesSync(await pdf.save());
-    return;
+    savePdf(schedule.id, pdf);
   }
 
   static propertiesCallSheet(
@@ -2119,12 +2032,7 @@ class PdfGenerator {
             );
           }),
     );
-
-    Directory documentDirectory = await path.getExternalStorageDirectory();
-    String documentPath = documentDirectory.path;
-    File file = File("$documentPath/${schedule.id}.pdf");
-    file.writeAsBytesSync(await pdf.save());
-    return;
+    savePdf(schedule.id, pdf);
   }
 
   static String oneDigitToTwo(int i) {
