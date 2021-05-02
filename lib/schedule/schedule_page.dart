@@ -89,7 +89,7 @@ class _SchedulePageState extends State<SchedulePage>
   Scene selectedScene;
   String check;
   Color background, background1, color;
-
+  ScrollController _scrollController;
   Future<String> createAlertDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -137,6 +137,7 @@ class _SchedulePageState extends State<SchedulePage>
   void initState() {
     isPopUp = isPopUp ?? true;
     setContent();
+    _scrollController = ScrollController();
     print(project.role.permissions);
     super.initState();
     animationController = AnimationController(vsync: this);
@@ -186,7 +187,7 @@ class _SchedulePageState extends State<SchedulePage>
       return "0$i";
     }
   }
-  Widget widget2(){
+  Widget widget2(ScrollController scrollController){
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -208,6 +209,7 @@ class _SchedulePageState extends State<SchedulePage>
         child: Stack(
           children: [
             SingleChildScrollView(
+              controller: scrollController,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1178,9 +1180,9 @@ class _SchedulePageState extends State<SchedulePage>
       minChildSize: 300 / MediaQuery.of(context).size.height,
       maxChildSize: 1,
       builder: (context, scrollController) {
-        return widget2();
+        return widget2(scrollController);
       },
-    ) : widget2();
+    ) : widget2(_scrollController);
   }
 
   editSchedule() async {
