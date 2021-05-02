@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cinemawala/locations/add_location.dart';
@@ -252,7 +250,7 @@ class _LocationPageState extends State<LocationPage> {
                                                             300),
                                                   ),
                                                   child: Text(
-                                                      '${Utils.scenesMap[location.usedIn[i]].titles['English']}'),
+                                                      '${Utils.scenesMap[location.usedIn[i]].titles['en']}'),
                                                 ),
                                               );
                                             },

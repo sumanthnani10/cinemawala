@@ -201,7 +201,7 @@ class _PropPageState extends State<PropPage> {
                                                   BorderRadius.circular(300),
                                             ),
                                             child: Text(
-                                                '${Utils.scenesMap[prop.usedIn[i]].titles['English']}'),
+                                                '${Utils.scenesMap[prop.usedIn[i]].titles['en']}'),
                                           ),
                                         );
                                       },

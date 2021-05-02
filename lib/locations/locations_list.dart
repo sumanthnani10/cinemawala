@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/locations/add_location.dart';
@@ -129,18 +128,18 @@ class _LocationsList extends State<LocationsList>
                     Scene scene = scenes[i];
                     Location location = Utils.locationsMap[scene.location];
                     return ListTile(
-                      title: Text('${scene.titles['English']}'),
-                      subtitle:
-                          Text('${location.location} @ ${location.shootLocation}'),
-                      onTap: () {
-                        if(maxWidth>Utils.mobileWidth){
-                          setState(() {
-                            sideWidget = LocationPage(
-                              key: UniqueKey(),
-                              isPopUp: false,
-                              project: project,
-                              location: location,
-                            );
+                      title: Text('${scene.titles['en']}'),
+                        subtitle: Text(
+                            '${location.location} @ ${location.shootLocation}'),
+                        onTap: () {
+                          if (maxWidth > Utils.mobileWidth) {
+                            setState(() {
+                              sideWidget = LocationPage(
+                                key: UniqueKey(),
+                                isPopUp: false,
+                                project: project,
+                                location: location,
+                              );
                           });
                         }
                         else{

@@ -18,6 +18,7 @@ import 'props/prop.dart';
 class Utils {
   static String USER_ID;
   static User user;
+  static List<dynamic> users;
   static Project project;
   static List<String> languages = [], langsInLang = [];
   static List<Project> projects;
@@ -49,6 +50,24 @@ class Utils {
         user = User.fromJson(r['user']);
         USER_ID = user.id;
         return user;
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
+
+  static getUserNames(context, userId) async {
+    var resp = await http.post(Utils.GET_USERNAMES, body: {"id": "${userId}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        // print(r['user']);
+        users = r['usernames'];
+        return users;
       } else {
         showErrorDialog(context, '', '${r['msg']}');
       }
@@ -270,6 +289,8 @@ class Utils {
   static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
   static Uri VALIDATE_USERNAME =
       Uri.https('${DOMAIN}', '${URL_PATH}/validateUsername');
+  static Uri GET_USERNAMES =
+      Uri.https('${DOMAIN}', '${URL_PATH}/getAllUsernames');
 
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
@@ -311,6 +332,7 @@ class Utils {
 
   static Uri ADD_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/addRole');
   static Uri EDIT_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/editRole');
+  static Uri RESPOND_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/respondRole');
 
 /*---------------------------------------------------------------------------------*/
 
@@ -966,7 +988,7 @@ class Utils {
         "zu": 'Zulu',
       };
 
-  static final mobileWidth = 480;
+  static final mobileWidth = 480.0;
 
   static final linearGradient = LinearGradient(
     begin: Alignment(-1.0, 0.0),

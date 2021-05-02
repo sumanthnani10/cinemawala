@@ -130,7 +130,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
   }
   @override
   Widget build(BuildContext context) {
-    print(" width ${MediaQuery.of(context).size.width}");
+    // print(" width ${MediaQuery.of(context).size.width}");
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -194,13 +194,11 @@ class _DailyBudgetsState extends State<DailyBudgets>
                   maxChildSize: 1,
                   builder: (_,sc){
                     return widget2(sc);
-                  }
-
-              )
+                  })
             ],
           );
-
-        }}),
+        }
+      }),
     );
   }
 

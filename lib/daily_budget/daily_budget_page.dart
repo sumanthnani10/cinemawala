@@ -60,8 +60,17 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   ScrollController scrollController;
   VoidCallback nextDate, prevDate, getDailyBudgets;
 
-  _DailyBudgetPage(this.project, this.budget, this.dailyBudget, this.date,
-      this.id, this.getDailyBudgets, this.nextDate, this.prevDate,this.isPopUp,this.scrollController);
+  _DailyBudgetPage(
+      this.project,
+      this.budget,
+      this.dailyBudget,
+      this.date,
+      this.id,
+      this.getDailyBudgets,
+      this.nextDate,
+      this.prevDate,
+      this.isPopUp,
+      this.scrollController);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Color background, background1, color;
@@ -85,7 +94,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
-    print(isPopUp);
+    // print(isPopUp);
     super.initState();
   }
 
@@ -275,8 +284,8 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                         new TextEditingController(
                                             text:
                                             "${subcategory["callSheet"] != "" ? subcategory["callSheet"] : "-"}"));
-                                    print("ispopup ${isPopUp}");
-                                    return Container(
+                                    // print("ispopup ${isPopUp}");
+                                      return Container(
                                       constraints: BoxConstraints(maxWidth: 480),
                                       decoration: BoxDecoration(
                                           border: Border(

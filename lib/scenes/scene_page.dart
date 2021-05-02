@@ -245,17 +245,17 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                         return Container(
                           decoration: BoxDecoration(
                             color: i == selectedLanguage ? Colors.white : color,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 4, vertical: 4),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 2),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedLanguage = i;
-                          cardScrollController.animateTo(
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 2),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedLanguage = i;
+                                cardScrollController.animateTo(
                               MediaQuery.of(context).size.width * i,
                               duration: Duration(milliseconds: 400),
                               curve: Curves.decelerate);
@@ -265,20 +265,20 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(
-                                text: '${langsInLang[i]}',
-                                style: TextStyle(
-                                    color: background1,
-                                    fontSize: 14,
-                                    fontFamily: 'Poppins')),
-                            TextSpan(
-                                text:
+                                  TextSpan(
+                                      text: '${langsInLang[i]}',
+                                      style: TextStyle(
+                                          color: background1,
+                                          fontSize: 14,
+                                          fontFamily: 'Poppins')),
+                                  TextSpan(
+                                      text:
                                           '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                       style: TextStyle(
                                           fontSize: 10,
                                           fontFamily: 'Poppins',
                                           color: background1)),
-                          ],
+                                ],
                         ),
                       ),
                     ),
@@ -306,17 +306,17 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                       // await setScene();
                       // setState(() {});
                     },
-              label: Text(
-                "Edit",
-                style: TextStyle(color: Colors.indigo),
-                textAlign: TextAlign.right,
-              ),
-              icon: Icon(
-                Icons.edit,
-                size: 18,
-                color: Colors.indigo,
-              ),
-            )
+                    label: Text(
+                      "Edit",
+                      style: TextStyle(color: Colors.indigo),
+                      textAlign: TextAlign.right,
+                    ),
+                    icon: Icon(
+                      Icons.edit,
+                      size: 18,
+                      color: Colors.indigo,
+                    ),
+                  )
           ],
               ),
         body: GestureDetector(
@@ -822,6 +822,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                             scene.artists.length,
                                             (a) => Utils
                                                 .artistsMap[scene.artists[a]]),
+                                        scene: scene,
                                       ),
                                       Utils.DTU));
                               setState(() {

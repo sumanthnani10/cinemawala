@@ -131,18 +131,18 @@ class _CostumesListState extends State<CostumesList>
                       count += c['costumes'].length;
                     });
                     return ListTile(
-                      title: Text('${scene.titles['English']}'),
-                      subtitle: Text(
-                        '$count ${count == 1 ? "Costume" : "Costumes"}',
-                      ),
-                      onTap: () async {
-                        if(maxWidth>Utils.mobileWidth){
-                          setState(() {
-                            sideWidget = SelectedCostumes(
-                              key: UniqueKey(),
-                              isPopUp: false,
-                              project: project,
-                              costumes: scene.costumes,
+                      title: Text('${scene.titles['en']}'),
+                        subtitle: Text(
+                          '$count ${count == 1 ? "Costume" : "Costumes"}',
+                        ),
+                        onTap: () async {
+                          if (maxWidth > Utils.mobileWidth) {
+                            setState(() {
+                              sideWidget = SelectedCostumes(
+                                key: UniqueKey(),
+                                isPopUp: false,
+                                project: project,
+                                costumes: scene.costumes,
                             );
                           });
                         }

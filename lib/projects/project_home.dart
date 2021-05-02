@@ -180,244 +180,326 @@ class _ProjectHome extends State<ProjectHome> {
             )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Row(
-                children: List<Widget>.generate(rowCount, (i) {
-                  int ind = i;
-                  return Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (project.role.permissions[categories[ind]['key']]
-                            ['view']) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      categories[ind]['onClick']));
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                            padding: padding,
-                            margin: margin,
-                            decoration: BoxDecoration(
-                              color: categories[ind]['color'],
-                              //borderRadius: BorderRadius.circular(12.0)
-                              borderRadius: ind == 0
-                                  ? BorderRadius.only(
-                                      topLeft: Radius.circular(24))
-                                  : ind == 2
-                                      ? BorderRadius.only(
-                                          topRight: Radius.circular(24))
-                                      : ind == categories.length - rowCount
-                                          ? BorderRadius.only(
-                                              bottomLeft: Radius.circular(24))
-                                          : ind == categories.length - 1
-                                              ? BorderRadius.only(
-                                                  topRight: Radius.circular(24))
-                                              : BorderRadius.only(),
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: 4 / 3,
-                                    child: Image(
-                                        image: AssetImage(
-                                            '${categories[ind]['image']}')),
-                                  ),
-                                  FittedBox(
-                                    child: Text(
-                                      "${categories[ind]['title']}",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (!project.role.permissions[categories[ind]['key']]
-                              ['view'])
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image(
-                                    image:
-                                        AssetImage('assets/images/lock.png')),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-            Expanded(
-              child: Row(
-                children: List<Widget>.generate(rowCount, (i) {
-                  int ind = i + 3;
-                  return Expanded(
-                    child: InkWell(
-                      onTap: () async {
-                        if (project.role.permissions[categories[ind]['key']]
-                            ['view']) {
-                          var back = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      categories[ind]['onClick']));
-                          if (back != null) {
-                            if (back.runtimeType == Project) {
-                              project = back;
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          var width = constraints.maxWidth;
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: List<Widget>.generate(rowCount, (i) {
+                      int ind = i;
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            if (project.role.permissions[categories[ind]['key']]
+                                ['view']) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          categories[ind]['onClick']));
                             }
-                          }
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                            padding: padding,
-                            margin: margin,
-                            decoration: BoxDecoration(
-                              color: categories[ind]['color'],
-                              //borderRadius: BorderRadius.circular(12.0)
-                              borderRadius: ind == 0
-                                  ? BorderRadius.only(
-                                      topLeft: Radius.circular(24))
-                                  : ind == 2
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: padding,
+                                margin: margin,
+                                decoration: BoxDecoration(
+                                  color: categories[ind]['color'],
+                                  //borderRadius: BorderRadius.circular(12.0)
+                                  borderRadius: ind == 0
                                       ? BorderRadius.only(
-                                          topRight: Radius.circular(24))
-                                      : ind == categories.length - rowCount
+                                          topLeft: Radius.circular(24))
+                                      : ind == 2
                                           ? BorderRadius.only(
-                                              bottomLeft: Radius.circular(24))
-                                          : ind == categories.length - 1
+                                              topRight: Radius.circular(24))
+                                          : ind == categories.length - rowCount
                                               ? BorderRadius.only(
-                                                  topRight: Radius.circular(24))
-                                              : BorderRadius.only(),
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: 4 / 3,
-                                    child: Image(
-                                        image: AssetImage(
-                                            '${categories[ind]['image']}')),
-                                  ),
-                                  FittedBox(
-                                    child: Text(
-                                      "${categories[ind]['title']}",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (!project.role.permissions[categories[ind]['key']]
-                              ['view'])
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image(
-                                    image:
-                                        AssetImage('assets/images/lock.png')),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-            Expanded(
-              child: Row(
-                children: List<Widget>.generate(rowCount, (i) {
-                  int ind = i + 6;
-                  return Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (project.role.permissions[categories[ind]['key']]
-                            ['view']) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      categories[ind]['onClick']));
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                            padding: padding,
-                            margin: margin,
-                            decoration: BoxDecoration(
-                              color: categories[ind]['color'],
-                              //borderRadius: BorderRadius.circular(12.0)
-                              borderRadius: ind == 0
-                                  ? BorderRadius.only(
-                                      topLeft: Radius.circular(24))
-                                  : ind == 2
-                                      ? BorderRadius.only(
-                                          topRight: Radius.circular(24))
-                                      : ind == categories.length - rowCount
-                                          ? BorderRadius.only(
-                                              bottomLeft: Radius.circular(24))
-                                          : ind == categories.length - 1
-                                              ? BorderRadius.only(
-                                                  bottomRight:
+                                                  bottomLeft:
                                                       Radius.circular(24))
-                                              : BorderRadius.only(),
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AspectRatio(
+                                              : ind == categories.length - 1
+                                                  ? BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(24))
+                                                  : BorderRadius.only(),
+                                ),
+                                child: Center(
+                                  child: width > Utils.mobileWidth
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ),
+                              if (!project.role
+                                  .permissions[categories[ind]['key']]['view'])
+                                Center(
+                                  child: AspectRatio(
                                     aspectRatio: 4 / 3,
                                     child: Image(
                                         image: AssetImage(
-                                            '${categories[ind]['image']}')),
+                                            'assets/images/lock.png')),
                                   ),
-                                  FittedBox(
-                                    child: Text(
-                                      "${categories[ind]['title']}",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
+                            ],
                           ),
-                          if (!project.role.permissions[categories[ind]['key']]
-                              ['view'])
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image(
-                                    image:
-                                        AssetImage('assets/images/lock.png')),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: List<Widget>.generate(rowCount, (i) {
+                      int ind = i + 3;
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            if (project.role.permissions[categories[ind]['key']]
+                                ['view']) {
+                              var back = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          categories[ind]['onClick']));
+                              if (back != null) {
+                                if (back.runtimeType == Project) {
+                                  project = back;
+                                }
+                              }
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: padding,
+                                margin: margin,
+                                decoration: BoxDecoration(
+                                  color: categories[ind]['color'],
+                                  //borderRadius: BorderRadius.circular(12.0)
+                                  borderRadius: ind == 0
+                                      ? BorderRadius.only(
+                                          topLeft: Radius.circular(24))
+                                      : ind == 2
+                                          ? BorderRadius.only(
+                                              topRight: Radius.circular(24))
+                                          : ind == categories.length - rowCount
+                                              ? BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(24))
+                                              : ind == categories.length - 1
+                                                  ? BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(24))
+                                                  : BorderRadius.only(),
+                                ),
+                                child: Center(
+                                  child: width > Utils.mobileWidth
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              ),
+                              if (!project.role
+                                  .permissions[categories[ind]['key']]['view'])
+                                Center(
+                                  child: AspectRatio(
+                                    aspectRatio: 4 / 3,
+                                    child: Image(
+                                        image: AssetImage(
+                                            'assets/images/lock.png')),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: List<Widget>.generate(rowCount, (i) {
+                      int ind = i + 6;
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            if (project.role.permissions[categories[ind]['key']]
+                                ['view']) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          categories[ind]['onClick']));
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: padding,
+                                margin: margin,
+                                decoration: BoxDecoration(
+                                  color: categories[ind]['color'],
+                                  //borderRadius: BorderRadius.circular(12.0)
+                                  borderRadius: ind == 0
+                                      ? BorderRadius.only(
+                                          topLeft: Radius.circular(24))
+                                      : ind == 2
+                                          ? BorderRadius.only(
+                                              topRight: Radius.circular(24))
+                                          : ind == categories.length - rowCount
+                                              ? BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(24))
+                                              : ind == categories.length - 1
+                                                  ? BorderRadius.only(
+                                                      bottomRight:
+                                                          Radius.circular(24))
+                                                  : BorderRadius.only(),
+                                ),
+                                child: Center(
+                                  child: width > Utils.mobileWidth
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 4 / 3,
+                                              child: FittedBox(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        '${categories[ind]['image']}')),
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                "${categories[ind]['title']}",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ),
+                              if (!project.role
+                                  .permissions[categories[ind]['key']]['view'])
+                                Center(
+                                  child: AspectRatio(
+                                    aspectRatio: 4 / 3,
+                                    child: Image(
+                                        image: AssetImage(
+                                            'assets/images/lock.png')),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

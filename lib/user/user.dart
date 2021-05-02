@@ -19,7 +19,7 @@ class User {
       name: i['name'],
       email: i['email'],
       mobile: i['mobile'],
-      projects: i['projects'],
+      projects: i['projects'].values.toList(),
     );
   }
 }

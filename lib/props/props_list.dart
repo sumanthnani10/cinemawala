@@ -116,18 +116,17 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                             children: List<Widget>.generate(scenes.length, (i) {
                               Scene scene = scenes[i];
                               return ListTile(
-                                title: Text('${scene.titles['English']}'),
-                                subtitle: Text(
-                                    '${scene.props.length} ${scene.props
-                                        .length == 1 ? "Prop" : "Props"}'),
-                                onTap: () {
-                                  if(maxWidth>Utils.mobileWidth){
-                                    setState(() {
-                                      sideWidget = SelectedProps(
-                                          key: UniqueKey(),
-                                          isPopUp: false,
-                                          project: project,
-                                          selectedProps: List<
+                                title: Text('${scene.titles['en']}'),
+                        subtitle: Text(
+                            '${scene.props.length} ${scene.props.length == 1 ? "Prop" : "Props"}'),
+                        onTap: () {
+                          if (maxWidth > Utils.mobileWidth) {
+                            setState(() {
+                              sideWidget = SelectedProps(
+                                  key: UniqueKey(),
+                                  isPopUp: false,
+                                  project: project,
+                                  selectedProps: List<
                                               Prop>.generate(
                                               scene.props.length,
                                                   (p) =>

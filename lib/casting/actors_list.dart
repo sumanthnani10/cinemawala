@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/casting/actor_page.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:cinemawala/projects/select_languages.dart';
 import 'package:cinemawala/scenes/scene.dart';
+import 'package:cinemawala/scenes/select_actors.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -43,12 +43,12 @@ class _ActorsListState extends State<ActorsList>
         getArtists();
       });
     }
-    print(artists);
+    // print(artists);
     super.initState();
   }
 
   getArtists() async {
-    print("getarjrnf");
+    // print("getarjrnf");
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Artists');
     artists = await Utils.getArtists(context, project.id);
@@ -58,7 +58,7 @@ class _ActorsListState extends State<ActorsList>
     });
   }
   getScenes() async {
-    print("getscenes");
+    // print("getscenes");
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Scenes');
     if (Utils.artists == null) {
@@ -69,7 +69,7 @@ class _ActorsListState extends State<ActorsList>
     } else {
       scenes = Utils.scenes ?? [];
     }
-    print(scenes);
+    // print(scenes);
     Navigator.pop(context);
     setState(() {
       loading = false;
@@ -134,9 +134,9 @@ class _ActorsListState extends State<ActorsList>
   }
   @override
   Widget build(BuildContext context) {
-    print(Utils.artistsMap);
-    print(Utils.artists);
-    print(scenes);
+    // print(Utils.artistsMap);
+    // print(Utils.artists);
+    // print(scenes);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -208,38 +208,43 @@ class _ActorsListState extends State<ActorsList>
                     child: Container(
                       child: Column(
                           children: List.generate(scenes.length, (i){
-                            print("${i},${scenes[i]}");
-                            Scene scene = scenes[i];
-                            print(scene.artists.length);
-                            return InkWell(
+                            // print("${i},${scenes[i]}");
+                        Scene scene = scenes[i];
+                            // print(scene.artists.length);
+                        return InkWell(
                               onTap: () async{
                                 if(maxWidth>Utils.mobileWidth){
                                   setState(() {
                                     sideWidget = SelectedActors(
                                       project: project,
-                                      key: UniqueKey(),
-                                      isPopUp: maxWidth>Utils.mobileWidth ? false : true,
-                                      selectedArtists:
-                                      List<Actor>.generate(
-                                          scene.artists.length,
-                                              (a) => Utils.artistsMap[
-                                          scene.artists[a]]),
-                                    );
+                                  key: UniqueKey(),
+                                  scene: scene,
+                                  isPopUp: maxWidth > Utils.mobileWidth
+                                      ? false
+                                      : true,
+                                  selectedArtists: List<Actor>.generate(
+                                      scene.artists.length,
+                                      (a) =>
+                                          Utils.artistsMap[scene.artists[a]]),
+                                );
                                   });
                                 }else{
-                                  Navigator.push(
-                                      context,
-                                      Utils.createRoute(
-                                          SelectedActors(
-                                            project: project,
-                                            selectedArtists:
-                                            List<Actor>.generate(
-                                                scene.artists.length,
-                                                    (a) => Utils.artistsMap[
-                                                scene.artists[a]]),
-                                          ),
-                                          Utils.DTU));
-                                }
+                                  await Navigator.push(
+                                  context,
+                                  Utils.createRoute(
+                                      SelectedActors(
+                                        project: project,
+                                        scene: scene,
+                                        selectedArtists: List<Actor>.generate(
+                                            scene.artists.length,
+                                            (a) => Utils
+                                                .artistsMap[scene.artists[a]]),
+                                      ),
+                                      Utils.DTU));
+                              setState(() {
+                                scenes = Utils.scenes.sublist(0);
+                              });
+                            }
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
