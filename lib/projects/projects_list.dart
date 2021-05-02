@@ -310,20 +310,20 @@ class _ProjectsList extends State<ProjectsList> {
                     List.generate(requestProjects.length, (i) {
                       project = requestProjects[i];
                       return ProjectCard(
-                        project: project,
+                                    project: project,
                                     onTap: () async {
                                       Project proj = requestProjects[i];
-                                      if (await Navigator.push(
-                                              context,
-                                              Utils.createRoute(
-                                                  RespondRequest(project: proj),
-                                                  Utils.UTD)) ??
-                                          false) {
+                                      var r = await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              RespondRequest(project: proj),
+                                              Utils.UTD));
+                                      if (r ?? false) {
                                         getProjects();
                                       }
                                     },
                                   );
-                    }),
+                                }),
                   ),
                 ),
               ),
