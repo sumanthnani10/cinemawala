@@ -246,11 +246,11 @@ class _SelectedActors extends State<SelectedActors>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        IconButton(
+                        isPopUp ? IconButton(
                             icon: Icon(Icons.arrow_back_rounded),
                             onPressed: () {
                               Navigator.pop(context);
-                            }),
+                            }):Container(),
                         Text(
                           "Selected Artists",
                           style: TextStyle(fontSize: 20, color: background1),

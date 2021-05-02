@@ -11,19 +11,14 @@ import 'schedule.dart';
 
 class Schedules extends StatefulWidget {
   final Project project;
-
   const Schedules({Key key, this.project}) : super(key: key);
-
   @override
   _SchedulesState createState() => _SchedulesState(project);
 }
-
 class _SchedulesState extends State<Schedules>
     with SingleTickerProviderStateMixin {
   final Project project;
-
   _SchedulesState(this.project);
-
   Color background, background1, color;
   CalendarController calendarController;
   Map<dynamic, Schedule> schedules = {};
@@ -33,7 +28,6 @@ class _SchedulesState extends State<Schedules>
   String selectedDateId;
   bool loading;
   ScrollController cardScrollController = new ScrollController();
-
   @override
   void initState() {
     final date = DateTime.now();

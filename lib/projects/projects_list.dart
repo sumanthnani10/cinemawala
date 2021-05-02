@@ -1,12 +1,11 @@
-import 'dart:convert';
-
-import 'package:cinemawala/main.dart';
+import 'package:cinemawala/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils.dart';
@@ -131,180 +130,197 @@ class _ProjectsList extends State<ProjectsList> {
       ),
       body: allProjects.length > 0
           ? SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Text(
-                  "My Projects",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: const Color(0xff309f86),
-                    fontWeight: FontWeight.w600,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: Text(
+                            "My Projects",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: const Color(0xff309f86),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: InkWell(
+                              onTap: (){
+                                Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        PersonalCalendar(),
+                                        Utils.DTU));
+                              },
+                              child: Icon(Icons.calendar_today)),
+                        ),
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ),
-            Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(ownProjects.length, (i) {
-                      project = ownProjects[i];
-                      return ProjectCard(
-                        project: project,
-                        onTap: () async {
-                          if (Utils.project == null ||
-                              Utils.project.id != project.id) {
-                            Utils.artists = null;
-                            Utils.artistsMap = null;
-                            Utils.costumes = null;
-                            Utils.props = null;
-                            Utils.costumes = null;
-                            Utils.propsMap = null;
-                            Utils.locations = null;
-                            Utils.scenes = null;
-                            Utils.locations = null;
-                            Utils.scenesMap = null;
 
-                            await getProject(project);
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: List.generate(ownProjects.length, (i) {
+                            project = ownProjects[i];
+                            return ProjectCard(
+                              project: project,
+                              onTap: () async {
+                                if (Utils.project == null ||
+                                    Utils.project.id != project.id) {
+                                  Utils.artists = null;
+                                  Utils.artistsMap = null;
+                                  Utils.costumes = null;
+                                  Utils.props = null;
+                                  Utils.costumes = null;
+                                  Utils.propsMap = null;
+                                  Utils.locations = null;
+                                  Utils.scenes = null;
+                                  Utils.locations = null;
+                                  Utils.scenesMap = null;
 
-                            Utils.languages = [];
-                            Utils.langsInLang = [];
+                                  await getProject(project);
 
-                            project.languages.forEach((l) {
-                              Utils.languages
-                                  .add(Utils.codeToLanguagesInEnglish[l]);
-                              Utils.langsInLang.add(
-                                  Utils.codeToLanguagesInLanguage[l]);
-                            });
-                          }
+                                  Utils.languages = [];
+                                  Utils.langsInLang = [];
 
-                          Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  ProjectHome(
-                                    project: project,
-                                  ),
-                                  Utils.RTL));
-                        },
-                      );
-                    }),
-                  ),
-                ),
-              ),
-            ),
-            if (otherProjects.length > 0)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Text(
-                    "Other Projects",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: const Color(0xff309f86),
-                      fontWeight: FontWeight.w600,
+                                  project.languages.forEach((l) {
+                                    Utils.languages
+                                        .add(Utils.codeToLanguagesInEnglish[l]);
+                                    Utils.langsInLang.add(
+                                        Utils.codeToLanguagesInLanguage[l]);
+                                  });
+                                }
+
+                                Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        ProjectHome(
+                                          project: project,
+                                        ),
+                                        Utils.RTL));
+                              },
+                            );
+                          }),
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.left,
                   ),
-                ),
-              ),
-            Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(otherProjects.length, (i) {
-                      project = otherProjects[i];
-                      return ProjectCard(
-                        project: project,
-                        onTap: () async {
-                          if (Utils.project == null ||
-                              Utils.project.id != project.id) {
-                            Utils.artists = null;
-                            Utils.artistsMap = null;
-                            Utils.costumes = null;
-                            Utils.props = null;
-                            Utils.costumes = null;
-                            Utils.propsMap = null;
-                            Utils.locations = null;
-                            Utils.scenes = null;
-                            Utils.locations = null;
-                            Utils.scenesMap = null;
+                  if (otherProjects.length > 0)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        child: Text(
+                          "Other Projects",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: const Color(0xff309f86),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: List.generate(otherProjects.length, (i) {
+                            project = otherProjects[i];
+                            return ProjectCard(
+                              project: project,
+                              onTap: () async {
+                                if (Utils.project == null ||
+                                    Utils.project.id != project.id) {
+                                  Utils.artists = null;
+                                  Utils.artistsMap = null;
+                                  Utils.costumes = null;
+                                  Utils.props = null;
+                                  Utils.costumes = null;
+                                  Utils.propsMap = null;
+                                  Utils.locations = null;
+                                  Utils.scenes = null;
+                                  Utils.locations = null;
+                                  Utils.scenesMap = null;
 
-                            await getProject(project);
-                          }
+                                  await getProject(project);
+                                }
 
-                          Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  ProjectHome(
+                                Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        ProjectHome(
+                                          project: project,
+                                        ),
+                                        Utils.RTL));
+                              },
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Text(
+                        "Requests",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: const Color(0xff309f86),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                  requestProjects.length == 0
+                      ? Text("No Requests")
+                      : Flexible(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children:
+                                    List.generate(requestProjects.length, (i) {
+                                  project = requestProjects[i];
+                                  return ProjectCard(
                                     project: project,
-                                  ),
-                                  Utils.RTL));
-                        },
-                      );
-                    }),
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Text(
-                  "Requests",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: const Color(0xff309f86),
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ),
-            requestProjects.length == 0
-                ? Text("No Requests")
-                : Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children:
-                    List.generate(requestProjects.length, (i) {
-                      project = requestProjects[i];
-                      return ProjectCard(
-                        project: project,
-                                    onTap: () async {
-                                      Navigator.push(
-                                          context,
-                                          Utils.createRoute(
-                                              RespondRequest(project: project),
-                                              Utils.DTU));
-                                    },
+                                    onTap: () async {},
                                   );
-                    }),
-                  ),
-                ),
+                                }),
+                              ),
+                            ),
+                          ),
+                        ),
+                ],
               ),
-            ),
-          ],
-        ),
-      )
+            )
           : Center(
-        child: Text(loading ? '' : 'No Projects.'),
-      ),
+              child: Text(loading ? '' : 'No Projects.'),
+            ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: color,
         onPressed: () async {
@@ -778,7 +794,7 @@ Padding(
             ),
           ),
         ),
-      ) SingleChildScrollView(
+      )*/ /*SingleChildScrollView(
               child: Container(
                 height: 1000,
                 child: Column(
@@ -833,7 +849,7 @@ Padding(
                   ],
                 ),
               ),
-            ) ProjectCard(project: projects[0], onTap: () async {
+            )*/ /*ProjectCard(project: projects[0], onTap: () async {
         Utils.artists = null;
         Utils.artistsMap = null;
         Utils.costumes = null;

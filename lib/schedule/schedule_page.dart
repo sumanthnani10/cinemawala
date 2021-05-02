@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
@@ -14,7 +13,6 @@ import 'package:cinemawala/schedule/schedule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import '../utils.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -38,7 +36,6 @@ class SchedulePage extends StatefulWidget {
       this.isPopUp
       })
       : super(key: key);
-
   @override
   _SchedulePageState createState() => _SchedulePageState(
       this.nextDate,
@@ -140,6 +137,7 @@ class _SchedulePageState extends State<SchedulePage>
   void initState() {
     isPopUp = isPopUp ?? true;
     setContent();
+    print(project.role.permissions);
     super.initState();
     animationController = AnimationController(vsync: this);
   }
@@ -456,11 +454,13 @@ class _SchedulePageState extends State<SchedulePage>
                         ],
                       ),
                     ),
+                  if(project.role.permissions["casting"]["view"])
                   Divider(
                     thickness: 2,
                     height: 1,
                   ),
                   // Artists
+                  if(project.role.permissions["casting"]["view"])
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     child: Align(
@@ -485,6 +485,7 @@ class _SchedulePageState extends State<SchedulePage>
                           ],
                         )),
                   ),
+                  if(project.role.permissions["casting"]["view"])
                   Align(
                     alignment: Alignment.centerLeft,
                     child: selectedArtists.length == 0
@@ -547,10 +548,12 @@ class _SchedulePageState extends State<SchedulePage>
                       }),
                     ),
                   ),
+                  if(project.role.permissions["casting"]["view"])
                   Divider(
                     thickness: 2,
                   ),
                   // ADDITIONAL ARTISTS
+                  if(project.role.permissions["casting"]["view"])
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     child: Align(
@@ -560,6 +563,7 @@ class _SchedulePageState extends State<SchedulePage>
                           style: bottomSheetHeadingStyle,
                         )),
                   ),
+                  if(project.role.permissions["casting"]["view"])
                   Align(
                     alignment: Alignment.centerLeft,
                     child: selectedScenes.length == 0
@@ -733,9 +737,11 @@ class _SchedulePageState extends State<SchedulePage>
                           }),
                     ),
                   ),
+                  if(project.role.permissions["costumes"]["view"])
                   Divider(
                     thickness: 2,
                   ),
+                  if(project.role.permissions["costumes"]["view"])
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -776,6 +782,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ],
                     ),
                   ),
+                  if(project.role.permissions["costumes"]["view"])
                   Padding(
                     padding:
                     const EdgeInsets.symmetric(horizontal: 8),
@@ -818,9 +825,11 @@ class _SchedulePageState extends State<SchedulePage>
                       ),
                     ),
                   ),
+                  if(project.role.permissions["props"]["view"])
                   Divider(
                     thickness: 2,
                   ),
+                  if(project.role.permissions["props"]["view"])
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -860,6 +869,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ],
                     ),
                   ),
+                  if(project.role.permissions["props"]["view"])
                   Padding(
                     padding:
                     const EdgeInsets.symmetric(horizontal: 8),
@@ -902,6 +912,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ),
                     ),
                   ),
+                  if(project.role.permissions["props"]["view"])
                   SizedBox(
                     height: 16,
                   )
