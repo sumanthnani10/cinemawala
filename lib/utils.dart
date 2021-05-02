@@ -18,6 +18,7 @@ import 'props/prop.dart';
 class Utils {
   static String USER_ID;
   static User user;
+  static List<dynamic> users;
   static Project project;
   static List<String> languages = [], langsInLang = [];
   static List<Project> projects;
@@ -49,6 +50,24 @@ class Utils {
         user = User.fromJson(r['user']);
         USER_ID = user.id;
         return user;
+      } else {
+        showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
+
+  static getUserNames(context, userId) async {
+    var resp = await http.post(Utils.GET_USERNAMES, body: {"id": "${userId}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        // print(r['user']);
+        users = r['usernames'];
+        return users;
       } else {
         showErrorDialog(context, '', '${r['msg']}');
       }
@@ -266,54 +285,54 @@ class Utils {
   static const String DOMAIN =
       "us-central1-cinemawala-2021b.cloudfunctions.net";
   static const String URL_PATH = "/cinemawala";
-
-  static Uri GET_USER = Uri.https('$DOMAIN', '$URL_PATH/getUser');
-  static Uri ADD_USER = Uri.https('$DOMAIN', '$URL_PATH/addUser');
+  static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
+  static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
   static Uri VALIDATE_USERNAME =
-      Uri.https('$DOMAIN', '$URL_PATH/validateUsername');
+      Uri.https('${DOMAIN}', '${URL_PATH}/validateUsername');
+  static Uri GET_USERNAMES =
+      Uri.https('${DOMAIN}', '${URL_PATH}/getAllUsernames');
 
-  static Uri GET_PROJECTS = Uri.https('$DOMAIN', '$URL_PATH/getProjects');
-  static Uri GET_PROJECT = Uri.https('$DOMAIN', '$URL_PATH/getProject');
-  static Uri ADD_PROJECT = Uri.https('$DOMAIN', '$URL_PATH/addProject');
-  static Uri EDIT_PROJECT = Uri.https('$DOMAIN', '$URL_PATH/editProject');
+  static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
+  static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
+  static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
+  static Uri EDIT_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/editProject');
 
-  static Uri GET_ARTISTS = Uri.https('$DOMAIN', '$URL_PATH/getArtists');
-  static Uri ADD_ARTIST = Uri.https('$DOMAIN', '$URL_PATH/addArtist');
-  static Uri EDIT_ARTIST = Uri.https('$DOMAIN', '$URL_PATH/editArtist');
+  static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
+  static Uri ADD_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/addArtist');
+  static Uri EDIT_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/editArtist');
   static Uri UPLOAD_ARTIST_IMAGE =
-      Uri.https('$DOMAIN', '$URL_PATH/uploadArtistImage');
+      Uri.https('${DOMAIN}', '${URL_PATH}/uploadArtistImage');
 
-  static Uri GET_COSTUMES = Uri.https('$DOMAIN', '$URL_PATH/getCostumes');
-  static Uri ADD_COSTUME = Uri.https("$DOMAIN", '$URL_PATH/addCostume');
-  static Uri EDIT_COSTUME = Uri.https('$DOMAIN', '$URL_PATH/editCostume');
+  static Uri GET_COSTUMES = Uri.https('${DOMAIN}', '${URL_PATH}/getCostumes');
+  static Uri ADD_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/addCostume');
+  static Uri EDIT_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/editCostume');
 
-  static Uri GET_PROPS = Uri.https('$DOMAIN', '$URL_PATH/getProps');
-  static Uri ADD_PROP = Uri.https('$DOMAIN', '$URL_PATH/addProp');
-  static Uri EDIT_PROP = Uri.https('$DOMAIN', '$URL_PATH/editProp');
+  static Uri GET_PROPS = Uri.https('${DOMAIN}', '${URL_PATH}/getProps');
+  static Uri ADD_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/addProp');
+  static Uri EDIT_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/editProp');
 
-  static Uri GET_LOCATIONS = Uri.https('$DOMAIN', '$URL_PATH/getLocations');
-  static Uri ADD_LOCATION = Uri.https('$DOMAIN', '$URL_PATH/addLocation');
-  static Uri EDIT_LOCATION = Uri.https('$DOMAIN', '$URL_PATH/editLocation');
+  static Uri GET_LOCATIONS = Uri.https('${DOMAIN}', '${URL_PATH}/getLocations');
+  static Uri ADD_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/addLocation');
+  static Uri EDIT_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/editLocation');
 
-  static Uri GET_SCENES = Uri.https('$DOMAIN', '$URL_PATH/getScenes');
-  static Uri ADD_SCENE = Uri.https('$DOMAIN', '$URL_PATH/addScene');
-  static Uri EDIT_SCENE = Uri.https('$DOMAIN', '$URL_PATH/editScene');
+  static Uri GET_SCENES = Uri.https('${DOMAIN}', '${URL_PATH}/getScenes');
+  static Uri ADD_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/addScene');
+  static Uri EDIT_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/editScene');
 
-  static Uri GET_SCHEDULES = Uri.https('$DOMAIN', '$URL_PATH/getSchedules');
-  static Uri ADD_SCHEDULE = Uri.https('$DOMAIN', '$URL_PATH/addSchedule');
-  static Uri EDIT_SCHEDULE = Uri.https('$DOMAIN', '$URL_PATH/editSchedule');
+  static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
+  static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
+  static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
 
   static Uri GET_DAILY_BUDGETS =
-      Uri.https('$DOMAIN', '$URL_PATH/getDailyBudgets');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getDailyBudgets');
   static Uri ADD_DAILY_BUDGET =
-      Uri.https("$DOMAIN", '$URL_PATH/addDailyBudget');
-
-  // ignore: non_constant_identifier_names
+      Uri.https('${DOMAIN}', '${URL_PATH}/addDailyBudget');
   static Uri EDIT_DAILY_BUDGET =
-      Uri.https('$DOMAIN', '$URL_PATH/editDailyBudget');
+      Uri.https('${DOMAIN}', '${URL_PATH}/editDailyBudget');
 
-  static Uri ADD_ROLE = Uri.https('$DOMAIN', '$URL_PATH/addRole');
-  static Uri EDIT_ROLE = Uri.https('$DOMAIN', '$URL_PATH/editRole');
+  static Uri ADD_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/addRole');
+  static Uri EDIT_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/editRole');
+  static Uri RESPOND_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/respondRole');
 
 /*---------------------------------------------------------------------------------*/
 
@@ -328,18 +347,18 @@ class Utils {
   static String generateId(String pref) {
     var chars =
         'zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210';
-    int charLength = chars.length;
+    int char_length = chars.length;
     var t = DateTime.now();
     String id = pref;
     // id += chars[(t.year / 100).round()];
-    id += chars[t.year % charLength];
+    id += chars[t.year % char_length];
     id += chars[t.month];
     id += chars[t.day];
     id += chars[t.hour];
     id += chars[t.minute];
     id += chars[t.second];
-    id += chars[t.millisecond % charLength];
-    id += chars[t.microsecond % charLength];
+    id += chars[t.millisecond % char_length];
+    id += chars[t.microsecond % char_length];
     return id;
   }
 
@@ -969,7 +988,7 @@ class Utils {
         "zu": 'Zulu',
       };
 
-  static final mobileWidth = 480;
+  static final mobileWidth = 480.0;
 
   static final linearGradient = LinearGradient(
     begin: Alignment(-1.0, 0.0),

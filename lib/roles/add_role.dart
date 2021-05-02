@@ -1,7 +1,7 @@
 import "dart:convert";
 
 import "package:cinemawala/projects/project.dart";
-import 'package:flutter/foundation.dart';
+import 'package:cinemawala/roles/select_user.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import "package:http/http.dart" as http;
@@ -22,7 +22,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
   Project project;
   Color background, background1, color;
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-  Map<dynamic, dynamic> role;
+  Map<dynamic, dynamic> role, selectedUser;
   List<String> permissionsKeys;
   String catName = "";
   bool loading = true, edit = false;
@@ -120,7 +120,6 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
       key: scaffoldKey,
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,
@@ -187,21 +186,39 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: TextField(
-                      controller: nameController,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.done,
-                      onChanged: (v) {
-                        role['name'] = v;
+                    child: InkWell(
+                      onTap: () async {
+                        var r = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectUser(
+                                    project: project,
+                                    selectedUser: selectedUser),
+                                Utils.DTU));
+                        print(r);
+                        setState(() {
+                          selectedUser = r;
+                        });
                       },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background1)),
-                        labelText: "Name",
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        decoration: BoxDecoration(
+                            gradient: Utils.linearGradient,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "${selectedUser == null ? "Select User" : "${selectedUser['name']}"}",
+                                style: TextStyle(
+                                    color: background1, fontSize: 14)),
+                            Text(
+                                "@ ${selectedUser == null ? "Tap to choose." : "${selectedUser['username']}"}",
+                                style: TextStyle(
+                                    color: Colors.black54, fontSize: 12)),
+                          ],
                         ),
                       ),
                     ),
@@ -378,6 +395,16 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
     Utils.showLoadingDialog(context, "Adding Role");
 
     var back = false;
+
+    if (selectedUser != null) {
+      role['username'] = selectedUser['username'];
+      role['name'] = selectedUser['name'];
+      role['user_id'] = selectedUser['id'];
+    } else {
+      await Utils.showErrorDialog(
+          context, "Select User", "No user selected. Please select a user.");
+      return;
+    }
 
     try {
       var resp = await http.post(Utils.ADD_ROLE,

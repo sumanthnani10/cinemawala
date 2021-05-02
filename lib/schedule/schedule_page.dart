@@ -294,13 +294,13 @@ class _SchedulePageState extends State<SchedulePage>
                                             color: background,
                                             width: 3))),
                                 child: Text(
-                                  '${selectedScenes[i].titles['English']}',
-                                  style: selectedSceneIndex == i
-                                      ? TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: background1)
-                                      : TextStyle(color: background1),
-                                )),
+                                  '${selectedScenes[i].titles['en']}',
+                                        style: selectedSceneIndex == i
+                                            ? TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: background1)
+                                            : TextStyle(color: background1),
+                                      )),
                           ),
                         ),
                       ),
@@ -521,19 +521,18 @@ class _SchedulePageState extends State<SchedulePage>
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                  "${artist.names['English']}"),
-                              Row(
-                                children: [
-                                  Text(
-                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                    style: TextStyle(
-                                        color: Colors.indigo),
-                                  ),
-                                  Text(
-                                    "    ",
-                                    style: TextStyle(
-                                        color: background1),
+                                          Text("${artist.names['en']}"),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
+                                              ),
+                                              Text(
+                                                "    ",
+                                                style: TextStyle(
+                                                    color: background1),
                                   ),
                                   Text(
                                     "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
@@ -1060,15 +1059,13 @@ class _SchedulePageState extends State<SchedulePage>
                                                 background,
                                                 width: 3))),
                                     child: Text(
-                                      '${selectedScenes[i].titles['English']}',
-                                      style: selectedSceneIndex == i
-                                          ? TextStyle(
-                                          fontWeight:
-                                          FontWeight.bold,
-                                          color: background1)
-                                          : TextStyle(
-                                          color: background1),
-                                    )),
+                                      '${selectedScenes[i].titles['en']}',
+                                            style: selectedSceneIndex == i
+                                                ? TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: background1)
+                                                : TextStyle(color: background1),
+                                          )),
                               ),
                             ),
                           ),

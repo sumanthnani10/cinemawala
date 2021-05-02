@@ -320,12 +320,15 @@ class _ScenesList extends State<ScenesList>
                                             Utils.createRoute(
                                                 SelectedActors(
                                                   project: project,
-                                                  selectedArtists:
-                                                  List<Actor>.generate(
-                                                      scene.artists.length,
-                                                          (a) => Utils.artistsMap[
-                                                      scene.artists[a]]),
-                                                ),
+                                                        selectedArtists: List<
+                                                                Actor>.generate(
+                                                            scene
+                                                                .artists.length,
+                                                            (a) => Utils
+                                                                    .artistsMap[
+                                                                scene.artists[
+                                                                    a]]),
+                                                        scene: scene),
                                                 Utils.DTU));
                                       },
                                       child: Column(

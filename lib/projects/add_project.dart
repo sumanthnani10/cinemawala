@@ -550,7 +550,6 @@ class _AddProject extends State<AddProject>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

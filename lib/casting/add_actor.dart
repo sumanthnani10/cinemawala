@@ -416,7 +416,6 @@ class _AddActorState extends State<AddActor>
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

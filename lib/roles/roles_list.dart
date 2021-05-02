@@ -1,6 +1,5 @@
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/roles/role.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -54,7 +53,6 @@ class _RolesList extends State<RolesList> {
     }
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

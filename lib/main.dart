@@ -30,9 +30,6 @@ class _CinemawalaState extends State<Cinemawala> {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8))),
       ),
       home: SplashScreen(),
     );
@@ -54,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   check() async {
-    // await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
     if (kIsWeb) {
       await FirebaseAuth.instance.authStateChanges().first;
     }
@@ -97,7 +94,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: Utils.linearGradient,

@@ -10,7 +10,6 @@ import 'package:cinemawala/props/prop_page.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/select_scenes.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -134,7 +133,6 @@ class _AddScheduleState extends State<AddSchedule> {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

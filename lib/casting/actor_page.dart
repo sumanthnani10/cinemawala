@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/casting/add_actor.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -369,7 +368,6 @@ class _ActorPage extends State<ActorPage> {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: isPopUp? BoxDecoration(
             gradient: Utils.linearGradient,
@@ -394,7 +392,8 @@ class _ActorPage extends State<ActorPage> {
                         actor: actor.toJson(),
                       ),
                       Utils.RTL));
-              Navigator.pop(context);
+              actor = Utils.artistsMap[actor.id];
+              setState(() {});
             },
             label: Text(
               "Edit",

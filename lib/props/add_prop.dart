@@ -299,7 +299,6 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,

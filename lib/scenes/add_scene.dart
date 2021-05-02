@@ -10,7 +10,6 @@ import 'package:cinemawala/scenes/additional_artists.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
 import 'package:cinemawala/scenes/select_location.dart';
 import 'package:cinemawala/scenes/select_props.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -272,7 +271,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: Utils.linearGradient,
@@ -317,7 +315,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   fontFamily: 'Poppins')),
                           TextSpan(
                               text:
-                              '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
+                                  '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                               style: TextStyle(
                                   fontSize: 10,
                                   fontFamily: 'Poppins',

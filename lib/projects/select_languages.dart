@@ -1,8 +1,5 @@
 import 'dart:math';
 
-import 'package:cinemawala/casting/actor.dart';
-import 'package:cinemawala/casting/actor_page.dart';
-import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -168,6 +165,7 @@ class _SelectLanguages extends State<SelectLanguages>
     );
   }
 }
+/*
 
 class SelectedActors extends StatefulWidget {
   final Project project;
@@ -205,12 +203,14 @@ class _SelectedActors extends State<SelectedActors>
         .where((e) =>
             e.names.toString().toLowerCase().contains(search.toLowerCase()))
         .toList();
-    /*selectedLanguages.sort((a,b) {
+    */
+/*selectedLanguages.sort((a,b) {
       int x, y;
       x = count.contains(a)?1:0;
       y = count.contains(b)?1:0;
       return y-x;
-    });*/
+    });*/ /*
+
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -302,7 +302,8 @@ class _SelectedActors extends State<SelectedActors>
                           child: Wrap(
                             direction: Axis.horizontal,
                             children:
-                                /*<Widget>[InkWell(
+                                */
+/*<Widget>[InkWell(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => AddActor(project: project,),));
                               },
@@ -318,11 +319,12 @@ class _SelectedActors extends State<SelectedActors>
                                 ),
                                 child: Text('+ Add Artist'),
                               ),
-                            )]+*/
+                            )]+*/ /*
+
                                 List<Widget>.generate(selectedLanguages.length,
                                     (i) {
                               Actor actor = selectedLanguages[i];
-                              print("actor :: ${actor.names},${selectedLanguages[i].names['en']},${selectedLanguages[i].names['English']}");
+                              // print("actor :: ${actor.names},${selectedLanguages[i].names['en']},${selectedLanguages[i].names['en']}");
                               return InkWell(
                                 onLongPress: () {
                                   Navigator.push(
@@ -345,7 +347,7 @@ class _SelectedActors extends State<SelectedActors>
                                     borderRadius: BorderRadius.circular(300),
                                   ),
                                   child: selectedLanguages[i].names['en']!=null ?
-                                      Text('${selectedLanguages[i].names['en']}') : Text('${selectedLanguages[i].names['English']}'),
+                                      Text('${selectedLanguages[i].names['en']}') : Text('${selectedLanguages[i].names['en']}'),
                                 ),
                               );
                             }),
@@ -363,3 +365,4 @@ class _SelectedActors extends State<SelectedActors>
     );
   }
 }
+*/
