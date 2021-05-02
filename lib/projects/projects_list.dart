@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cinemawala/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
@@ -5,9 +7,9 @@ import 'package:cinemawala/projects/project_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
 import '../utils.dart';
 import 'add_project.dart';
 
@@ -130,61 +132,61 @@ class _ProjectsList extends State<ProjectsList> {
       ),
       body: allProjects.length > 0
           ? SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                          child: Text(
-                            "My Projects",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: const Color(0xff309f86),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Text(
+                      "My Projects",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: const Color(0xff309f86),
+                        fontWeight: FontWeight.w600,
                       ),
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                          child: InkWell(
-                              onTap: (){
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        PersonalCalendar(),
-                                        Utils.DTU));
-                              },
-                              child: Icon(Icons.calendar_today)),
-                        ),
-                      ),
-                    ],
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-
-                  Flexible(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(ownProjects.length, (i) {
-                            project = ownProjects[i];
-                            return ProjectCard(
-                              project: project,
-                              onTap: () async {
+                ),
+                Spacer(),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: InkWell(
+                        onTap: (){
+                          Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  PersonalCalendar(),
+                                  Utils.DTU));
+                        },
+                        child: Icon(Icons.calendar_today)),
+                  ),
+                ),
+              ],
+            ),
+            Flexible(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(ownProjects.length, (i) {
+                      project = ownProjects[i];
+                      return ProjectCard(
+                        project: project,
+                        onTap: () async {
+                          Project proj = ownProjects[i];
                                 if (Utils.project == null ||
-                                    Utils.project.id != project.id) {
+                                    Utils.project.id != proj.id) {
                                   Utils.artists = null;
                                   Utils.artistsMap = null;
                                   Utils.costumes = null;
@@ -196,12 +198,12 @@ class _ProjectsList extends State<ProjectsList> {
                                   Utils.locations = null;
                                   Utils.scenesMap = null;
 
-                                  await getProject(project);
+                                  await getProject(proj);
 
                                   Utils.languages = [];
                                   Utils.langsInLang = [];
 
-                                  project.languages.forEach((l) {
+                                  proj.languages.forEach((l) {
                                     Utils.languages
                                         .add(Utils.codeToLanguagesInEnglish[l]);
                                     Utils.langsInLang.add(
@@ -209,49 +211,50 @@ class _ProjectsList extends State<ProjectsList> {
                                   });
                                 }
 
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        ProjectHome(
-                                          project: project,
+                          Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  ProjectHome(
+                                    project: proj,
                                         ),
-                                        Utils.RTL));
-                              },
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
+                                  Utils.RTL));
+                        },
+                      );
+                    }),
                   ),
-                  if (otherProjects.length > 0)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                        child: Text(
-                          "Other Projects",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: const Color(0xff309f86),
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
+                ),
+              ),
+            ),
+            if (otherProjects.length > 0)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Text(
+                    "Other Projects",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: const Color(0xff309f86),
+                      fontWeight: FontWeight.w600,
                     ),
-                  Flexible(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(otherProjects.length, (i) {
-                            project = otherProjects[i];
-                            return ProjectCard(
-                              project: project,
-                              onTap: () async {
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ),
+            Flexible(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(otherProjects.length, (i) {
+                      project = otherProjects[i];
+                      return ProjectCard(
+                        project: project,
+                        onTap: () async {
+                          Project proj = otherProjects[i];
                                 if (Utils.project == null ||
-                                    Utils.project.id != project.id) {
+                                    Utils.project.id != proj.id) {
                                   Utils.artists = null;
                                   Utils.artistsMap = null;
                                   Utils.costumes = null;
@@ -263,64 +266,74 @@ class _ProjectsList extends State<ProjectsList> {
                                   Utils.locations = null;
                                   Utils.scenesMap = null;
 
-                                  await getProject(project);
+                                  await getProject(proj);
                                 }
 
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        ProjectHome(
-                                          project: project,
+                          Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  ProjectHome(
+                                    project: proj,
                                         ),
-                                        Utils.RTL));
-                              },
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
+                                  Utils.RTL));
+                        },
+                      );
+                    }),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Text(
-                        "Requests",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: const Color(0xff309f86),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ),
-                  requestProjects.length == 0
-                      ? Text("No Requests")
-                      : Flexible(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children:
-                                    List.generate(requestProjects.length, (i) {
-                                  project = requestProjects[i];
-                                  return ProjectCard(
-                                    project: project,
-                                    onTap: () async {},
-                                  );
-                                }),
-                              ),
-                            ),
-                          ),
-                        ),
-                ],
+                ),
               ),
-            )
-          : Center(
-              child: Text(loading ? '' : 'No Projects.'),
             ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Text(
+                  "Requests",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: const Color(0xff309f86),
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+            requestProjects.length == 0
+                ? Text("No Requests")
+                : Flexible(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children:
+                    List.generate(requestProjects.length, (i) {
+                      project = requestProjects[i];
+                      return ProjectCard(
+                        project: project,
+                                    onTap: () async {
+                                      Project proj = requestProjects[i];
+                                      if (await Navigator.push(
+                                              context,
+                                              Utils.createRoute(
+                                                  RespondRequest(project: proj),
+                                                  Utils.UTD)) ??
+                                          false) {
+                                        getProjects();
+                                      }
+                                    },
+                                  );
+                    }),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+          : Center(
+        child: Text(loading ? '' : 'No Projects.'),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: color,
         onPressed: () async {
@@ -456,80 +469,80 @@ class _RespondRequestState extends State<RespondRequest> {
                                     horizontalInside: BorderSide(
                                         color: background1, width: 0.4)),
                                 children: [
-                                      TableRow(children: [
-                                        TableCell(
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              child: FittedBox(
-                                                child: Text(
-                                                  "Permission",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      decoration: TextDecoration
-                                                          .underline),
-                                                ),
-                                              ),
+                                  TableRow(children: [
+                                    TableCell(
+                                      child: Center(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: FittedBox(
+                                            child: Text(
+                                              "Permission",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  decoration: TextDecoration
+                                                      .underline),
                                             ),
                                           ),
                                         ),
-                                        TableCell(
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              child: Text(
-                                                "View",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.bold,
-                                                    decoration: TextDecoration
-                                                        .underline),
-                                              ),
-                                            ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Center(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: Text(
+                                            "View",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                decoration: TextDecoration
+                                                    .underline),
                                           ),
                                         ),
-                                        TableCell(
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              child: Text(
-                                                "Add",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.bold,
-                                                    decoration: TextDecoration
-                                                        .underline),
-                                              ),
-                                            ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Center(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                decoration: TextDecoration
+                                                    .underline),
                                           ),
                                         ),
-                                        TableCell(
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              child: Text(
-                                                "Edit",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.bold,
-                                                    decoration: TextDecoration
-                                                        .underline),
-                                              ),
-                                            ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Center(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: Text(
+                                            "Edit",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                decoration: TextDecoration
+                                                    .underline),
                                           ),
                                         ),
-                                      ])
-                                    ] +
+                                      ),
+                                    ),
+                                  ])
+                                ] +
                                     List.generate(permissionsKeys.length, (i) {
                                       var keysVal = ["view", "add", "edit"];
                                       var catName = permissionsKeys[i]
@@ -550,20 +563,20 @@ class _RespondRequestState extends State<RespondRequest> {
                                       }
                                       return TableRow(
                                         children: [
-                                              TableCell(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 8),
-                                                  child: Text(
-                                                    "$category ",
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
+                                          TableCell(
+                                            child: Padding(
+                                              padding: const EdgeInsets
+                                                  .symmetric(vertical: 8),
+                                              child: Text(
+                                                "$category ",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                    FontWeight.bold),
                                               ),
-                                            ] +
+                                            ),
+                                          ),
+                                        ] +
                                             List.generate(keysVal.length, (j) {
                                               String permission = "";
                                               String val = keysVal[j];
@@ -571,12 +584,12 @@ class _RespondRequestState extends State<RespondRequest> {
                                                   val[0].toUpperCase() +
                                                   val.substring(1);
                                               bool value = permissions[
-                                                          permissionsKeys[
-                                                              i]][keysVal[0]] ==
-                                                      true
+                                              permissionsKeys[
+                                              i]][keysVal[0]] ==
+                                                  true
                                                   ? permissions[
-                                                          permissionsKeys[i]]
-                                                      [keysVal[j]]
+                                              permissionsKeys[i]]
+                                              [keysVal[j]]
                                                   : false;
                                               return TableCell(
                                                 child: Padding(
@@ -584,16 +597,16 @@ class _RespondRequestState extends State<RespondRequest> {
                                                       .symmetric(vertical: 8),
                                                   child: value
                                                       ? Icon(
-                                                          Icons.done,
-                                                          color: Colors.green,
-                                                          size: 20,
-                                                        )
+                                                    Icons.done,
+                                                    color: Colors.green,
+                                                    size: 20,
+                                                  )
                                                       : Icon(
-                                                          Icons.cancel,
-                                                          color:
-                                                              Colors.deepOrange,
-                                                          size: 20,
-                                                        ),
+                                                    Icons.cancel,
+                                                    color:
+                                                    Colors.deepOrange,
+                                                    size: 20,
+                                                  ),
                                                 ),
                                               );
                                             }),
@@ -683,7 +696,7 @@ class _RespondRequestState extends State<RespondRequest> {
       await Utils.showErrorDialog(
           context, "Something went wrong.", "Please try again after sometime.");
     }
-    Navigator.pop(context, [back]);
+    Navigator.pop(context, back);
   }
 }
 
@@ -794,7 +807,7 @@ Padding(
             ),
           ),
         ),
-      )*/ /*SingleChildScrollView(
+      ) SingleChildScrollView(
               child: Container(
                 height: 1000,
                 child: Column(
@@ -849,7 +862,7 @@ Padding(
                   ],
                 ),
               ),
-            )*/ /*ProjectCard(project: projects[0], onTap: () async {
+            ) ProjectCard(project: projects[0], onTap: () async {
         Utils.artists = null;
         Utils.artistsMap = null;
         Utils.costumes = null;
