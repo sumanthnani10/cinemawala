@@ -189,17 +189,30 @@ class _SchedulesState extends State<Schedules>
         ),
         actions: [
           TextButton.icon(
+            onPressed: () async {},
+            label: Text(
+              "",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.list_rounded,
+              size: 28,
+              color: Colors.indigo,
+            ),
+          ),
+          TextButton.icon(
             onPressed: () async {
               getAll();
             },
             label: Text(
-              "Reload",
+              "",
               style: TextStyle(color: Colors.indigo),
               textAlign: TextAlign.right,
             ),
             icon: Icon(
               Icons.refresh_rounded,
-              size: 16,
+              size: 32,
               color: Colors.indigo,
             ),
           )

@@ -4,12 +4,10 @@ import 'package:cinemawala/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../main.dart';
 import '../utils.dart';
 import 'add_project.dart';
 
@@ -96,36 +94,33 @@ class _ProjectsList extends State<ProjectsList> {
         actions: [
           TextButton.icon(
             onPressed: () async {
+              Navigator.push(
+                  context, Utils.createRoute(PersonalCalendar(), Utils.UTD));
+            },
+            label: Text(
+              "",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.calendar_today,
+              size: 24,
+              color: background1,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () async {
               getProjects();
             },
             label: Text(
-              "Reload",
+              "",
               style: TextStyle(color: Colors.indigo),
               textAlign: TextAlign.right,
             ),
             icon: Icon(
               Icons.refresh_rounded,
-              size: 18,
-              color: Colors.indigo,
-            ),
-          ),
-          TextButton.icon(
-            onPressed: () async {
-              Utils.showLoadingDialog(context, "Signing Out");
-              await FirebaseAuth.instance.signOut();
-              Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(context,
-                  Utils.createRoute(SplashScreen(), Utils.LTR), (r) => false);
-            },
-            label: Text(
-              "Sign Out",
-              style: TextStyle(color: Colors.indigo),
-              textAlign: TextAlign.right,
-            ),
-            icon: Icon(
-              Icons.person,
-              size: 18,
-              color: Colors.indigo,
+              size: 32,
+              color: background1,
             ),
           ),
         ],
@@ -136,53 +131,31 @@ class _ProjectsList extends State<ProjectsList> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Text(
-                      "My Projects",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: const Color(0xff309f86),
-                        fontWeight: FontWeight.w600,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Text(
+                        "My Projects",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: const Color(0xff309f86),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      textAlign: TextAlign.left,
                     ),
                   ),
-                ),
-                Spacer(),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: InkWell(
-                        onTap: (){
-                          Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  PersonalCalendar(),
-                                  Utils.DTU));
-                        },
-                        child: Icon(Icons.calendar_today)),
-                  ),
-                ),
-              ],
-            ),
-            Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(ownProjects.length, (i) {
-                      project = ownProjects[i];
-                      return ProjectCard(
-                        project: project,
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: List.generate(ownProjects.length, (i) {
+                            project = ownProjects[i];
+                            return ProjectCard(
+                              project: project,
                         onTap: () async {
                           Project proj = ownProjects[i];
                                 if (Utils.project == null ||

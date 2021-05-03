@@ -158,13 +158,13 @@ class _DailyBudgetsState extends State<DailyBudgets>
               getDailyBudgets();
             },
             label: Text(
-              "Reload",
+              "",
               style: TextStyle(color: Colors.indigo),
               textAlign: TextAlign.right,
             ),
             icon: Icon(
               Icons.refresh_rounded,
-              size: 16,
+              size: 32,
               color: Colors.indigo,
             ),
           )

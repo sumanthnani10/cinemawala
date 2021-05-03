@@ -22,7 +22,8 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
   Map<dynamic, dynamic> permissions;
   List<String> permissionsKeys;
   String catName = "";
-  TextEditingController roleTitleController, nameController;
+  TextEditingController roleTitleController;
+  Map selectedUser;
 
   _RolePage(this.project, this.role);
 
@@ -31,7 +32,11 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
     permissions = role.permissions;
     permissionsKeys = permissions.keys.toList();
     roleTitleController = new TextEditingController(text: role.role);
-    nameController = new TextEditingController(text: role.name);
+    selectedUser = {
+      "name": role.name,
+      "username": role.username,
+      "id": role.userId,
+    };
     super.initState();
   }
 
@@ -117,18 +122,24 @@ class _RolePage extends State<RolePage> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: background)),
-                        enabled: false,
-                        labelText: 'Name',
-                        labelStyle: TextStyle(color: background1, fontSize: 14),
-                        contentPadding: EdgeInsets.all(8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      decoration: BoxDecoration(
+                          gradient: Utils.linearGradient,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              "${selectedUser == null ? "Select User" : "${selectedUser['name']}"}",
+                              style:
+                                  TextStyle(color: background1, fontSize: 14)),
+                          Text(
+                              "@ ${selectedUser == null ? "Tap to choose." : "${selectedUser['username']}"}",
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 12)),
+                        ],
                       ),
                     ),
                   ),

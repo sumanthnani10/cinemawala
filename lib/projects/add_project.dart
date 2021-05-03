@@ -53,6 +53,7 @@ class _AddProject extends State<AddProject>
         "owner_id": "${Utils.USER_ID}",
         "owner_username": "${Utils.user.username}",
         "owner_name": "${Utils.user.name}",
+        "schedules": ["None"],
         "roles": {
           "${Utils.USER_ID}": {
             "last_edit_on": now.millisecondsSinceEpoch,

@@ -34,6 +34,11 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
   void initState() {
     if (role != null) {
       edit = true;
+      selectedUser = {
+        "name": role['name'],
+        "username": role["username"],
+        "id": role["user_id"],
+      };
       permissionsKeys = role["permissions"].keys.toList();
       roleTitleController = new TextEditingController(text: role["role"]);
       nameController = new TextEditingController(text: role["name"]);
@@ -195,9 +200,13 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                     project: project,
                                     selectedUser: selectedUser),
                                 Utils.DTU));
-                        print(r);
                         setState(() {
-                          selectedUser = r;
+                          selectedUser = r ?? selectedUser;
+                          if (selectedUser != null) {
+                            role['username'] = selectedUser['username'];
+                            role['name'] = selectedUser['name'];
+                            role['user_id'] = selectedUser['id'];
+                          }
                         });
                       },
                       child: Container(
@@ -245,7 +254,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "${category}",
+                              "$category",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             )),
@@ -369,7 +378,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                                   }
                                                 });
                                               }),
-                                          Text("${permission}"),
+                                          Text("$permission"),
                                           //Text(keysVal[j]),
                                         ],
                                       ),
@@ -396,11 +405,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
 
     var back = false;
 
-    if (selectedUser != null) {
-      role['username'] = selectedUser['username'];
-      role['name'] = selectedUser['name'];
-      role['user_id'] = selectedUser['id'];
-    } else {
+    if (selectedUser == null || role['role'].length == 0) {
       await Utils.showErrorDialog(
           context, "Select User", "No user selected. Please select a user.");
       return;
@@ -448,6 +453,17 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
     Utils.showLoadingDialog(context, "Editing Role");
 
     var back = false;
+
+    if (selectedUser == null) {
+      await Utils.showErrorDialog(
+          context, "Select User", "No user selected. Please select a user.");
+      return;
+    }
+    if (role['role'].length == 0) {
+      await Utils.showErrorDialog(
+          context, "Role", "Role Title not given. Please give a role title.");
+      return;
+    }
 
     try {
       var resp = await http.post(Utils.EDIT_ROLE,

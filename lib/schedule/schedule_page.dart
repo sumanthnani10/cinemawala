@@ -140,7 +140,7 @@ class _SchedulePageState extends State<SchedulePage>
   void initState() {
     isPopUp = isPopUp ?? true;
     setContent();
-    print(project.role.permissions);
+    // print(project.role.permissions);
     super.initState();
     animationController = AnimationController(vsync: this);
   }
@@ -265,6 +265,16 @@ class _SchedulePageState extends State<SchedulePage>
                               )
                             ],
                           ),
+                        ),
+                        Text(
+                          "Schedule: ${schedule.name}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: background1),
+                        ),
+                        SizedBox(
+                          height: 8,
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
@@ -989,6 +999,16 @@ class _SchedulePageState extends State<SchedulePage>
                               ],
                             ),
                           ),
+                          Text(
+                            "Schedule: ${schedule.name}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: background1),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Container(
@@ -1103,6 +1123,7 @@ class _SchedulePageState extends State<SchedulePage>
                       "day": date.day,
                       "project_id": project.id,
                       "scenes": [],
+                      "name": "None",
                       "month": date.month,
                       "artist_timings": {},
                       "addl_timings": {},

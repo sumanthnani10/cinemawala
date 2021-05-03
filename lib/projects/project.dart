@@ -19,7 +19,7 @@ class Project {
       lastEditBy;
   int productionNumber;
   DateTime created, lastEditOn;
-  List<dynamic> languages, rolesIDs;
+  List<dynamic> languages, rolesIDs, schedules;
   Map<dynamic, dynamic> roles;
   Role role;
 
@@ -29,17 +29,18 @@ class Project {
       @required this.languages,
       @required this.roles,
       @required this.rolesIDs,
+      @required this.schedules,
       @required this.ownerID,
       @required this.ownerUsername,
       @required this.ownerName,
       @required this.role,
-    @required this.productionName,
-    @required this.productionNumber,
-    @required this.producer,
-    @required this.director,
-    @required this.dop,
-    @required this.artDirector,
-    @required this.image,
+      @required this.productionName,
+      @required this.productionNumber,
+      @required this.producer,
+      @required this.director,
+      @required this.dop,
+      @required this.artDirector,
+      @required this.image,
     @required this.created,
     @required this.lastEditOn,
     @required this.lastEditBy,
@@ -55,6 +56,7 @@ class Project {
       "owner_name": ownerName,
       "roles": roles,
       "roles_ids": rolesIDs,
+      "schedules": schedules,
       "production_name": productionName,
       "production_number": productionNumber,
       "producer": producer,
@@ -79,6 +81,7 @@ class Project {
         ownerName: i["owner_name"],
         roles: i["roles"],
         rolesIDs: i["roles_ids"],
+        schedules: i["schedules"],
         role: Role.fromJson(i["roles"]["${Utils.USER_ID}"]),
         productionName: i["production_name"],
         productionNumber: i["production_number"],

@@ -69,6 +69,7 @@ class _RolesList extends State<RolesList> {
           ? Column(
               children: List<Widget>.generate(roles.length, (i) {
                 Role role = roles[i];
+                if (role.owner) return Container();
               return InkWell(
                 onTap: () async {
                   var back = await Navigator.push(

@@ -175,15 +175,15 @@ class _ActorsListState extends State<ActorsList>
                       getArtists();
                     },
                     label: Text(
-                      "Reload",
-                      style: TextStyle(color: Colors.indigo),
-                      textAlign: TextAlign.right,
-                    ),
+                      "",
+                        style: TextStyle(color: Colors.indigo),
+                        textAlign: TextAlign.right,
+                      ),
                     icon: Icon(
                       Icons.refresh_rounded,
-                      size: 18,
-                      color: Colors.indigo,
-                    ),
+                        size: 32,
+                        color: Colors.indigo,
+                      ),
                   )
                 ],
                 bottom: TabBar(
@@ -219,9 +219,7 @@ class _ActorsListState extends State<ActorsList>
                                       project: project,
                                   key: UniqueKey(),
                                   scene: scene,
-                                  isPopUp: maxWidth > Utils.mobileWidth
-                                      ? false
-                                      : true,
+                                  isPopUp: !(maxWidth > Utils.mobileWidth),
                                   selectedArtists: List<Actor>.generate(
                                       scene.artists.length,
                                       (a) =>

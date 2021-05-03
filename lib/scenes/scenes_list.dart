@@ -212,13 +212,13 @@ class _ScenesList extends State<ScenesList>
                       getAll();
                     },
                     label: Text(
-                      "Reload",
+                      "",
                       style: TextStyle(color: Colors.indigo),
                       textAlign: TextAlign.right,
                     ),
                     icon: Icon(
                       Icons.refresh_rounded,
-                      size: 18,
+                      size: 32,
                       color: Colors.indigo,
                     ),
                   )
