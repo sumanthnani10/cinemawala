@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cinemawala/personal_calendar.dart';
+import 'package:cinemawala/personal_calender/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';

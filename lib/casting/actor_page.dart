@@ -12,11 +12,14 @@ class ActorPage extends StatefulWidget {
   final Actor actor;
   final Project project;
   final bool isPopUp;
-  const ActorPage({Key key, @required this.actor, @required this.project,this.isPopUp})
+
+  const ActorPage(
+      {Key key, @required this.actor, @required this.project, this.isPopUp})
       : super(key: key);
 
   @override
-  _ActorPage createState() => _ActorPage(actor: actor, project: project,isPopUp: this.isPopUp);
+  _ActorPage createState() =>
+      _ActorPage(actor: actor, project: project, isPopUp: this.isPopUp);
 }
 
 class _ActorPage extends State<ActorPage> {
@@ -32,7 +35,7 @@ class _ActorPage extends State<ActorPage> {
   Set<String> costumes = {};
   Actor actor;
 
-  _ActorPage({@required this.actor, @required this.project,this.isPopUp});
+  _ActorPage({@required this.actor, @required this.project, this.isPopUp});
 
   @override
   void initState() {
@@ -49,23 +52,27 @@ class _ActorPage extends State<ActorPage> {
     });
     super.initState();
   }
-  Widget widget2(ScrollController scrollController){
+
+  Widget widget2(ScrollController scrollController) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: isPopUp ? BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16)) : BorderRadius.all(Radius.circular(0)),
+          borderRadius: isPopUp
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16))
+              : BorderRadius.all(Radius.circular(0)),
           boxShadow: [
-            isPopUp ? BoxShadow(
-              color: const Color(0x26000000),
-              offset: Offset(0, -1),
-              blurRadius: 10,
-            ) : BoxShadow(
-              color: Colors.white,
-              offset: Offset(0, -1),
-              blurRadius: 10,
-            ),
+            isPopUp
+                ? BoxShadow(
+                    color: const Color(0x26000000),
+                    offset: Offset(0, -1),
+                    blurRadius: 10,
+                  )
+                : BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(0, -1),
+                    blurRadius: 10,
+                  ),
           ]),
       child: SingleChildScrollView(
         controller: scrollController,
@@ -79,8 +86,7 @@ class _ActorPage extends State<ActorPage> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children:
-                  List<Widget>.generate(languages.length, (i) {
+                  children: List<Widget>.generate(languages.length, (i) {
                     return Container(
                       decoration: BoxDecoration(
                         color: i == selectedLanguage
@@ -88,8 +94,7 @@ class _ActorPage extends State<ActorPage> {
                             : color.withOpacity(10 / 16),
                         borderRadius: BorderRadius.circular(32),
                       ),
-                      margin:
-                      const EdgeInsets.symmetric(horizontal: 4),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 2),
                       child: InkWell(
@@ -97,12 +102,8 @@ class _ActorPage extends State<ActorPage> {
                             setState(() {
                               selectedLanguage = i;
                               cardScrollController.animateTo(
-                                  MediaQuery.of(context)
-                                      .size
-                                      .width *
-                                      i,
-                                  duration:
-                                  Duration(milliseconds: 400),
+                                  MediaQuery.of(context).size.width * i,
+                                  duration: Duration(milliseconds: 400),
                                   curve: Curves.decelerate);
                             });
                           },
@@ -118,7 +119,7 @@ class _ActorPage extends State<ActorPage> {
                                         fontFamily: 'Poppins')),
                                 TextSpan(
                                     text:
-                                    '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
+                                        '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                     style: TextStyle(
                                         fontSize: 10,
                                         fontFamily: 'Poppins',
@@ -135,8 +136,7 @@ class _ActorPage extends State<ActorPage> {
               padding: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(
-                          color: Colors.black26, width: 0.5))),
+                      bottom: BorderSide(color: Colors.black26, width: 0.5))),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 controller: cardScrollController,
@@ -144,12 +144,11 @@ class _ActorPage extends State<ActorPage> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children:
-                  List<Widget>.generate(languages.length, (i) {
+                  children: List<Widget>.generate(languages.length, (i) {
                     return Container(
                       width: MediaQuery.of(context).size.width - 24,
-                      margin: EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       padding: EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: background,
@@ -169,15 +168,13 @@ class _ActorPage extends State<ActorPage> {
                             decoration: InputDecoration(
                               enabled: false,
                               disabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: background)),
+                                  borderSide: BorderSide(color: background)),
                               labelText: 'Artist/Talent',
-                              labelStyle: TextStyle(
-                                  color: background1, fontSize: 14),
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
                               contentPadding: EdgeInsets.all(8),
                               border: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                           ),
@@ -189,16 +186,14 @@ class _ActorPage extends State<ActorPage> {
                             decoration: InputDecoration(
                               enabled: false,
                               disabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: background)),
+                                  borderSide: BorderSide(color: background)),
                               labelText: 'Character Name',
-                              labelStyle: TextStyle(
-                                  color: background1, fontSize: 14),
+                              labelStyle:
+                                  TextStyle(color: background1, fontSize: 14),
                               focusColor: Colors.white,
                               contentPadding: EdgeInsets.all(8),
                               border: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                           ),
@@ -213,8 +208,7 @@ class _ActorPage extends State<ActorPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                     border: Border(
-                        bottom: BorderSide(
-                            color: Colors.black26, width: 0.5))),
+                        bottom: BorderSide(color: Colors.black26, width: 0.5))),
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -230,8 +224,7 @@ class _ActorPage extends State<ActorPage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(
-                          color: Colors.black26, width: 0.5))),
+                      bottom: BorderSide(color: Colors.black26, width: 0.5))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -246,33 +239,31 @@ class _ActorPage extends State<ActorPage> {
                     alignment: Alignment.centerLeft,
                     child: actor.scenes.length < 1
                         ? Text(
-                      'No Scenes',
-                      style: TextStyle(color: background1),
-                    )
+                            'No Scenes',
+                            style: TextStyle(color: background1),
+                          )
                         : Wrap(
-                        direction: Axis.horizontal,
-                        spacing: 4,
-                        children: List<Widget>.generate(
-                          actor.scenes.length,
+                            direction: Axis.horizontal,
+                            spacing: 4,
+                            children: List<Widget>.generate(
+                              actor.scenes.length,
                               (i) {
-                            return InkWell(
-                              onTap: () {},
-                              child: Container(
-                                margin: EdgeInsets.all(2),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      300),
-                                ),
-                                child: Text(
-                                    '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
-                              ),
-                            );
-                          },
-                        )),
+                                return InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    margin: EdgeInsets.all(2),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      borderRadius: BorderRadius.circular(300),
+                                    ),
+                                    child: Text(
+                                        '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
+                                  ),
+                                );
+                              },
+                            )),
                   ),
                 ],
               ),
@@ -281,8 +272,7 @@ class _ActorPage extends State<ActorPage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(
-                          color: Colors.black26, width: 0.5))),
+                      bottom: BorderSide(color: Colors.black26, width: 0.5))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -298,54 +288,49 @@ class _ActorPage extends State<ActorPage> {
                   ),
                   costumes.length < 1
                       ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'No Costumes',
-                      style: TextStyle(color: background1),
-                    ),
-                  )
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'No Costumes',
+                            style: TextStyle(color: background1),
+                          ),
+                        )
                       : Align(
-                    alignment: Alignment.centerLeft,
-                    child: Wrap(
-                        spacing: 4,
-                        direction: Axis.horizontal,
-                        children: List<Widget>.generate(
-                          costumes.length,
-                              (i) {
-                            return InkWell(
-                              onLongPress: () async {
-                                await Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        CostumesPage(
-                                          project: project,
-                                          costume: Utils
-                                              .costumesMap[
-                                          costumes
-                                              .elementAt(
-                                              i)],
-                                        ),
-                                        Utils.DTU));
-                                setState(() {});
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(2),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      300),
-                                ),
-                                child: Text(
-                                    '${Utils.costumesMap[costumes.elementAt(i)].title}'),
-                              ),
-                            );
-                          },
-                        )),
-                  ),
+                          alignment: Alignment.centerLeft,
+                          child: Wrap(
+                              spacing: 4,
+                              direction: Axis.horizontal,
+                              children: List<Widget>.generate(
+                                costumes.length,
+                                (i) {
+                                  return InkWell(
+                                    onLongPress: () async {
+                                      await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              CostumesPage(
+                                                project: project,
+                                                costume: Utils.costumesMap[
+                                                    costumes.elementAt(i)],
+                                              ),
+                                              Utils.DTU));
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.all(2),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius:
+                                            BorderRadius.circular(300),
+                                      ),
+                                      child: Text(
+                                          '${Utils.costumesMap[costumes.elementAt(i)].title}'),
+                                    ),
+                                  );
+                                },
+                              )),
+                        ),
                 ],
               ),
             ),
@@ -354,6 +339,7 @@ class _ActorPage extends State<ActorPage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     color = Color(0xff6fd8a8);
@@ -370,11 +356,13 @@ class _ActorPage extends State<ActorPage> {
       appBar: AppBar(
         automaticallyImplyLeading: isPopUp ? true : false,
         flexibleSpace: Container(
-          decoration: isPopUp? BoxDecoration(
-            gradient: Utils.linearGradient,
-          ): BoxDecoration(
-              border: Border(left: BorderSide(color: Colors.black)),
-              color: Colors.white),
+          decoration: isPopUp
+              ? BoxDecoration(
+                  gradient: Utils.linearGradient,
+                )
+              : BoxDecoration(
+                  border: Border(left: BorderSide(color: Colors.black)),
+                  color: Colors.white),
         ),
         backgroundColor: color,
         title: Text(
@@ -409,128 +397,138 @@ class _ActorPage extends State<ActorPage> {
           )
         ],
       ),
-      body: isPopUp ? Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: const EdgeInsets.only(top: 24),
-              height: 200,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Positioned(
-                    child: actor.image == ''
-                        ? CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            radius: 100,
-                            child: Text(
-                              'No Image',
-                              style: TextStyle(color: background),
-                            ),
-                          )
-                        : CachedNetworkImage(
-                            width: 200,
-                            height: 200,
-                            imageBuilder: (context, imageProvider) => Container(
+      body: isPopUp
+          ? Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 24),
+                    height: 200,
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Positioned(
+                          child: actor.image == ''
+                              ? CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  radius: 100,
+                                  child: Text(
+                                    'No Image',
+                                    style: TextStyle(color: background),
+                                  ),
+                                )
+                              : CachedNetworkImage(
                                   width: 200,
                                   height: 200,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                            fit: BoxFit.cover,
-                            progressIndicatorBuilder:
-                                (context, url, progress) =>
-                                    LinearProgressIndicator(
-                                      value: progress.progress,
-                                    ),
-                            errorWidget: (context, url, error) => Center(
-                                    child: Text(
-                                  'Image',
-                                  style: const TextStyle(color: Colors.grey),
-                                )),
-                            useOldImageOnUrlChange: true,
-                            imageUrl: actor.image),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox.expand(
-            child: DraggableScrollableSheet(
-              initialChildSize: 310 / MediaQuery.of(context).size.height,
-              minChildSize: 310 / MediaQuery.of(context).size.height,
-              maxChildSize: 1,
-              builder: (context, scrollController) {
-                return widget2(scrollController);
-              },
-            ),
-          )
-        ],
-      ) : SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.black))),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 24),
-                  height: 200,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Positioned(
-                        child: actor.image == ''
-                            ? CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          radius: 100,
-                          child: Text(
-                            'No Image',
-                            style: TextStyle(color: background),
-                          ),
-                        )
-                            : CachedNetworkImage(
-                            width: 200,
-                            height: 200,
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: 200,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover),
-                              ),
-                            ),
-                            fit: BoxFit.cover,
-                            progressIndicatorBuilder:
-                                (context, url, progress) =>
-                                LinearProgressIndicator(
-                                  value: progress.progress,
-                                ),
-                            errorWidget: (context, url, error) => Center(
-                                child: Text(
-                                  'Image',
-                                  style: const TextStyle(color: Colors.grey),
-                                )),
-                            useOldImageOnUrlChange: true,
-                            imageUrl: actor.image),
-                      ),
-                    ],
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                        width: 200,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                  fit: BoxFit.cover,
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) =>
+                                          LinearProgressIndicator(
+                                            value: progress.progress,
+                                          ),
+                                  errorWidget: (context, url, error) => Center(
+                                          child: Text(
+                                        'Image',
+                                        style:
+                                            const TextStyle(color: Colors.grey),
+                                      )),
+                                  useOldImageOnUrlChange: true,
+                                  imageUrl: actor.image),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                SizedBox.expand(
+                  child: DraggableScrollableSheet(
+                    initialChildSize: 310 / MediaQuery.of(context).size.height,
+                    minChildSize: 310 / MediaQuery.of(context).size.height,
+                    maxChildSize: 1,
+                    builder: (context, scrollController) {
+                      return widget2(scrollController);
+                    },
+                  ),
+                )
+              ],
+            )
+          : SingleChildScrollView(
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: Colors.black))),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 24),
+                        height: 200,
+                        child: Stack(
+                          alignment: Alignment.topCenter,
+                          children: [
+                            Positioned(
+                              child: actor.image == ''
+                                  ? CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      radius: 100,
+                                      child: Text(
+                                        'No Image',
+                                        style: TextStyle(color: background),
+                                      ),
+                                    )
+                                  : CachedNetworkImage(
+                                      width: 200,
+                                      height: 200,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                            width: 200,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                      fit: BoxFit.cover,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) =>
+                                              LinearProgressIndicator(
+                                                value: progress.progress,
+                                              ),
+                                      errorWidget: (context, url, error) =>
+                                          Center(
+                                              child: Text(
+                                            'Image',
+                                            style: const TextStyle(
+                                                color: Colors.grey),
+                                          )),
+                                      useOldImageOnUrlChange: true,
+                                      imageUrl: actor.image),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    widget2(new ScrollController()),
+                  ],
+                ),
               ),
-              SizedBox(height: 4,),
-              widget2(new ScrollController()),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -250,7 +250,7 @@ class _SelectScheduleNames extends State<SelectScheduleNames>
               },
             ),
             TextButton(
-              child: Text("Ok"),
+              child: Text("Add"),
               onPressed: () async {
                 if (formKey.currentState.validate()) {
                   return await addScheduleName(nameController.text);
