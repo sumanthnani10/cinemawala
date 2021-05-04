@@ -292,6 +292,9 @@ class Utils {
   static Uri GET_USERNAMES =
       Uri.https('${DOMAIN}', '${URL_PATH}/getAllUsernames');
 
+  static Uri ADD_NOTE = Uri.https('${DOMAIN}', '${URL_PATH}/addNote');
+  static Uri REMOVE_NOTE = Uri.https('${DOMAIN}', '${URL_PATH}/removeNote');
+
   static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
   static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
@@ -321,6 +324,8 @@ class Utils {
 
   static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
   static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
+  static Uri ADD_SCHEDULE_NAME =
+      Uri.https('${DOMAIN}', '${URL_PATH}/addScheduleName');
   static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
 
   static Uri GET_DAILY_BUDGETS =

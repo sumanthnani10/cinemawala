@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class Schedule {
-  String project, id, lastEditBy, addedBy;
+  String project, id, lastEditBy, addedBy, name;
   DateTime lastEditOn, created;
   int year, month, day;
   List<dynamic> scenes;
@@ -27,12 +27,14 @@ class Schedule {
     @required this.callSheetTimings,
     @required this.vfxTimings,
     @required this.sfxTimings,
+    @required this.name,
   });
 
   factory Schedule.fromJson(Map<dynamic, dynamic> i) {
     return Schedule(
       project: i['project_id'],
       id: i['id'],
+      name: i['name'],
       lastEditBy: i['last_edit_by'],
       addedBy: i['added_by'],
       artistTimings: i['artist_timings'],
@@ -57,6 +59,7 @@ class Schedule {
       "month": this.month,
       "added_by": this.addedBy,
       "id": this.id,
+      "name": this.name,
       "year": this.year,
       "artist_timings": this.artistTimings,
       "addl_timings": this.additionalTimings,

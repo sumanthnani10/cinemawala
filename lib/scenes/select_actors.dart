@@ -199,8 +199,10 @@ class _SelectActors extends State<SelectActors>
                                     Navigator.push(
                                         context,
                                         Utils.createRoute(
-                                            ActorPopUp(
-                                                actor: actor, project: project),
+                                            ActorPage(
+                                                popUp: true,
+                                                actor: actor,
+                                                project: project),
                                             Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
@@ -405,7 +407,8 @@ class _SelectedActors extends State<SelectedActors>
                                     Navigator.push(
                                         context,
                                         Utils.createRoute(
-                                            ActorPopUp(
+                                            ActorPage(
+                                              popUp: true,
                                               actor: actor,
                                               project: project,
                                             ),

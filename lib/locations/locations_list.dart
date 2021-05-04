@@ -91,15 +91,15 @@ class _LocationsList extends State<LocationsList>
                       getLocations();
                     },
                     label: Text(
-                      "Reload",
-                      style: TextStyle(color: Colors.indigo),
-                      textAlign: TextAlign.right,
-                    ),
+                      "",
+                        style: TextStyle(color: Colors.indigo),
+                        textAlign: TextAlign.right,
+                      ),
                     icon: Icon(
                       Icons.refresh_rounded,
-                      size: 18,
-                      color: Colors.indigo,
-                    ),
+                        size: 32,
+                        color: Colors.indigo,
+                      ),
                   )
                 ],
                 bottom: TabBar(

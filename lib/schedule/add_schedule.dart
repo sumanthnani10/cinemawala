@@ -9,6 +9,7 @@ import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/select_scenes.dart';
+import 'package:cinemawala/schedule/select_schedule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,7 @@ class AddSchedule extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  final Project project;
+  Project project;
   Map<dynamic, dynamic> schedule;
 
   Scene selectedScene;
@@ -184,6 +185,32 @@ class _AddScheduleState extends State<AddSchedule> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 16,
+              ),
+              InkWell(
+                  onTap: () async {
+                    var r = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectScheduleNames(
+                                  project: project,
+                                  selectedScheduleName: schedule['name'],
+                                ),
+                                Utils.DTU)) ??
+                        schedule['name'];
+                    setState(() {
+                      schedule['name'] = r;
+                      project = Utils.project;
+                    });
+                  },
+                  child: Text(
+                    "Schedule: ${schedule['name']}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.blue),
+                  )),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(

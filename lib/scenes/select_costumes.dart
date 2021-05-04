@@ -213,7 +213,8 @@ class _SelectCostumes extends State<SelectCostumes>
                                 Navigator.push(
                                     context,
                                     Utils.createRoute(
-                                        ActorPopUp(
+                                        ActorPage(
+                                          popUp: true,
                                           actor: actor,
                                           project: project,
                                         ),
@@ -435,7 +436,8 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                   Navigator.push(
                                       context,
                                       Utils.createRoute(
-                                          ActorPopUp(
+                                          ActorPage(
+                                            popUp: true,
                                             actor: actor,
                                             project: project,
                                           ),

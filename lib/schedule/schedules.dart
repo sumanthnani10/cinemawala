@@ -11,14 +11,19 @@ import 'schedule.dart';
 
 class Schedules extends StatefulWidget {
   final Project project;
+
   const Schedules({Key key, this.project}) : super(key: key);
+
   @override
   _SchedulesState createState() => _SchedulesState(project);
 }
+
 class _SchedulesState extends State<Schedules>
     with SingleTickerProviderStateMixin {
   final Project project;
+
   _SchedulesState(this.project);
+
   Color background, background1, color;
   CalendarController calendarController;
   Map<dynamic, Schedule> schedules = {};
@@ -28,6 +33,7 @@ class _SchedulesState extends State<Schedules>
   String selectedDateId;
   bool loading;
   ScrollController cardScrollController = new ScrollController();
+
   @override
   void initState() {
     final date = DateTime.now();
@@ -95,7 +101,8 @@ class _SchedulesState extends State<Schedules>
       loading = false;
     });
   }
-  Widget widget1(){
+
+  Widget widget1() {
     return Container(
       child: TableCalendar(
         events: calenderSchedule,
@@ -108,7 +115,7 @@ class _SchedulesState extends State<Schedules>
         ),
         onDaySelected: (date, events, _) {
           selectedDateId =
-          "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
+              "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
           selectedSchedule = schedules[selectedDateId];
           selectedDate = date;
           setState(() {});
@@ -119,46 +126,48 @@ class _SchedulesState extends State<Schedules>
       ),
     );
   }
-  Widget widget2(){
+
+  Widget widget2() {
     int wd = 0;
     if (schedules.containsKey(selectedDateId)) {
       wd = schedules.keys.toList().indexOf(selectedDateId) + 1;
     }
     return SizedBox.expand(
-        child:  SchedulePage(
-          project: project,
-          schedule: selectedSchedule,
-          date: selectedDate,
-          id: selectedDateId,
-          getAll: () {
-            schedules = Utils.schedulesMap ?? {};
+        child: SchedulePage(
+      project: project,
+      schedule: selectedSchedule,
+      date: selectedDate,
+      id: selectedDateId,
+      getAll: () {
+        schedules = Utils.schedulesMap ?? {};
 
-            schedules.forEach((k, v) {
-              calenderSchedule[DateTime(v.year, v.month, v.day)] = v.scenes;
-            });
-            selectedSchedule = schedules[selectedDateId];
-            setState(() {});
-          },
-          workingDay: wd,
-          nextDate: () async {
-            selectedDate = selectedDate.add(Duration(days: 1));
-            selectedDateId =
+        schedules.forEach((k, v) {
+          calenderSchedule[DateTime(v.year, v.month, v.day)] = v.scenes;
+        });
+        selectedSchedule = schedules[selectedDateId];
+        setState(() {});
+      },
+      workingDay: wd,
+      nextDate: () async {
+        selectedDate = selectedDate.add(Duration(days: 1));
+        selectedDateId =
             "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-            selectedSchedule = schedules[selectedDateId];
-            calendarController.setSelectedDay(selectedDate);
-            setState(() {});
-          },
-          prevDate: () async {
-            selectedDate = selectedDate.subtract(Duration(days: 1));
-            selectedDateId =
+        selectedSchedule = schedules[selectedDateId];
+        calendarController.setSelectedDay(selectedDate);
+        setState(() {});
+      },
+      prevDate: () async {
+        selectedDate = selectedDate.subtract(Duration(days: 1));
+        selectedDateId =
             "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-            selectedSchedule = schedules[selectedDateId];
-            calendarController.setSelectedDay(selectedDate);
-            setState(() {});
-          },
-          key: UniqueKey(),
-        ));
+        selectedSchedule = schedules[selectedDateId];
+        calendarController.setSelectedDay(selectedDate);
+        setState(() {});
+      },
+      key: UniqueKey(),
+    ));
   }
+
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -189,79 +198,90 @@ class _SchedulesState extends State<Schedules>
         ),
         actions: [
           TextButton.icon(
+            onPressed: () async {},
+            label: Text(
+              "",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.list_rounded,
+              size: 28,
+              color: Colors.indigo,
+            ),
+          ),
+          TextButton.icon(
             onPressed: () async {
               getAll();
             },
             label: Text(
-              "Reload",
+              "",
               style: TextStyle(color: Colors.indigo),
               textAlign: TextAlign.right,
             ),
             icon: Icon(
               Icons.refresh_rounded,
-              size: 16,
+              size: 32,
               color: Colors.indigo,
             ),
           )
         ],
       ),
       body: LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-      if(constraints.maxWidth>Utils.mobileWidth){
-        return Row(
-          children: [
-            Flexible(
-              flex: 5,
-              child: widget1(),
-            ),
-            Flexible(
-              flex: 5,
-              child: SizedBox.expand(
-                  child: SchedulePage(
-                    project: project,
-                    schedule: selectedSchedule,
-                    date: selectedDate,
-                    id: selectedDateId,
-                    isPopUp: false,
-                    getAll: () {
-                      schedules = Utils.schedulesMap ?? {};
+          builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxWidth > Utils.mobileWidth) {
+          return Row(
+            children: [
+              Flexible(
+                flex: 5,
+                child: widget1(),
+              ),
+              Flexible(
+                flex: 5,
+                child: SizedBox.expand(
+                    child: SchedulePage(
+                  project: project,
+                  schedule: selectedSchedule,
+                  date: selectedDate,
+                  id: selectedDateId,
+                  isPopUp: false,
+                  getAll: () {
+                    schedules = Utils.schedulesMap ?? {};
 
-                      schedules.forEach((k, v) {
-                        calenderSchedule[DateTime(v.year, v.month, v.day)] = v.scenes;
-                      });
-                      selectedSchedule = schedules[selectedDateId];
-                      setState(() {});
-                    },
-                    workingDay: wd,
-                    nextDate: () async {
-                      selectedDate = selectedDate.add(Duration(days: 1));
-                      selectedDateId =
-                      "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-                      selectedSchedule = schedules[selectedDateId];
-                      calendarController.setSelectedDay(selectedDate);
-                      setState(() {});
-                    },
-                    prevDate: () async {
-                      selectedDate = selectedDate.subtract(Duration(days: 1));
-                      selectedDateId =
-                      "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
-                      selectedSchedule = schedules[selectedDateId];
-                      calendarController.setSelectedDay(selectedDate);
-                      setState(() {});
-                    },
-                    key: UniqueKey(),
-                  )),
-            ),
-          ],
-        );
-      }else{
-        return Stack(
-          children: [
-            widget1(),
-            widget2()
-          ],
-        );
-      }
+                    schedules.forEach((k, v) {
+                      calenderSchedule[DateTime(v.year, v.month, v.day)] =
+                          v.scenes;
+                    });
+                    selectedSchedule = schedules[selectedDateId];
+                    setState(() {});
+                  },
+                  workingDay: wd,
+                  nextDate: () async {
+                    selectedDate = selectedDate.add(Duration(days: 1));
+                    selectedDateId =
+                        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+                    selectedSchedule = schedules[selectedDateId];
+                    calendarController.setSelectedDay(selectedDate);
+                    setState(() {});
+                  },
+                  prevDate: () async {
+                    selectedDate = selectedDate.subtract(Duration(days: 1));
+                    selectedDateId =
+                        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+                    selectedSchedule = schedules[selectedDateId];
+                    calendarController.setSelectedDay(selectedDate);
+                    setState(() {});
+                  },
+                  key: UniqueKey(),
+                )),
+              ),
+            ],
+          );
+        } else {
+          return Stack(
+            children: [widget1(), widget2()],
+          );
+        }
       }),
     );
   }

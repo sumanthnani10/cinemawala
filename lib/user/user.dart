@@ -1,14 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 class User {
-  final String id, email, mobile, name, username;
-  final List<dynamic> projects;
+  String id, email, mobile, name, username;
+  List<dynamic> projects;
+  Map<dynamic, dynamic> notes;
 
   User(
       {@required this.id,
       @required this.email,
       @required this.mobile,
       @required this.name,
+      @required this.notes,
       @required this.username,
       @required this.projects});
 
@@ -17,6 +19,7 @@ class User {
       id: i['id'],
       username: i['username'],
       name: i['name'],
+      notes: i['notes'],
       email: i['email'],
       mobile: i['mobile'],
       projects: i['projects'].values.toList(),

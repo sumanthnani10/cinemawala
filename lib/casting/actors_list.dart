@@ -33,17 +33,15 @@ class _ActorsListState extends State<ActorsList>
   @override
   void initState() {
     loading = true;
-    artists = Utils.artists.sublist(0) ?? [];
+    if (Utils.artists == null) {
+      artists = [];
+    } else {
+      artists = Utils.artists.sublist(0);
+    }
     scenes = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getScenes();
     });
-    if (Utils.artists == null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        getArtists();
-      });
-    }
-    // print(artists);
     super.initState();
   }
 
@@ -57,24 +55,33 @@ class _ActorsListState extends State<ActorsList>
       loading = false;
     });
   }
+
   getScenes() async {
-    // print("getscenes");
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Scenes');
     if (Utils.artists == null) {
-      await Utils.getArtists(context, project.id);
+      artists = await Utils.getArtists(context, project.id);
+    }
+    if (Utils.costumes == null) {
+      await Utils.getCostumes(context, project.id);
+    }
+    if (Utils.props == null) {
+      await Utils.getProps(context, project.id);
+    }
+    if (Utils.locations == null) {
+      await Utils.getLocations(context, project.id);
     }
     if (Utils.scenes == null) {
       scenes = await Utils.getScenes(context, project.id);
     } else {
       scenes = Utils.scenes ?? [];
     }
-    // print(scenes);
     Navigator.pop(context);
     setState(() {
       loading = false;
     });
   }
+
   Widget imagesInCircles(List images, double radius, int max, double textSize) {
     return Stack(
       children: List<Widget>.generate(images.length > max ? max : images.length,
@@ -175,15 +182,15 @@ class _ActorsListState extends State<ActorsList>
                       getArtists();
                     },
                     label: Text(
-                      "Reload",
-                      style: TextStyle(color: Colors.indigo),
-                      textAlign: TextAlign.right,
-                    ),
+                      "",
+                        style: TextStyle(color: Colors.indigo),
+                        textAlign: TextAlign.right,
+                      ),
                     icon: Icon(
                       Icons.refresh_rounded,
-                      size: 18,
-                      color: Colors.indigo,
-                    ),
+                        size: 32,
+                        color: Colors.indigo,
+                      ),
                   )
                 ],
                 bottom: TabBar(
@@ -219,9 +226,7 @@ class _ActorsListState extends State<ActorsList>
                                       project: project,
                                   key: UniqueKey(),
                                   scene: scene,
-                                  isPopUp: maxWidth > Utils.mobileWidth
-                                      ? false
-                                      : true,
+                                  isPopUp: !(maxWidth > Utils.mobileWidth),
                                   selectedArtists: List<Actor>.generate(
                                       scene.artists.length,
                                       (a) =>
@@ -314,12 +319,12 @@ class _ActorsListState extends State<ActorsList>
                             sideWidget =
                                     ActorPage(
                                       key: UniqueKey(),
-                                      actor: artists[i],
-                                      isPopUp: maxWidth>Utils.mobileWidth? false : true,
-                                      project: project,
-                                    );
-                            artists = Utils.artists.sublist(0);
-                          });
+                                actor: artists[i],
+                                popUp: false,
+                                project: project,
+                              );
+                            // artists = Utils.artists.sublist(0);
+                            });
                         }
                         else{
                           await Navigator.push(
