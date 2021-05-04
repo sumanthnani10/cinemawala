@@ -204,11 +204,13 @@ class _CostumesPageState extends State<CostumesPage> {
                                               await Navigator.push(
                                                   context,
                                                   Utils.createRoute(
-                                                      ActorPopUp(
-                                                          actor: Utils.artistsMap[
-                                                              artists
-                                                                  .elementAt(i)],
-                                                          project: project),
+                                                      ActorPage(
+                                                        actor: Utils.artistsMap[
+                                                            artists
+                                                                .elementAt(i)],
+                                                        project: project,
+                                                        popUp: true,
+                                                      ),
                                                       Utils.DTU));
                                               setState(() {});
                                             },

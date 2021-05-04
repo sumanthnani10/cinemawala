@@ -227,7 +227,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
               )
             : AppBar(
                 flexibleSpace: Container(
-
                   decoration: popUp ? BoxDecoration(
                     gradient: Utils.linearGradient,
                   ) : BoxDecoration(
@@ -244,7 +243,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                       children: List<Widget>.generate(langsInLang.length, (i) {
                         return Container(
                           decoration: BoxDecoration(
-                            color: i == selectedLanguage ? Colors.white : color,
+                            color: i != selectedLanguage ? background : color,
                             borderRadius: BorderRadius.circular(32),
                           ),
                           margin: const EdgeInsets.symmetric(
@@ -322,7 +321,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
         body: GestureDetector(
           onTap: () {},
           child: Container(
-
             margin: popUp
                 ? const EdgeInsets.symmetric(horizontal: 24, vertical: 40)
                 : const EdgeInsets.all(0),
@@ -392,8 +390,8 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                     langsInLang.length, (i) {
                                   return Container(
                                     decoration: BoxDecoration(
-                                      color: i == selectedLanguage
-                                          ? Colors.white
+                                      color: i != selectedLanguage
+                                          ? background
                                           : color,
                                       borderRadius: BorderRadius.circular(32),
                                     ),

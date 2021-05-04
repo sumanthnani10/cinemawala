@@ -46,7 +46,8 @@ class _AddActorState extends State<AddActor>
     isPopUp = isPopUp ?? true;
     actorImage = null;
     languages = project.languages;
-    // print(languages);
+    print(languages);
+    print(langsInLang);
     if (actor == null) {
       actor = {
         "added_by": "${Utils.USER_ID}",

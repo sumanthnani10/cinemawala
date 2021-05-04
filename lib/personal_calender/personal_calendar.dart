@@ -57,26 +57,28 @@ class _PersonalCalendar extends State<PersonalCalendar> {
   Widget widgetTop() {
     return Align(
         alignment: Alignment.topCenter,
-        child: Container(
-          child: TableCalendar(
-            events: calendarNotes,
-            calendarController: calendarController,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: CalendarStyle(
-              selectedColor: color,
-              highlightToday: false,
-              outsideDaysVisible: false,
-            ),
-            onDaySelected: (date, events, _) {
-              selectedDateId =
-                  "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
-              selectedNote = notes[selectedDateId];
-              selectedDate = date;
-              print(1);
-              setState(() {});
-            },
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
+        child: SingleChildScrollView(
+          child: Container(
+            child: TableCalendar(
+              events: calendarNotes,
+              calendarController: calendarController,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: CalendarStyle(
+                selectedColor: color,
+                highlightToday: false,
+                outsideDaysVisible: false,
+              ),
+              onDaySelected: (date, events, _) {
+                selectedDateId =
+                    "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
+                selectedNote = notes[selectedDateId];
+                selectedDate = date;
+                print(1);
+                setState(() {});
+              },
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+              ),
             ),
           ),
         ));

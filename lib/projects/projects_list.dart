@@ -239,6 +239,16 @@ class _ProjectsList extends State<ProjectsList> {
                                   Utils.locations = null;
                                   Utils.scenesMap = null;
 
+                                  Utils.languages = [];
+                                  Utils.langsInLang = [];
+
+                                  proj.languages.forEach((l) {
+                                    Utils.languages
+                                        .add(Utils.codeToLanguagesInEnglish[l]);
+                                    Utils.langsInLang.add(
+                                        Utils.codeToLanguagesInLanguage[l]);
+                                  });
+
                                   await getProject(proj);
                                 }
 
