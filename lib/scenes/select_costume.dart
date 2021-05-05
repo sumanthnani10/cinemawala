@@ -78,7 +78,7 @@ class _SelectCostume extends State<SelectCostume>
           child: Center(
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              constraints: BoxConstraints(maxWidth: 480),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
 
-import 'personal_notes.dart';
+import 'personal_note.dart';
 
 class PersonalCalendar extends StatefulWidget {
   PersonalCalendar({Key key}) : super(key: key);
@@ -84,9 +84,10 @@ class _PersonalCalendar extends State<PersonalCalendar> {
         ));
   }
 
-  Widget widgetBottom(scrollController) {
+  Widget widgetBottom(scrollController, height) {
     return Container(
       padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+      height: height,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -299,7 +300,10 @@ class _PersonalCalendar extends State<PersonalCalendar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(flex: 5, child: widgetTop()),
-              Flexible(flex: 5, child: widgetBottom(new ScrollController())),
+              Flexible(
+                  flex: 5,
+                  child: widgetBottom(
+                      new ScrollController(), constraints.maxHeight)),
             ],
           );
         } else {
@@ -312,7 +316,7 @@ class _PersonalCalendar extends State<PersonalCalendar> {
                 minChildSize: 250 / MediaQuery.of(context).size.height,
                 maxChildSize: 1,
                 builder: (context, scrollController) {
-                  return widgetBottom(scrollController);
+                  return widgetBottom(scrollController, constraints.maxHeight);
                 },
               )),
             ],
@@ -400,21 +404,32 @@ class _PersonalCalendar extends State<PersonalCalendar> {
           }),
           headers: {"Content-Type": "application/json"});
       var r = jsonDecode(resp.body);
-      Navigator.pop(context);
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          if (!Utils.user.notes[selectedDateId]['notes'].contains(note)) {
+          if (Utils.user.notes[selectedDateId] == null) {
+            Utils.user.notes[selectedDateId] = {
+              "day": selectedDate.day,
+              "notes": [note],
+              "month": selectedDate.month,
+              "id": selectedDateId,
+              "year": selectedDate.year
+            };
+          } else if (!Utils.user.notes[selectedDateId]['notes']
+              .contains(note)) {
             Utils.user.notes[selectedDateId]['notes'].add(note);
           }
+          Navigator.pop(context);
         } else {
+          Navigator.pop(context);
           await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
         }
       } else {
+        Navigator.pop(context);
         await Utils.showErrorDialog(context, 'Something went wrong.',
             'Please try again after sometime.');
       }
     } catch (e) {
-      debugPrint(e);
+      debugPrint("$e");
       Navigator.pop(context);
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');
@@ -451,7 +466,7 @@ class _PersonalCalendar extends State<PersonalCalendar> {
             'Please try again after sometime.');
       }
     } catch (e) {
-      debugPrint(e);
+      debugPrint("$e");
       Navigator.pop(context);
       await Utils.showErrorDialog(
           context, 'Something went wrong.', 'Please try again after sometime.');

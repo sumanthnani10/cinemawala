@@ -61,7 +61,7 @@ class _SelectLanguages extends State<SelectLanguages>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              constraints: BoxConstraints(maxWidth: 480),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 0),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(

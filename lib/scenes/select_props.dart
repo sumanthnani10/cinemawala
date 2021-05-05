@@ -68,7 +68,7 @@ class _SelectProps extends State<SelectProps> {
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              constraints: BoxConstraints(maxWidth: 480),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
