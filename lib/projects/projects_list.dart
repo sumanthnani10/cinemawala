@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cinemawala/artist_projects/artist_projects_list.dart';
 import 'package:cinemawala/personal_calender/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
@@ -77,263 +78,287 @@ class _ProjectsList extends State<ProjectsList> {
     } else {
       background1 = Colors.white;
     }
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: Utils.linearGradient,
-          ),
-        ),
-        backgroundColor: color,
-        iconTheme: IconThemeData(color: background1),
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Projects",
-          style: TextStyle(color: background1),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: () async {
-              Navigator.push(
-                  context, Utils.createRoute(PersonalCalendar(), Utils.UTD));
-            },
-            label: Text(
-              "",
-              style: TextStyle(color: Colors.indigo),
-              textAlign: TextAlign.right,
-            ),
-            icon: Icon(
-              Icons.calendar_today,
-              size: 24,
-              color: background1,
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 1,
+      child: Scaffold(
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Utils.linearGradient,
             ),
           ),
-          TextButton.icon(
-            onPressed: () async {
-              getProjects();
-            },
-            label: Text(
-              "",
-              style: TextStyle(color: Colors.indigo),
-              textAlign: TextAlign.right,
-            ),
-            icon: Icon(
-              Icons.refresh_rounded,
-              size: 32,
-              color: background1,
-            ),
+          backgroundColor: color,
+          iconTheme: IconThemeData(color: background1),
+          automaticallyImplyLeading: false,
+          title: Text(
+            "Projects",
+            style: TextStyle(color: background1),
           ),
-        ],
-      ),
-      body: allProjects.length > 0
-          ? SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Text(
-                        "My Projects",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: const Color(0xff309f86),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(ownProjects.length, (i) {
-                            project = ownProjects[i];
-                            return ProjectCard(
-                              project: project,
-                        onTap: () async {
-                          Project proj = ownProjects[i];
-                                if (Utils.project == null ||
-                                    Utils.project.id != proj.id) {
-                                  Utils.artists = null;
-                                  Utils.artistsMap = null;
-                                  Utils.costumes = null;
-                                  Utils.props = null;
-                                  Utils.costumes = null;
-                                  Utils.propsMap = null;
-                                  Utils.locations = null;
-                                  Utils.scenes = null;
-                                  Utils.locations = null;
-                                  Utils.scenesMap = null;
-
-                                  await getProject(proj);
-
-                                  Utils.languages = [];
-                                  Utils.langsInLang = [];
-
-                                  proj.languages.forEach((l) {
-                                    Utils.languages
-                                        .add(Utils.codeToLanguagesInEnglish[l]);
-                                    Utils.langsInLang.add(
-                                        Utils.codeToLanguagesInLanguage[l]);
-                                  });
-                                }
-
-                          Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  ProjectHome(
-                                    project: proj,
-                                        ),
-                                  Utils.RTL));
-                        },
-                      );
-                    }),
-                  ),
-                ),
+          actions: [
+            TextButton.icon(
+              onPressed: () async {
+                Navigator.push(
+                    context, Utils.createRoute(PersonalCalendar(), Utils.UTD));
+              },
+              label: Text(
+                "",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
+              ),
+              icon: Icon(
+                Icons.calendar_today,
+                size: 24,
+                color: background1,
               ),
             ),
-            if (otherProjects.length > 0)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Text(
-                    "Other Projects",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: const Color(0xff309f86),
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
+            TextButton.icon(
+              onPressed: () async {
+                getProjects();
+              },
+              label: Text(
+                "",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
               ),
-            Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(otherProjects.length, (i) {
-                      project = otherProjects[i];
-                      return ProjectCard(
-                        project: project,
-                        onTap: () async {
-                          Project proj = otherProjects[i];
-                                if (Utils.project == null ||
-                                    Utils.project.id != proj.id) {
-                                  Utils.artists = null;
-                                  Utils.artistsMap = null;
-                                  Utils.costumes = null;
-                                  Utils.props = null;
-                                  Utils.costumes = null;
-                                  Utils.propsMap = null;
-                                  Utils.locations = null;
-                                  Utils.scenes = null;
-                                  Utils.locations = null;
-                                  Utils.scenesMap = null;
-
-                                  Utils.languages = [];
-                                  Utils.langsInLang = [];
-
-                                  proj.languages.forEach((l) {
-                                    Utils.languages
-                                        .add(Utils.codeToLanguagesInEnglish[l]);
-                                    Utils.langsInLang.add(
-                                        Utils.codeToLanguagesInLanguage[l]);
-                                  });
-
-                                  await getProject(proj);
-                                }
-
-                          Navigator.push(
-                              context,
-                              Utils.createRoute(
-                                  ProjectHome(
-                                    project: proj,
-                                        ),
-                                  Utils.RTL));
-                        },
-                      );
-                    }),
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Text(
-                  "Requests",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: const Color(0xff309f86),
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ),
-            requestProjects.length == 0
-                ? Text("No Requests")
-                : Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children:
-                    List.generate(requestProjects.length, (i) {
-                      project = requestProjects[i];
-                      return ProjectCard(
-                                    project: project,
-                                    onTap: () async {
-                                      Project proj = requestProjects[i];
-                                      var r = await Navigator.push(
-                                          context,
-                                          Utils.createRoute(
-                                              RespondRequest(project: proj),
-                                              Utils.UTD));
-                                      if (r ?? false) {
-                                        getProjects();
-                                      }
-                                    },
-                                  );
-                                }),
-                  ),
-                ),
+              icon: Icon(
+                Icons.refresh_rounded,
+                size: 32,
+                color: background1,
               ),
             ),
           ],
+          bottom: TabBar(tabs: [
+            Tab(
+              child: Text(
+                "Crew",
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Tab(
+              child: Text(
+                "Artist",
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ]),
         ),
-      )
-          : Center(
-        child: Text(loading ? '' : 'No Projects.'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: color,
-        onPressed: () async {
-          await Navigator.push(
-              context, Utils.createRoute(AddProject(), Utils.DTU));
-          setState(() {
-            allProjects = Utils.projects;
-            ownProjects = allProjects.where((e) => e.role.owner).toList();
-            otherProjects = allProjects.where((e) => !e.role.owner).toList();
-            requestProjects =
-                allProjects.where((e) => !e.role.accepted).toList();
-          });
-        },
-        child: Icon(
-          Icons.add,
-          color: background1,
-          size: 32,
+        body: TabBarView(children: [
+          allProjects.length > 0
+              ? SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: Text(
+                            "My Projects",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: const Color(0xff309f86),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(ownProjects.length, (i) {
+                                project = ownProjects[i];
+                                return ProjectCard(
+                                  project: project,
+                                  onTap: () async {
+                                    Project proj = ownProjects[i];
+                                    if (Utils.project == null ||
+                                        Utils.project.id != proj.id) {
+                                      Utils.artists = null;
+                                      Utils.artistsMap = null;
+                                      Utils.costumes = null;
+                                      Utils.props = null;
+                                      Utils.costumes = null;
+                                      Utils.propsMap = null;
+                                      Utils.locations = null;
+                                      Utils.scenes = null;
+                                      Utils.locations = null;
+                                      Utils.scenesMap = null;
+
+                                      await getProject(proj);
+
+                                      Utils.languages = [];
+                                      Utils.langsInLang = [];
+
+                                      proj.languages.forEach((l) {
+                                        Utils.languages.add(
+                                            Utils.codeToLanguagesInEnglish[l]);
+                                        Utils.langsInLang.add(
+                                            Utils.codeToLanguagesInLanguage[l]);
+                                      });
+                                    }
+
+                                    Navigator.push(
+                                        context,
+                                        Utils.createRoute(
+                                            ProjectHome(
+                                              project: proj,
+                                            ),
+                                            Utils.RTL));
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (otherProjects.length > 0)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                            child: Text(
+                              "Other Projects",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: const Color(0xff309f86),
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ),
+                      Flexible(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children:
+                                  List.generate(otherProjects.length, (i) {
+                                project = otherProjects[i];
+                                return ProjectCard(
+                                  project: project,
+                                  onTap: () async {
+                                    Project proj = otherProjects[i];
+                                    if (Utils.project == null ||
+                                        Utils.project.id != proj.id) {
+                                      Utils.artists = null;
+                                      Utils.artistsMap = null;
+                                      Utils.costumes = null;
+                                      Utils.props = null;
+                                      Utils.costumes = null;
+                                      Utils.propsMap = null;
+                                      Utils.locations = null;
+                                      Utils.scenes = null;
+                                      Utils.locations = null;
+                                      Utils.scenesMap = null;
+
+                                      Utils.languages = [];
+                                      Utils.langsInLang = [];
+
+                                      proj.languages.forEach((l) {
+                                        Utils.languages.add(
+                                            Utils.codeToLanguagesInEnglish[l]);
+                                        Utils.langsInLang.add(
+                                            Utils.codeToLanguagesInLanguage[l]);
+                                      });
+
+                                      await getProject(proj);
+                                    }
+
+                                    Navigator.push(
+                                        context,
+                                        Utils.createRoute(
+                                            ProjectHome(
+                                              project: proj,
+                                            ),
+                                            Utils.RTL));
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: Text(
+                            "Requests",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: const Color(0xff309f86),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      requestProjects.length == 0
+                          ? Text("No Requests")
+                          : Flexible(
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: List.generate(
+                                        requestProjects.length, (i) {
+                                      project = requestProjects[i];
+                                      return ProjectCard(
+                                        project: project,
+                                        onTap: () async {
+                                          Project proj = requestProjects[i];
+                                          var r = await Navigator.push(
+                                              context,
+                                              Utils.createRoute(
+                                                  RespondRequest(project: proj),
+                                                  Utils.UTD));
+                                          if (r ?? false) {
+                                            getProjects();
+                                          }
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: Text(loading ? '' : 'No Projects.'),
+                ),
+          ArtistProjects()
+        ]),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: color,
+          onPressed: () async {
+            await Navigator.push(
+                context, Utils.createRoute(AddProject(), Utils.DTU));
+            setState(() {
+              allProjects = Utils.projects;
+              ownProjects = allProjects.where((e) => e.role.owner).toList();
+              otherProjects = allProjects.where((e) => !e.role.owner).toList();
+              requestProjects =
+                  allProjects.where((e) => !e.role.accepted).toList();
+            });
+          },
+          child: Icon(
+            Icons.add,
+            color: background1,
+            size: 32,
+          ),
         ),
       ),
     );

@@ -53,6 +53,8 @@ class _AddProject extends State<AddProject>
         "owner_id": "${Utils.USER_ID}",
         "owner_username": "${Utils.user.username}",
         "owner_name": "${Utils.user.name}",
+        "artists": [],
+        "artist_ids": {},
         "schedules": ["None"],
         "roles": {
           "${Utils.USER_ID}": {

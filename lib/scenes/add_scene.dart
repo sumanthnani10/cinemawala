@@ -370,6 +370,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
                     color: Colors.grey.shade400,
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Container(
@@ -383,16 +384,18 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: List<Widget>.generate(languages.length, (i) {
                               return Container(
-                                constraints: BoxConstraints(maxWidth: 480),
+                                constraints:
+                                    BoxConstraints(maxWidth: Utils.mobileWidth),
                                 color: Colors.white,
                                 padding: EdgeInsets.symmetric(
                                     vertical: 16, horizontal: 16),
-                                //width: MediaQuery.of(context).size.width,
+                                width: MediaQuery.of(context).size.width,
                                 child: Column(
                                   children: [
                                     TextField(
                                       textInputAction: TextInputAction.done,
-                                      textCapitalization: TextCapitalization.words,
+                                      textCapitalization:
+                                          TextCapitalization.words,
                                       onChanged: (v) {
                                         scene['titles'][languages[i]] = v;
                                       },

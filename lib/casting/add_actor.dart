@@ -51,6 +51,11 @@ class _AddActorState extends State<AddActor>
         "added_by": "${Utils.USER_ID}",
         "names": {},
         "costumes": {},
+        "by": {
+          "user_id": "",
+          "username": "",
+          "name": "",
+        },
         "days": 0,
         "project_id": "${project.id}",
         "scenes": [],
