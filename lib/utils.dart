@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+import 'artist_projects/artist_project.dart';
 import 'daily_budget/daily_budget.dart';
 import 'props/prop.dart';
 
@@ -20,8 +21,10 @@ class Utils {
   static User user;
   static List<dynamic> users;
   static Project project;
+  static ArtistProject artistProject;
   static List<String> languages = [], langsInLang = [];
   static List<Project> projects;
+  static List<Project> artistProjects;
   static List<Actor> artists;
   static List<Costume> costumes;
   static List<Prop> props;
@@ -30,6 +33,7 @@ class Utils {
   static List<Schedule> schedules;
   static List<DailyBudget> dailyBudgets;
   static Map<String, Project> projectsMap;
+  static Map<String, Project> artistProjectsMap;
   static Map<String, Actor> artistsMap;
   static Map<String, Costume> costumesMap;
   static Map<String, Prop> propsMap;
@@ -51,10 +55,11 @@ class Utils {
         USER_ID = user.id;
         return user;
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return null;
   }
@@ -69,10 +74,11 @@ class Utils {
         users = r['usernames'];
         return users;
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return null;
   }
@@ -87,10 +93,29 @@ class Utils {
         // print(r['project']);
         return Project.fromJson(r['project']);
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
+
+  static getArtistProject(context, projectId) async {
+    var resp = await http.post(Utils.GET_ARTIST_PROJECT,
+        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        return ArtistProject.fromJson(r['project']);
+      } else {
+        await showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return null;
   }
@@ -109,12 +134,36 @@ class Utils {
           Utils.projectsMap[Utils.projects.last.id] = Utils.projects.last;
         });
       } else {
+        await showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
+    }
+    return Utils.projects;
+  }
+
+  static getArtistProjects(context) async {
+    var resp = await http
+        .post(Utils.GET_ARTIST_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
+
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        Utils.artistProjects = [];
+        Utils.artistProjectsMap = {};
+        r['projects'].forEach((i) {
+          Utils.artistProjects.add(Project.fromJson(i));
+          Utils.artistProjectsMap[Utils.artistProjects.last.id] =
+              Utils.artistProjects.last;
+        });
+      } else {
         showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
       showErrorDialog(context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.projects;
+    return Utils.artistProjects;
   }
 
   static getArtists(context, projectId) async {
@@ -131,10 +180,11 @@ class Utils {
           Utils.artistsMap[Utils.artists.last.id] = Utils.artists.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.artists;
   }
@@ -153,10 +203,11 @@ class Utils {
           costumesMap[Utils.costumes.last.id] = Utils.costumes.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.costumes;
   }
@@ -175,10 +226,11 @@ class Utils {
           Utils.propsMap[Utils.props.last.id] = Utils.props.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.props;
   }
@@ -197,10 +249,11 @@ class Utils {
           Utils.locationsMap[Utils.locations.last.id] = Utils.locations.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.locations;
   }
@@ -220,10 +273,11 @@ class Utils {
           Utils.scenesMap[Utils.scenes.last.id] = Utils.scenes.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.scenes;
   }
@@ -243,10 +297,11 @@ class Utils {
           Utils.schedulesMap[Utils.schedules.last.id] = Utils.schedules.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.schedules;
   }
@@ -267,10 +322,11 @@ class Utils {
               Utils.dailyBudgets.last;
         });
       } else {
-        showErrorDialog(context, '', '${r['msg']}');
+        await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
-      showErrorDialog(context, '', 'Something went Wrong. Please try again');
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
     }
     return Utils.schedules;
   }
@@ -285,6 +341,7 @@ class Utils {
   static const String DOMAIN =
       "us-central1-cinemawala-2021b.cloudfunctions.net";
   static const String URL_PATH = "/cinemawala";
+
   static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
   static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
   static Uri VALIDATE_USERNAME =
@@ -299,6 +356,11 @@ class Utils {
   static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
   static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
   static Uri EDIT_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/editProject');
+
+  static Uri GET_ARTIST_PROJECTS =
+      Uri.https('${DOMAIN}', '${URL_PATH}/getArtistProjects');
+  static Uri GET_ARTIST_PROJECT =
+      Uri.https('${DOMAIN}', '${URL_PATH}/getArtistProject');
 
   static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
   static Uri ADD_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/addArtist');

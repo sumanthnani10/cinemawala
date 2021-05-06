@@ -28,7 +28,6 @@ class _LocationPageState extends State<LocationPage> {
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
-    // TODO: implement initState
     super.initState();
   }
   @override

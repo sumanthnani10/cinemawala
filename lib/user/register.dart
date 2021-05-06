@@ -561,6 +561,7 @@ class _Register extends State<Register> {
       "id": "${Utils.generateId("user_")}",
       "projects": [],
       "notes": {},
+      "acts_in": {},
       "gender": 1
     };
 
