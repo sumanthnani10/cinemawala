@@ -55,8 +55,6 @@ class _ActorPage extends State<ActorPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(languages);
-    print(langsInLang);
     color = Color(0xff6fd8a8);
     background = Colors.white;
     headingStyle = TextStyle(
@@ -591,8 +589,6 @@ class _ActorPopUpState extends State<ActorPopUp> {
   @override
   void initState() {
     languages = project.languages;
-    print(langsInLang);
-    print(languages);
     for (var i in languages) {
       nameControllers.add(new TextEditingController(
           text: '${actor.names[i] != "" ? actor.names[i] : "-"}'));

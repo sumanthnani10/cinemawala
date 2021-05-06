@@ -60,6 +60,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
             child: Container(
               padding: const EdgeInsets.all(8.0),
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
@@ -406,6 +407,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
             child: Container(
               padding: const EdgeInsets.all(8.0),
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),

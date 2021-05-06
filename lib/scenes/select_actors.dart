@@ -70,7 +70,7 @@ class _SelectActors extends State<SelectActors>
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-              constraints: BoxConstraints(maxWidth: 480),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(
@@ -306,7 +306,7 @@ class _SelectedActors extends State<SelectedActors>
             child: Container(
               margin: EdgeInsets.symmetric(
                   vertical: isPopUp ? 48 : 8, horizontal: isPopUp ? 24 : 4),
-              constraints: BoxConstraints(maxWidth: 480),
+              constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               height: MediaQuery.of(context).size.height - (48 * 2),
               decoration: BoxDecoration(

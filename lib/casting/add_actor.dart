@@ -46,8 +46,6 @@ class _AddActorState extends State<AddActor>
     isPopUp = isPopUp ?? true;
     actorImage = null;
     languages = project.languages;
-    print(languages);
-    print(langsInLang);
     if (actor == null) {
       actor = {
         "added_by": "${Utils.USER_ID}",
@@ -201,16 +199,16 @@ class _AddActorState extends State<AddActor>
       ),
     );
   }
+
   Widget widget2(){
     return Align(
-      alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
+      alignment: Alignment.bottomCenter,
       child: Container(
-        constraints: BoxConstraints(maxWidth: 700),
+        constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16)),
+                topLeft: Radius.circular(16), topRight: Radius.circular(16)),
             boxShadow: [
               BoxShadow(
                 color: const Color(0x26000000),
@@ -285,19 +283,20 @@ class _AddActorState extends State<AddActor>
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 14),
-                width:  MediaQuery.of(context).size.width,
+                constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
                 child: SingleChildScrollView(
                   controller: cardScrollController,
                   physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children:
-                    List<Widget>.generate(languages.length, (i) {
+                    children: List<Widget>.generate(languages.length, (i) {
                       return Container(
                         width: MediaQuery.of(context).size.width - 24,
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                        constraints:
+                            BoxConstraints(maxWidth: Utils.mobileWidth - (24)),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         padding: EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           color: background,
@@ -405,6 +404,7 @@ class _AddActorState extends State<AddActor>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -430,10 +430,12 @@ class _AddActorState extends State<AddActor>
         ),
       ),
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: isPopUp ? Stack(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Stack(
+            children: [widget1(), widget2()],
+          ) /*isPopUp ? Stack(
           children: [
             widget1(),
             widget2()
@@ -447,12 +449,9 @@ class _AddActorState extends State<AddActor>
                 Flexible(
                     flex: 5,
                     child: widget2()),
-                Flexible(
-                    flex: 1,
-                    child: Container())
               ],
-            ),
-      ),
+            ),*/
+          ),
     );
   }
 
