@@ -221,6 +221,7 @@ class PdfGenerator {
   }
   static dailyReportCallSheet(
       DailyBudget dailyReport,
+      String callSheetType,
       ) async{
     Map dailyReportMap = dailyReport.budget;
     List<dynamic> categories,subcategories;
@@ -254,7 +255,21 @@ class PdfGenerator {
                                 decoration: BoxDecoration(
                                   border: Border.all(color: PdfColors.black),
                                 ),
-                                child: RichText(
+                                child: callSheetType=="Daily Program" ?
+                                RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(text: '${subcategories[j]}\n\n',style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),
+                                      TextSpan(text: 'Contact', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["contact"]}\n'),
+                                      TextSpan(text: 'Quantity', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["quantity"]}\n'),
+                                      TextSpan(text: 'CallSheet', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${dailyReportMap[categories[i]][subcategories[j]]["callSheet"]}\n'),
+                                    ],
+                                  ),
+                                )
+                                    : RichText(
                                   text: TextSpan(
                                     children: <TextSpan>[
                                       TextSpan(text: '${subcategories[j]}\n\n',style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),

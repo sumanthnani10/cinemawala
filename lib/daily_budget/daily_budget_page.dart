@@ -91,14 +91,42 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
   TimeOfDay _timeOfDay = TimeOfDay.now();
-
+  List<String> callSheetType = ["Daily Report","Daily Program"];
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
     // print(isPopUp);
     super.initState();
   }
-
+  Future<String> createAlertDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Select Call Sheet"),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(callSheetType.length, (i) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        //Utils.showLoadingDialog(context, "Generating PDF");
+                        await PdfGenerator.dailyReportCallSheet(dailyBudget,callSheetType[i]);
+                        //Navigator.of(context).pop();
+                        },
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("${callSheetType[i]}"),
+                      ),
+                    ),
+                  );
+                })),
+          );
+        });
+  }
   String reFormatKey(String s) {
     s = s.replaceAll("_", " ");
     s = s.toLowerCase();
@@ -205,12 +233,10 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                     ),
                                     TextButton.icon(
                                       onPressed: () async {
-                                        Utils.showLoadingDialog(
-                                            context, "Generating");
-                                        PdfGenerator.dailyReportCallSheet(
-                                          dailyBudget,
-                                        );
-                                        Navigator.pop(context);
+                                        //Utils.showLoadingDialog(
+                                          //  context, "Generating");
+                                        createAlertDialog(context);
+                                        //Navigator.pop(context);
                                       },
                                       label: Text("Generate PDF"),
                                       icon: Icon(Icons.picture_as_pdf_outlined),

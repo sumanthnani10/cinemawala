@@ -659,6 +659,227 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       ],
                     ),
                   ),
+                  // Artists
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, 'Loading');
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectActors(
+                                  project: project,
+                                  selectedActors: selectedArtists,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['artists'] = selected[0];
+                          selectedArtists = selected[1];
+                          artistsImages = [];
+                          var costumes = [];
+                          for (var i in selectedArtists) {
+                            artistsImages.add(i.image ?? '');
+                          }
+                          int ind = 0;
+                          scene['artists'].forEach((a) {
+                            costumes.add({"id": a});
+                            var oldCostume = scene['costumes'].firstWhere(
+                                    (e) => e['id'] == a,
+                                orElse: () => null);
+                            if (oldCostume != null) {
+                              costumes[ind]['costumes'] = oldCostume["costumes"];
+                            } else {
+                              costumes[ind]['costumes'] = [];
+                            }
+                            ind++;
+                          });
+                          scene['costumes'] = costumes;
+
+                          for (var i in scene['costumes']) {
+                            for (var j in i['costumes']) {
+                              Costume costume = Utils.costumesMap[j];
+                              selectedCostumes.add(costume);
+                              costumesImages.add(costume.referenceImage ?? '');
+                            }
+                          }
+
+                          Navigator.pop(context);
+                          setState(() {});
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Artists",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            imagesInCircles(artistsImages)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Additional Artists
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        // print(scene['addl_artists']);
+                        var addlArtists = Utils.additionalArtists;
+                        for (var k in addlArtists.keys) {
+                          addlArtists['$k']['field_values'] =
+                          scene['addl_artists']['$k'];
+                        }
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                AddCompanyArtists(
+                                  additionalArtists: addlArtists,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          for (var k in selected.keys) {
+                            scene['addl_artists']['$k'] =
+                            selected['$k']['field_values'];
+                          }
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          child: Text(
+                            'Company/Additional Artists',
+                            style: TextStyle(
+                                color: background1, fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ),
+                  // Costumes
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, "Loading");
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectCostumes(
+                                  project: project,
+                                  selectedActors: selectedArtists,
+                                  costumes: scene['costumes'],
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['costumes'] = selected;
+                          selectedCostumes.clear();
+                          selectedCostumes = [];
+                          costumesImages.clear();
+                          costumesImages = [];
+                          for (var i in scene['costumes']) {
+                            for (var j in i['costumes']) {
+                              Costume costume = Utils.costumesMap[j];
+                              selectedCostumes.add(costume);
+                              costumesImages.add(costume.referenceImage ?? '');
+                            }
+                          }
+
+                          Navigator.pop(context);
+                          setState(() {});
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Costumes",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            imagesInSquares(costumesImages),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Props
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Utils.showLoadingDialog(context, 'Loading');
+                        var selected = await Navigator.push(
+                            context,
+                            Utils.createRoute(
+                                SelectProps(
+                                  project: project,
+                                  selectedProps: selectedProps,
+                                ),
+                                Utils.DTU));
+                        if (selected != null) {
+                          scene['props'] = selected[0];
+                          selectedProps = selected[1];
+                          propsImages = [];
+                          for (var i in selectedProps) {
+                            propsImages.add(i.referenceImage ?? '');
+                          }
+                          Navigator.pop(context);
+                          setState(() {});
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Props",
+                              style: TextStyle(
+                                  color: background1, fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            imagesInSquares(propsImages),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   // Makeup & Hair
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -846,227 +1067,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                         contentPadding: EdgeInsets.all(8),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Artists
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        Utils.showLoadingDialog(context, 'Loading');
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectActors(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['artists'] = selected[0];
-                          selectedArtists = selected[1];
-                          artistsImages = [];
-                          var costumes = [];
-                          for (var i in selectedArtists) {
-                            artistsImages.add(i.image ?? '');
-                          }
-                          int ind = 0;
-                          scene['artists'].forEach((a) {
-                            costumes.add({"id": a});
-                            var oldCostume = scene['costumes'].firstWhere(
-                                (e) => e['id'] == a,
-                                orElse: () => null);
-                            if (oldCostume != null) {
-                              costumes[ind]['costumes'] = oldCostume["costumes"];
-                            } else {
-                              costumes[ind]['costumes'] = [];
-                            }
-                            ind++;
-                          });
-                          scene['costumes'] = costumes;
-
-                          for (var i in scene['costumes']) {
-                            for (var j in i['costumes']) {
-                              Costume costume = Utils.costumesMap[j];
-                              selectedCostumes.add(costume);
-                              costumesImages.add(costume.referenceImage ?? '');
-                            }
-                          }
-
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Artists",
-                              style: TextStyle(
-                                  color: background1, fontWeight: FontWeight.bold),
-                            ),
-                            Spacer(),
-                            imagesInCircles(artistsImages)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Additional Artists
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        // print(scene['addl_artists']);
-                        var addlArtists = Utils.additionalArtists;
-                        for (var k in addlArtists.keys) {
-                          addlArtists['$k']['field_values'] =
-                              scene['addl_artists']['$k'];
-                        }
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                AddCompanyArtists(
-                                  additionalArtists: addlArtists,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          for (var k in selected.keys) {
-                            scene['addl_artists']['$k'] =
-                                selected['$k']['field_values'];
-                          }
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          child: Text(
-                            'Company/Additional Artists',
-                            style: TextStyle(
-                                color: background1, fontWeight: FontWeight.bold),
-                          )),
-                    ),
-                  ),
-                  // Costumes
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        Utils.showLoadingDialog(context, "Loading");
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectCostumes(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                  costumes: scene['costumes'],
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['costumes'] = selected;
-                          selectedCostumes.clear();
-                          selectedCostumes = [];
-                          costumesImages.clear();
-                          costumesImages = [];
-                          for (var i in scene['costumes']) {
-                            for (var j in i['costumes']) {
-                              Costume costume = Utils.costumesMap[j];
-                              selectedCostumes.add(costume);
-                              costumesImages.add(costume.referenceImage ?? '');
-                            }
-                          }
-
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Costumes",
-                              style: TextStyle(
-                                  color: background1, fontWeight: FontWeight.bold),
-                            ),
-                            Spacer(),
-                            imagesInSquares(costumesImages),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Props
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        Utils.showLoadingDialog(context, 'Loading');
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectProps(
-                                  project: project,
-                                  selectedProps: selectedProps,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['props'] = selected[0];
-                          selectedProps = selected[1];
-                          propsImages = [];
-                          for (var i in selectedProps) {
-                            propsImages.add(i.referenceImage ?? '');
-                          }
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Props",
-                              style: TextStyle(
-                                  color: background1, fontWeight: FontWeight.bold),
-                            ),
-                            Spacer(),
-                            imagesInSquares(propsImages),
-                          ],
                         ),
                       ),
                     ),
