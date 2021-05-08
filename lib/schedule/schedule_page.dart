@@ -123,7 +123,7 @@ class _SchedulePageState extends State<SchedulePage>
                           "en",
                           selectedArtist,
                         );
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                       },
                       child: Align(
                         alignment: Alignment.topLeft,
