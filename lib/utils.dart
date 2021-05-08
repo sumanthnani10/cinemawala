@@ -726,7 +726,26 @@ class Utils {
       },
       'addable': false
     },
-    'Dancers/Fighters': {
+    'Dancers': {
+      'field_values': [
+        {
+          'Male': 0,
+          'Female': 0,
+          'Kids': 0,
+          'Contact': '',
+          'Notes': '',
+        }
+      ],
+      'fields': {
+        'Male': 0,
+        'Female': 0,
+        'Kids': 0,
+        'Contact': '',
+        'Notes': '',
+      },
+      'addable': false
+    },
+    'Fighters': {
       'field_values': [
         {
           'Male': 0,
@@ -770,7 +789,8 @@ class Utils {
     'Additional Artists',
     'Juniors',
     'Models',
-    'Dancers/Fighters'
+    'Dancers',
+    'Fighters'
   ];
 
   static var elevatedButtonStyle = ElevatedButton.styleFrom(

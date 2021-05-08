@@ -79,6 +79,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               'Male': 0,
               'Female': 0,
               'Kids': 0,
+              'Contact': "",
               'Notes': '',
             }
           ],
@@ -87,14 +88,25 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               'Male': 0,
               'Female': 0,
               'Kids': 0,
+              'Contact': "",
               'Notes': '',
             }
           ],
-          'Dancers/Fighters': [
+          'Dancers': [
             {
               'Male': 0,
               'Female': 0,
               'Kids': 0,
+              'Contact': "",
+              'Notes': '',
+            }
+          ],
+          'Fighters': [
+            {
+              'Male': 0,
+              'Female': 0,
+              'Kids': 0,
+              'Contact': "",
               'Notes': '',
             }
           ],

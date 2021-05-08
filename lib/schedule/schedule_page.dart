@@ -580,6 +580,7 @@ class _SchedulePageState extends State<SchedulePage>
                                         var artist = {"Name": '$key'};
                                         var timings =
                                             addlTimings[selectedScene.id][key];
+                                        print(artist['Name']);
                                         return Column(
                                           children: [
                                             Padding(
