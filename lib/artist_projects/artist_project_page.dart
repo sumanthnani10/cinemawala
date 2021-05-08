@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
+import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
@@ -28,42 +29,42 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
   AnimationController _controller;
   Project project;
   List months = [];
-  var selectedDayScenes;
-  Map<dynamic,dynamic> callSheetTimings = {};
-  Map<dynamic,dynamic> artistTiming = {};
+  Map<dynamic, dynamic> callSheetTimings = {};
+  Map<dynamic, dynamic> artistTiming = {};
   var timings;
   Actor artist;
   int flag = 0;
   List<Scene> scenes;
   List<Costume> costumes;
   List<Schedule> schedules;
-  int cday,cmonth,cyear,tempday,tempmonth,tempyear;
-  int selectedIndex = 0,selectedScene = 0;
-  Map<String,Scene> scene;
-  Map<String,Costume> costume;
+  List<Location> locations;
+  int cday, cmonth, cyear, tempday, tempmonth, tempyear;
+  int selectedIndex = 0;
+  Scene selectedScene;
+  Map<String, Scene> scenesMap;
+  Map<String, Costume> costumesMap;
+  Map<String, Location> locationsMap;
   Scene sceneDetails;
   Costume costumeDetails;
   List<dynamic> temp = [];
+  Location selectedLocation;
   Schedule selectedSchedule;
   Color background, color, background1;
+
   _ArtistProjectPageState(this.artistProject);
 
   @override
   void initState() {
-    scene = {};
-    costume = {};
+    scenesMap = {};
+    costumesMap = {};
+    locationsMap = {};
     project = artistProject.project;
     artist = artistProject.artist;
     scenes = artistProject.scenes;
     costumes = artistProject.costumes;
+    locations = artistProject.locations;
     schedules = artistProject.schedules;
     selectedSchedule = null;
-    if (schedules.length > 0) {
-      selectedSchedule = schedules.first;
-      cday = selectedSchedule.day;
-      cmonth = selectedSchedule.month;
-      cyear = selectedSchedule.year;
-    }
     months = [
       "",
       "Jan",
@@ -81,11 +82,22 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
     ];
     _controller = AnimationController(vsync: this);
     scenes.forEach((element) {
-      scene[element.id] = element;
+      scenesMap[element.id] = element;
     });
     costumes.forEach((element) {
-      costume[element.id] = element;
+      costumesMap[element.id] = element;
     });
+    locations.forEach((element) {
+      locationsMap[element.id] = element;
+    });
+    if (schedules.length > 0) {
+      selectedSchedule = schedules.first;
+      cday = selectedSchedule.day;
+      cmonth = selectedSchedule.month;
+      cyear = selectedSchedule.year;
+      selectedScene = scenesMap[selectedSchedule.scenes[0]];
+      selectedLocation = locationsMap[selectedScene.location];
+    }
     super.initState();
   }
 
@@ -187,13 +199,15 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
             cyear = tempyear;
             callSheetTimings = selectedSchedule.callSheetTimings;
             timings = callSheetTimings[selectedSchedule.scenes[0]];
-            artistTiming = selectedSchedule.artistTimings[selectedSchedule.scenes[0]][artist.id];
-            sceneDetails = scene[selectedSchedule.scenes[0]];
-            for(int j=0;j<sceneDetails.costumes.length;j++){
-              if(sceneDetails.costumes[j]["id"]==artist.id){
+            artistTiming = selectedSchedule
+                .artistTimings[selectedSchedule.scenes[0]][artist.id];
+            sceneDetails = scenesMap[selectedSchedule.scenes[0]];
+            for (int j = 0; j < sceneDetails.costumes.length; j++) {
+              if (sceneDetails.costumes[j]["id"] == artist.id) {
                 temp = [];
-                for(int k=0;k<sceneDetails.costumes[j]["costumes"].length;k++){
-
+                for (int k = 0;
+                    k < sceneDetails.costumes[j]["costumes"].length;
+                    k++) {
                   temp.add(sceneDetails.costumes[j]["costumes"][k]);
                 }
               }
@@ -203,31 +217,39 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
             onTap: (){
             setState(() {
               selectedIndex = i;
-              selectedScene = 0;
-              selectedSchedule = schedules[i];
-              tempday = schedules[i].day;
-              tempmonth = schedules[i].month;
-              tempyear = schedules[i].year;
-            });
+                selectedScene = scenesMap[selectedSchedule.scenes[0]];
+                selectedSchedule = schedules[i];
+                tempday = schedules[i].day;
+                tempmonth = schedules[i].month;
+                tempyear = schedules[i].year;
+              });
             },
             child: Container(
               padding: EdgeInsets.all(8),
               margin: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  border: Border.all(color: i==selectedIndex ? color : Colors.white),
-                  color: i==selectedIndex ? color : Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              decoration: i == selectedIndex
+                  ? BoxDecoration(
+                      gradient: Utils.linearGradient,
+                      borderRadius: BorderRadius.all(Radius.circular(8)))
+                  : BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
               child: Column(
                 children: [
-                  Text("${months[schedules[i].month]}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontSize: 12),),
-                  Text("${schedules[i].day}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontWeight: FontWeight.bold,
+                  Text(
+                    "${months[schedules[i].month]}",
+                    style: TextStyle(color: Colors.black, fontSize: 12),
+                  ),
+                  Text(
+                    "${schedules[i].day}",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                         fontSize: 16),
                   ),
                   Text(
                     "${schedules[i].year}",
-                    style: TextStyle(
-                        color: i == selectedIndex ? Colors.white : Colors.black,
-                        fontSize: 12),
+                    style: TextStyle(color: Colors.black, fontSize: 12),
                   ),
                 ],
               ),
@@ -253,15 +275,19 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
             return InkWell(
               onTap: () {
                 setState(() {
-                  selectedScene = i;
+                  selectedScene = scenesMap[selectedSchedule.scenes[i]];
+                  selectedLocation = locationsMap[selectedScene.location];
                   callSheetTimings = selectedSchedule.callSheetTimings;
                   timings = callSheetTimings[selectedSchedule.scenes[i]];
-                  artistTiming = selectedSchedule.artistTimings[selectedSchedule.scenes[i]][artist.id];
-                  sceneDetails = scene[selectedSchedule.scenes[i]];
-                  for(int j=0;j<sceneDetails.costumes.length;j++){
-                    if(sceneDetails.costumes[j]["id"]==artist.id){
+                  artistTiming = selectedSchedule
+                      .artistTimings[selectedSchedule.scenes[i]][artist.id];
+                  sceneDetails = scenesMap[selectedSchedule.scenes[i]];
+                  for (int j = 0; j < sceneDetails.costumes.length; j++) {
+                    if (sceneDetails.costumes[j]["id"] == artist.id) {
                       temp = [];
-                      for(int k=0;k<sceneDetails.costumes[j]["costumes"].length;k++){
+                      for (int k = 0;
+                          k < sceneDetails.costumes[j]["costumes"].length;
+                          k++) {
                         temp.add(sceneDetails.costumes[j]["costumes"][k]);
                       }
                     }
@@ -269,11 +295,17 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                 });
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 8, horizontal: 8),
-                decoration: BoxDecoration(border: Border(
-                    bottom: BorderSide(color: i==selectedScene ? color : color.withOpacity(0.1),width: 3))),
-                child: Text("${scene[selectedSchedule.scenes[i]].titles['en']}"),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            color: scenesMap[selectedSchedule.scenes[i]].id ==
+                                    selectedScene.id
+                                ? color
+                                : color.withOpacity(0.1),
+                            width: 3))),
+                child: Text(
+                    "${scenesMap[selectedSchedule.scenes[i]].titles['en']}"),
                 //child: Text("${selectedSchedule.scenes[i]}"),
               ),
             );
@@ -307,6 +339,41 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                         text: '${sceneDetails.gists['en']}',
                         style: TextStyle(color: Colors.black)),
                   ],
+                ),
+              ),
+            ),
+            Divider(
+              color: Colors.black45,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              decoration: BoxDecoration(
+                gradient: Utils.linearGradient,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: CachedNetworkImage(
+                      imageUrl: selectedLocation.images.length > 0
+                          ? selectedLocation.images[0]
+                          : '',
+                      width: 60,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )),
+                title: Text("${selectedLocation.location}",
+                    style: TextStyle(
+                        color: background1, fontWeight: FontWeight.bold),
+                    maxLines: 1),
+                subtitle: Text(
+                  "@ ${selectedLocation.shootLocation}",
+                  style: TextStyle(color: background1),
+                  maxLines: 1,
                 ),
               ),
             ),
@@ -411,7 +478,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(temp.length, (i){
-                  costumeDetails = costume[temp[i]];
+                  costumeDetails = costumesMap[temp[i]];
                   return Container(
                     padding: EdgeInsets.all(8),
                     margin: EdgeInsets.only(bottom: 8),

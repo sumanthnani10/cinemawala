@@ -522,52 +522,49 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                         SizedBox(
                           height: 8,
                         ),
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          child: InkWell(
-                            onTap: () async {
-                              await Navigator.push(
-                                  context,
-                                  Utils.createRoute(
-                                      LocationPage(
-                                        project: project,
-                                        location: selectedLocation,
-                                      ),
-                                      Utils.DTU));
-                              setState(() {});
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ListTile(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 0),
-                                leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          selectedLocation.images.length > 0
-                                              ? selectedLocation.images[0]
-                                              : '',
-                                      width: 60,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )),
-                                title: Text("${selectedLocation.location}",
-                                    style: TextStyle(
-                                        color: background1,
-                                        fontWeight: FontWeight.bold),
-                                    maxLines: 1),
-                                subtitle: Text(
-                                  "@ ${selectedLocation.shootLocation}",
-                                  style: TextStyle(color: background1),
-                                  maxLines: 1,
-                                ),
+                        InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    LocationPage(
+                                      project: project,
+                                      location: selectedLocation,
+                                    ),
+                                    Utils.DTU));
+                            setState(() {});
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            decoration: BoxDecoration(
+                              gradient: Utils.linearGradient,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 0),
+                              leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: CachedNetworkImage(
+                                    imageUrl: selectedLocation.images.length > 0
+                                        ? selectedLocation.images[0]
+                                        : '',
+                                    width: 60,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  )),
+                              title: Text("${selectedLocation.location}",
+                                  style: TextStyle(
+                                      color: background1,
+                                      fontWeight: FontWeight.bold),
+                                  maxLines: 1),
+                              subtitle: Text(
+                                "@ ${selectedLocation.shootLocation}",
+                                style: TextStyle(color: background1),
+                                maxLines: 1,
                               ),
                             ),
                           ),
