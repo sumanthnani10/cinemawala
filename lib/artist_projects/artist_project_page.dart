@@ -57,9 +57,28 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
     scenes = artistProject.scenes;
     costumes = artistProject.costumes;
     schedules = artistProject.schedules;
-    selectedSchedule = selectedSchedule ?? schedules.first;
-    super.initState();
-    months = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    selectedSchedule = null;
+    if (schedules.length > 0) {
+      selectedSchedule = schedules.first;
+      cday = selectedSchedule.day;
+      cmonth = selectedSchedule.month;
+      cyear = selectedSchedule.year;
+    }
+    months = [
+      "",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
     _controller = AnimationController(vsync: this);
     scenes.forEach((element) {
       scene[element.id] = element;
@@ -67,9 +86,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
     costumes.forEach((element) {
       costume[element.id] = element;
     });
-    cday = schedules[0].day;
-    cmonth = schedules[0].month;
-    cyear = schedules[0].year;
+    super.initState();
   }
 
   @override
@@ -77,6 +94,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
     _controller.dispose();
     super.dispose();
   }
+
   String oneDigitToTwo(int i) {
     if (i == 0) {
       return "12";
@@ -87,9 +105,10 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
       return "0$i";
     }
   }
-  Widget actorProfileWidget(){
+
+  Widget actorProfileWidget() {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(4, 6, 4, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -98,50 +117,67 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
               borderRadius: BorderRadius.circular(8),
               child: artist.image == ''
                   ? Container(
-                color: Colors.grey,
-                child: Center(
-                    child: Text(
+                      color: Colors.grey,
+                      child: Center(
+                          child: Text(
                       'No Image',
                       style: TextStyle(color: background),
                     )),
               )
                   : CachedNetworkImage(
                   fit: BoxFit.cover,
-                  width: 100,
-                  height: 150,
-                  progressIndicatorBuilder:
-                      (context, url, progress) =>
-                      LinearProgressIndicator(
-                        value: progress.progress,
-                      ),
-                  errorWidget: (context, url, error) =>
-                      Center(child: Text('Image')),
-                  useOldImageOnUrlChange: true,
-                  imageUrl: artist.image)),
+                      width: 120,
+                      height: 180,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          LinearProgressIndicator(
+                            value: progress.progress,
+                          ),
+                      errorWidget: (context, url, error) =>
+                          Center(child: Text('Image')),
+                      useOldImageOnUrlChange: true,
+                      imageUrl: artist.image)),
           Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text("${artist.names['en']}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-              SizedBox(height: 2,),
+              Text(
+                "${artist.names['en']}",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 2,
+              ),
               Text("as"),
-              SizedBox(height: 2,),
-              Text("${artist.characters['en']}",style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),)
+              SizedBox(
+                height: 0,
+              ),
+              Text(
+                "${artist.characters['en']}",
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              )
             ],
           )
         ],
       ),
     );
   }
-  Widget scheduleDateWidget(){
+
+  Widget scheduleDateWidget() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: List.generate(schedules.length, (i){
-          if(tempday==null || cday!=tempday || cmonth!=tempmonth || cyear!=tempyear){
-            if(tempday==null){
+        children: List.generate(schedules.length, (i) {
+          if (tempday == null ||
+              cday != tempday ||
+              cmonth != tempmonth ||
+              cyear != tempyear) {
+            if (tempday == null) {
               tempday = schedules[0].day;
               tempmonth = schedules[0].month;
               tempyear = schedules[0].year;
@@ -184,9 +220,15 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
               child: Column(
                 children: [
                   Text("${months[schedules[i].month]}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontSize: 12),),
-                  Text("${schedules[i].day}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontWeight: FontWeight.bold
-                      ,fontSize: 16),),
-                  Text("${schedules[i].year}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontSize: 12),),
+                  Text("${schedules[i].day}",style: TextStyle(color: i==selectedIndex ? Colors.white : Colors.black,fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                  Text(
+                    "${schedules[i].year}",
+                    style: TextStyle(
+                        color: i == selectedIndex ? Colors.white : Colors.black,
+                        fontSize: 12),
+                  ),
                 ],
               ),
             ),
@@ -195,19 +237,22 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
       ),
     );
   }
-  Widget scenesWidget(){
+
+  Widget scenesWidget() {
     return Container(
       width: MediaQuery.of(context).size.width,
+      constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
+      margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
       color: color.withOpacity(0.2),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
-          children: List.generate(selectedSchedule.scenes.length,(i){
+          children: List.generate(selectedSchedule.scenes.length, (i) {
             return InkWell(
-              onTap: (){
-                setState((){
+              onTap: () {
+                setState(() {
                   selectedScene = i;
                   callSheetTimings = selectedSchedule.callSheetTimings;
                   timings = callSheetTimings[selectedSchedule.scenes[i]];
@@ -237,6 +282,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
       ),
     );
   }
+
   Widget sceneDetailWidget(){
     return Expanded(
       child: SingleChildScrollView(
@@ -244,16 +290,28 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Divider(
+              color: Colors.black45,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: RichText(
                 text: TextSpan(
+                  style: TextStyle(fontFamily: "Poppins"),
                   children: <TextSpan>[
-                    TextSpan(text: 'Gist : ', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black)),
-                    TextSpan(text: '${sceneDetails.gists['en']}',style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: 'Gist : ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black)),
+                    TextSpan(
+                        text: '${sceneDetails.gists['en']}',
+                        style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
+            ),
+            Divider(
+              color: Colors.black45,
             ),
             Padding(
               padding: EdgeInsets.all(8.0),
@@ -277,26 +335,27 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                       onTap: () async {},
                       child: Text(
                         "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                        style:
-                        TextStyle(color: Colors.indigo),
+                        style: TextStyle(color: Colors.indigo),
                       )),
                 ],
               ),
             ),
+            Divider(
+              color: Colors.black45,
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Align(
-                      alignment:Alignment.centerLeft,
-                      child: Text("On Shoot  ")),
+                      alignment: Alignment.centerLeft,
+                      child: Text(" On Shoot ")),
                   Row(
                     children: [
                       Text(
                         "    ",
-                        style: TextStyle(
-                            color: background1),
+                        style: TextStyle(color: background1),
                       ),
                       Text("On Set  ")
                     ],
@@ -305,17 +364,21 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${artist.names['en']}",style: TextStyle(),overflow: TextOverflow.ellipsis,maxLines: 1,),
+                  Text(
+                    "${artist.names['en']}",
+                    style: TextStyle(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                   Row(
                     children: [
                       Text(
                         "${oneDigitToTwo(artistTiming['start'][0])}:${artistTiming['start'][1] == 0 ? "00" : oneDigitToTwo(artistTiming['start'][1])} ${artistTiming['start'][2] == 0 ? "AM" : "PM"}",
-                        style: TextStyle(
-                            color: Colors.indigo),
+                        style: TextStyle(color: Colors.indigo),
                       ),
                       Text(
                         "    ",
@@ -324,17 +387,22 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                       ),
                       Text(
                         "${oneDigitToTwo(artistTiming['end'][0])}:${artistTiming['end'][1] == 0 ? "00" : oneDigitToTwo(artistTiming['end'][1])} ${artistTiming['end'][2] == 0 ? "AM" : "PM"}",
-                        style: TextStyle(
-                            color: Colors.indigo),
+                        style: TextStyle(color: Colors.indigo),
                       ),
                     ],
                   )
                 ],
               ),
             ),
+            Divider(
+              color: Colors.black45,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text("Costumes",style: TextStyle(fontWeight: FontWeight.bold),),
+              child: Text(
+                "Costumes",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -352,8 +420,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                       color: color,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    constraints: MediaQuery.of(context).size.width>Utils.mobileWidth ? BoxConstraints(minWidth: Utils.mobileWidth) :
-                    BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+                    constraints: BoxConstraints(minWidth: Utils.mobileWidth),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -361,26 +428,26 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                             borderRadius: BorderRadius.circular(8),
                             child: costumeDetails.referenceImage == ''
                                 ? Container(
-                              color: Colors.grey,
-                              child: Center(
-                                  child: Text(
-                                    'No Image',
+                                    color: Colors.grey,
+                                    child: Center(
+                                        child: Text(
+                                      'No Image',
                                     style: TextStyle(color: background),
                                   )),
                             )
                                 : CachedNetworkImage(
                                 width: 60,
-                                height: 50,
-                                fit: BoxFit.fill,
-                                progressIndicatorBuilder:
-                                    (context, url, progress) =>
-                                    LinearProgressIndicator(
-                                      value: progress.progress,
-                                    ),
-                                errorWidget: (context, url, error) =>
-                                    Center(child: Text('Image')),
-                                useOldImageOnUrlChange: true,
-                                imageUrl: costumeDetails.referenceImage)),
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                    progressIndicatorBuilder:
+                                        (context, url, progress) =>
+                                            LinearProgressIndicator(
+                                              value: progress.progress,
+                                            ),
+                                    errorWidget: (context, url, error) =>
+                                        Center(child: Text('Image')),
+                                    useOldImageOnUrlChange: true,
+                                    imageUrl: costumeDetails.referenceImage)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Align(
@@ -408,6 +475,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     color = Color(0xff6fd8a8);
@@ -435,29 +503,35 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
         actions: [],
       ),
       body: constraints.maxWidth>Utils.mobileWidth ?
-          //kept seperately for background image in web
           Center(
             child: Container(
               constraints: BoxConstraints(maxWidth: Utils.mobileWidth),
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                actorProfileWidget(),
-                scheduleDateWidget(),
-                scenesWidget(),
-                sceneDetailWidget()
-              ]),
-            ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                            actorProfileWidget(),
+                          ] +
+                          (schedules.length > 0
+                              ? <Widget>[
+                                  scheduleDateWidget(),
+                                  scenesWidget(),
+                                  sceneDetailWidget()
+                                ]
+                              : <Widget>[Text("No Schedules")])),
+                ),
           )
           : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          actorProfileWidget(),
-          scheduleDateWidget(),
-          scenesWidget(),
-          sceneDetailWidget()
-        ],
-      ),
+                      actorProfileWidget(),
+                    ] +
+                    (schedules.length > 0
+                        ? <Widget>[
+                            scheduleDateWidget(),
+                            scenesWidget(),
+                            sceneDetailWidget()
+                          ]
+                        : <Widget>[Text("No Schedules")])),
     );});
   }
 }

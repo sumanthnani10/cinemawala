@@ -22,6 +22,7 @@ class ProjectsList extends StatefulWidget {
 class _ProjectsList extends State<ProjectsList> {
   Color background, color, background1;
   List<Project> allProjects = [],
+      artistProjects = [],
       ownProjects = [],
       otherProjects = [],
       requestProjects = [];
@@ -41,6 +42,7 @@ class _ProjectsList extends State<ProjectsList> {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting Projects');
     allProjects = await Utils.getProjects(context);
+    artistProjects = await Utils.getArtistProjects(context);
     ownProjects = allProjects.where((e) => e.role.owner).toList();
     otherProjects =
         allProjects.where((e) => !e.role.owner && e.role.accepted).toList();
@@ -339,7 +341,10 @@ class _ProjectsList extends State<ProjectsList> {
               : Center(
                   child: Text(loading ? '' : 'No Projects.'),
                 ),
-          ArtistProjects()
+          ArtistProjects(
+            artistProjects: artistProjects,
+            key: UniqueKey(),
+          )
         ]),
         floatingActionButton: FloatingActionButton(
           backgroundColor: color,

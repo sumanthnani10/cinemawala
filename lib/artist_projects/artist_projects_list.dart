@@ -6,36 +6,28 @@ import '../utils.dart';
 import 'artist_project_page.dart';
 
 class ArtistProjects extends StatefulWidget {
-  const ArtistProjects({Key key}) : super(key: key);
+  final List<Project> artistProjects;
+
+  const ArtistProjects({Key key, @required this.artistProjects})
+      : super(key: key);
 
   @override
-  _ArtistProjectsState createState() => _ArtistProjectsState();
+  _ArtistProjectsState createState() =>
+      _ArtistProjectsState(this.artistProjects ?? []);
 }
 
-class _ArtistProjectsState extends State<ArtistProjects>
-    with AutomaticKeepAliveClientMixin<ArtistProjects> {
+class _ArtistProjectsState extends State<ArtistProjects> {
   Color background, color, background1;
-  List<Project> allProjects = [], requestProjects = [];
+  List<Project> allProjects, requestProjects = [];
   bool loading = false;
   Project project;
+
+  _ArtistProjectsState(this.allProjects);
 
   @override
   void initState() {
     loading = true;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getArtistProjects();
-    });
     super.initState();
-  }
-
-  getArtistProjects() async {
-    loading = true;
-    Utils.showLoadingDialog(context, 'Getting Projects');
-    allProjects = await Utils.getArtistProjects(context);
-    setState(() {
-      loading = false;
-    });
-    Navigator.pop(context);
   }
 
   getArtistProject(Project proj) async {
