@@ -135,9 +135,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       selectedLocation = Utils.locationsMap[scene["location"]];
       oldLocation = Utils.locationsMap[scene["location"]];
       for (var i in languages) {
-        titleControllers
-            .add(new TextEditingController(text: scene["titles"][i]));
-        gistControllers.add(new TextEditingController(text: scene["gists"][i]));
+        titleControllers.add(
+            new TextEditingController(text: "${scene["titles"][i] ?? ""}"));
+        gistControllers
+            .add(new TextEditingController(text: "${scene["gists"][i] ?? ""}"));
       }
       for (var i in scene['artists']) {
         selectedArtists.add(Utils.artistsMap[i]);

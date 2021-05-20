@@ -73,8 +73,12 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     selectedLocation = Utils.locationsMap[scene.location];
 
     for (var i in languages) {
-      titleControllers.add(new TextEditingController(text: scene.titles[i]));
-      gistControllers.add(new TextEditingController(text: scene.gists[i]));
+      titleControllers.add(new TextEditingController(
+          text:
+              "${(scene.titles[i] != null && scene.titles[i] != "") ? scene.titles[i] : "-"}"));
+      gistControllers.add(new TextEditingController(
+          text:
+              "${(scene.gists[i] != null && scene.gists[i] != "") ? scene.gists[i] : "-"}"));
     }
 
     for (var i in scene.artists) {
@@ -723,6 +727,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                   Utils.createRoute(
                                       SelectedCostumes(
                                           project: project,
+                                          scene: scene,
                                           costumes: scene.costumes),
                                       Utils.DTU));
                               setState(() {
@@ -765,9 +770,10 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                   Utils.createRoute(
                                       SelectedProps(
                                           project: project,
+                                          scene: scene,
                                           selectedProps: List<Prop>.generate(
                                               scene.artists.length,
-                                                  (p) => Utils
+                                              (p) => Utils
                                                   .propsMap[scene.props[p]])),
                                       Utils.DTU));
                               setState(() {

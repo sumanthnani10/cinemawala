@@ -179,84 +179,107 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
   }
 
   Widget scheduleDateWidget() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: List.generate(schedules.length, (i) {
-          if (tempday == null ||
-              cday != tempday ||
-              cmonth != tempmonth ||
-              cyear != tempyear) {
-            if (tempday == null) {
-              tempday = schedules[0].day;
-              tempmonth = schedules[0].month;
-              tempyear = schedules[0].year;
-            }
-            cday = tempday;
-            cmonth = tempmonth;
-            cyear = tempyear;
-            callSheetTimings = selectedSchedule.callSheetTimings;
-            timings = callSheetTimings[selectedSchedule.scenes[0]];
-            artistTiming = selectedSchedule
-                .artistTimings[selectedSchedule.scenes[0]][artist.id];
-            sceneDetails = scenesMap[selectedSchedule.scenes[0]];
-            for (int j = 0; j < sceneDetails.costumes.length; j++) {
-              if (sceneDetails.costumes[j]["id"] == artist.id) {
-                temp = [];
-                for (int k = 0;
-                    k < sceneDetails.costumes[j]["costumes"].length;
-                    k++) {
-                  temp.add(sceneDetails.costumes[j]["costumes"][k]);
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: List.generate(schedules.length, (i) {
+                if (tempday == null ||
+                    cday != tempday ||
+                    cmonth != tempmonth ||
+                    cyear != tempyear) {
+                  if (tempday == null) {
+                    tempday = schedules[0].day;
+                    tempmonth = schedules[0].month;
+                    tempyear = schedules[0].year;
+                  }
+                  cday = tempday;
+                  cmonth = tempmonth;
+                  cyear = tempyear;
+                  callSheetTimings = selectedSchedule.callSheetTimings;
+                  timings = callSheetTimings[selectedSchedule.scenes[0]];
+                  artistTiming = selectedSchedule
+                      .artistTimings[selectedSchedule.scenes[0]][artist.id];
+                  sceneDetails = scenesMap[selectedSchedule.scenes[0]];
+                  for (int j = 0; j < sceneDetails.costumes.length; j++) {
+                    if (sceneDetails.costumes[j]["id"] == artist.id) {
+                      temp = [];
+                      for (int k = 0;
+                          k < sceneDetails.costumes[j]["costumes"].length;
+                          k++) {
+                        temp.add(sceneDetails.costumes[j]["costumes"][k]);
+                      }
+                    }
+                  }
                 }
-              }
-            }
-          }
-          return InkWell(
-            onTap: (){
-            setState(() {
-              selectedIndex = i;
-                selectedScene = scenesMap[selectedSchedule.scenes[0]];
-                selectedSchedule = schedules[i];
-                tempday = schedules[i].day;
-                tempmonth = schedules[i].month;
-                tempyear = schedules[i].year;
-              });
-            },
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = i;
+                      selectedScene = scenesMap[selectedSchedule.scenes[0]];
+                      selectedSchedule = schedules[i];
+                      tempday = schedules[i].day;
+                      tempmonth = schedules[i].month;
+                      tempyear = schedules[i].year;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    margin: EdgeInsets.all(4),
+                    decoration: i == selectedIndex
+                        ? BoxDecoration(
+                            gradient: Utils.linearGradient,
+                            borderRadius: BorderRadius.all(Radius.circular(8)))
+                        : BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Column(
+                      children: [
+                        Text(
+                          "${months[schedules[i].month]}",
+                          style: TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        Text(
+                          "${schedules[i].day}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          "${schedules[i].year}",
+                          style: TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        if (schedules.length > 0)
+          Align(
+            alignment: Alignment.centerRight,
             child: Container(
-              padding: EdgeInsets.all(8),
-              margin: EdgeInsets.all(4),
-              decoration: i == selectedIndex
-                  ? BoxDecoration(
-                      gradient: Utils.linearGradient,
-                      borderRadius: BorderRadius.all(Radius.circular(8)))
-                  : BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-              child: Column(
-                children: [
-                  Text(
-                    "${months[schedules[i].month]}",
-                    style: TextStyle(color: Colors.black, fontSize: 12),
-                  ),
-                  Text(
-                    "${schedules[i].day}",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                  Text(
-                    "${schedules[i].year}",
-                    style: TextStyle(color: Colors.black, fontSize: 12),
-                  ),
-                ],
+              decoration: BoxDecoration(
+                // gradient: Utils.linearGradient,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              // padding: const EdgeInsets.all(4),
+              margin: const EdgeInsets.all(4),
+              child: Text(
+                'Working Day: ${selectedIndex + 1}',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-          );
-        }),
-      ),
+          ),
+      ],
     );
   }
 
@@ -416,8 +439,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(" On Shoot ")),
+                      alignment: Alignment.centerLeft, child: Text(" On Loc ")),
                   Row(
                     children: [
                       Text(

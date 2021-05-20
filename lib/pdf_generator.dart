@@ -408,7 +408,7 @@ class PdfGenerator {
                                     Padding(
                                       padding: headingPadding,
                                       child: Center(
-                                          child: Text("On Shoot Loc",
+                                          child: Text("On Loc",
                                               style: tableHeader)),
                                     ),
                                     Padding(
@@ -550,7 +550,7 @@ class PdfGenerator {
                                                     padding: headingPadding,
                                                     child: Center(
                                                         child: Text(
-                                                      "On Shoot Loc",
+                                                          "On Loc",
                                                       style: tableHeader,
                                                     ))),
                                                 Padding(
@@ -1052,8 +1052,8 @@ class PdfGenerator {
                                 Padding(
                                   padding: headingPadding,
                                   child: Center(
-                                      child: Text("On Shoot Loc",
-                                          style: tableHeader)),
+                                      child:
+                                          Text("On Loc", style: tableHeader)),
                                 ),
                                 Padding(
                                   padding: headingPadding,
@@ -1223,8 +1223,8 @@ class PdfGenerator {
                                 Padding(
                                   padding: headingPadding,
                                   child: Center(
-                                      child: Text("On Shoot Loc",
-                                          style: tableHeader)),
+                                      child:
+                                          Text("On Loc", style: tableHeader)),
                                 ),
                                 Padding(
                                   padding: headingPadding,
@@ -1365,7 +1365,7 @@ class PdfGenerator {
                                                     padding: headingPadding,
                                                     child: Center(
                                                         child: Text(
-                                                      "On Shoot Loc",
+                                                          "On Loc",
                                                       style: tableHeader,
                                                     ))),
                                                 Padding(
@@ -1566,8 +1566,8 @@ class PdfGenerator {
                                 Padding(
                                   padding: headingPadding,
                                   child: Center(
-                                      child: Text("On Shoot Loc",
-                                          style: tableHeader)),
+                                      child:
+                                          Text("On Loc", style: tableHeader)),
                                 ),
                                 Padding(
                                   padding: headingPadding,
@@ -1708,7 +1708,7 @@ class PdfGenerator {
                                                     padding: headingPadding,
                                                     child: Center(
                                                         child: Text(
-                                                      "On Shoot Loc",
+                                                          "On Loc",
                                                       style: tableHeader,
                                                     ))),
                                                 Padding(

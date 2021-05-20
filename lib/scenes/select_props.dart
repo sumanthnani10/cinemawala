@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../utils.dart';
+import 'add_scene.dart';
+import 'scene.dart';
 
 class SelectProps extends StatefulWidget {
   final Project project;
@@ -237,24 +239,33 @@ class SelectedProps extends StatefulWidget {
   final Project project;
   final List<Prop> selectedProps;
   final bool isPopUp;
-  SelectedProps({Key key, @required this.project, @required this.selectedProps,this.isPopUp})
+  final Scene scene;
+
+  SelectedProps(
+      {Key key,
+      @required this.project,
+      @required this.selectedProps,
+      @required this.scene,
+      this.isPopUp})
       : super(key: key);
 
   @override
-  _SelectedProps createState() =>
-      _SelectedProps(this.project, this.selectedProps,this.isPopUp);
+  _SelectedProps createState() => _SelectedProps(
+      this.project, this.selectedProps, this.isPopUp, this.scene);
 }
 
 class _SelectedProps extends State<SelectedProps>
     with SingleTickerProviderStateMixin {
   final Project project;
   bool isPopUp;
+  final Scene scene;
   Color background, background1, color;
   final List<Prop> selectedProps;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
-  _SelectedProps(this.project, this.selectedProps,this.isPopUp);
+  _SelectedProps(this.project, this.selectedProps, this.isPopUp, this.scene);
+
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
@@ -359,19 +370,44 @@ class _SelectedProps extends State<SelectedProps>
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: Wrap(
                             direction: Axis.horizontal,
-                            children:
+                            children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => AddScene(
+                                                project: project,
+                                                scene: scene.toJson()),
+                                          ));
+                                    },
+                                    splashColor: background1.withOpacity(0.2),
+                                    child: Container(
+                                      //color: color,
+                                      margin: EdgeInsets.all(2),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius:
+                                            BorderRadius.circular(300),
+                                      ),
+                                      child: Text('+ Add Prop'),
+                                    ),
+                                  )
+                                ] +
                                 List<Widget>.generate(showProps.length, (i) {
-                              Prop prop = showProps[i];
-                              return InkWell(
-                                onLongPress: () async {
-                                  await Navigator.push(
-                                      context,
-                                      Utils.createRoute(
-                                          PropPage(
-                                            prop: prop,
-                                            project: project,
-                                          ),
-                                          Utils.DTU));
+                                  Prop prop = showProps[i];
+                                  return InkWell(
+                                    onLongPress: () async {
+                                      await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              PropPage(
+                                                prop: prop,
+                                                project: project,
+                                              ),
+                                              Utils.DTU));
                                 },
                                 splashColor: background1.withOpacity(0.2),
                                 child: Container(

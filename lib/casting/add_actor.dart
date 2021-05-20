@@ -77,9 +77,10 @@ class _AddActorState extends State<AddActor>
       actor['last_edit_on'] = DateTime.now().millisecondsSinceEpoch;
       actor['last_edit_by'] = "${Utils.USER_ID}";
       for (var i in languages) {
-        nameControllers.add(new TextEditingController(text: actor["names"][i]));
-        characterControllers
-            .add(new TextEditingController(text: actor["characters"][i]));
+        nameControllers
+            .add(new TextEditingController(text: "${actor["names"][i] ?? ""}"));
+        characterControllers.add(
+            new TextEditingController(text: "${actor["characters"][i] ?? ""}"));
       }
     }
     // debugPrint('${actor}');

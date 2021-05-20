@@ -43,9 +43,11 @@ class _ActorPage extends State<ActorPage> {
     languages = project.languages;
     for (var i in languages) {
       nameControllers.add(new TextEditingController(
-          text: '${actor.names[i] != "" ? actor.names[i] : "-"}'));
+          text:
+              '${(actor.names[i] != null && actor.names[i] != "") ? actor.names[i] : "-"}'));
       characterControllers.add(new TextEditingController(
-          text: '${actor.characters[i] != "" ? actor.characters[i] : "-"}'));
+          text:
+              '${(actor.characters[i] != null && actor.characters[i] != "") ? actor.characters[i] : "-"}'));
     }
     actor.costumes.forEach((key, value) {
       costumes.addAll(Iterable.castFrom(value));
@@ -55,6 +57,8 @@ class _ActorPage extends State<ActorPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(languages);
+    print(langsInLang);
     color = Color(0xff6fd8a8);
     background = Colors.white;
     headingStyle = TextStyle(
@@ -74,53 +78,53 @@ class _ActorPage extends State<ActorPage> {
           backgroundColor: popUp ? Colors.black26 : background,
           appBar: popUp
               ? PreferredSize(
-                  preferredSize: Size.fromHeight(0),
-                  child: Container(),
-                )
+            preferredSize: Size.fromHeight(0),
+            child: Container(),
+          )
               : AppBar(
-                  automaticallyImplyLeading: !popUp ? true : false,
-                  flexibleSpace: Container(
-                    decoration: popUp
+            automaticallyImplyLeading: !popUp ? true : false,
+            flexibleSpace: Container(
+              decoration: popUp
                         ? BoxDecoration(
-                            gradient: Utils.linearGradient,
-                          )
-                        : BoxDecoration(
                             // border: Border(left: BorderSide(color: Colors.black)),
-                            color: Colors.white),
+                            color: Colors.white)
+                        : BoxDecoration(
+                            gradient: Utils.linearGradient,
+                          ),
                   ),
-                  backgroundColor: color,
-                  title: Text(
-                    'Actor Info',
-                    style: TextStyle(color: background1),
-                  ),
-                  iconTheme: IconThemeData(color: background1),
-                  actions: [
-                    TextButton.icon(
-                      onPressed: () async {
-                        await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                AddActor(
-                                  project: project,
-                                  actor: actor.toJson(),
-                                ),
-                                Utils.RTL));
-                        actor = Utils.artistsMap[actor.id];
-                        setState(() {});
-                      },
-                      label: Text(
-                        "Edit",
-                        style: TextStyle(color: Colors.indigo),
-                        textAlign: TextAlign.right,
-                      ),
-                      icon: Icon(
-                        Icons.edit,
-                        size: 16,
-                        color: Colors.indigo,
-                      ),
-                    )
-                  ],
+            backgroundColor: color,
+            title: Text(
+              'Actor Info',
+              style: TextStyle(color: background1),
+            ),
+            iconTheme: IconThemeData(color: background1),
+            actions: [
+              TextButton.icon(
+                onPressed: () async {
+                  await Navigator.push(
+                      context,
+                      Utils.createRoute(
+                          AddActor(
+                            project: project,
+                            actor: actor.toJson(),
+                          ),
+                          Utils.RTL));
+                  actor = Utils.artistsMap[actor.id];
+                  setState(() {});
+                },
+                label: Text(
+                  "Edit",
+                  style: TextStyle(color: Colors.indigo),
+                  textAlign: TextAlign.right,
                 ),
+                icon: Icon(
+                  Icons.edit,
+                  size: 16,
+                  color: Colors.indigo,
+                ),
+              )
+            ],
+          ),
           body: GestureDetector(
             onTap: () {},
             child: Container(
@@ -129,10 +133,10 @@ class _ActorPage extends State<ActorPage> {
                   : const EdgeInsets.all(0),
               decoration: popUp
                   ? BoxDecoration(
-                      color: background, borderRadius: BorderRadius.circular(8))
+                  color: background, borderRadius: BorderRadius.circular(8))
                   : BoxDecoration(
-                      color: background,
-                    ),
+                color: background,
+              ),
               child: Stack(
                 children: [
                   if (popUp)
@@ -157,42 +161,42 @@ class _ActorPage extends State<ActorPage> {
                           Positioned(
                             child: actor.image == ''
                                 ? CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    radius: 100,
-                                    child: Text(
-                                      'No Image',
-                                      style: TextStyle(color: background),
-                                    ),
-                                  )
+                              backgroundColor: Colors.grey,
+                              radius: 100,
+                              child: Text(
+                                'No Image',
+                                style: TextStyle(color: background),
+                              ),
+                            )
                                 : CachedNetworkImage(
-                                    width: 200,
-                                    height: 200,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                          width: 200,
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                          ),
-                                        ),
-                                    fit: BoxFit.cover,
-                                    progressIndicatorBuilder:
-                                        (context, url, progress) =>
-                                            LinearProgressIndicator(
-                                              value: progress.progress,
-                                            ),
-                                    errorWidget: (context, url, error) =>
-                                        Center(
-                                            child: Text(
+                                width: 200,
+                                height: 200,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                      width: 200,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                fit: BoxFit.cover,
+                                progressIndicatorBuilder:
+                                    (context, url, progress) =>
+                                    LinearProgressIndicator(
+                                      value: progress.progress,
+                                    ),
+                                errorWidget: (context, url, error) =>
+                                    Center(
+                                        child: Text(
                                           'Image',
                                           style: const TextStyle(
                                               color: Colors.grey),
                                         )),
-                                    useOldImageOnUrlChange: true,
-                                    imageUrl: actor.image),
+                                useOldImageOnUrlChange: true,
+                                imageUrl: actor.image),
                           ),
                         ],
                       ),
@@ -201,7 +205,7 @@ class _ActorPage extends State<ActorPage> {
                   SizedBox.expand(
                     child: DraggableScrollableSheet(
                       initialChildSize:
-                          310 / MediaQuery.of(context).size.height,
+                      310 / MediaQuery.of(context).size.height,
                       minChildSize: 310 / MediaQuery.of(context).size.height,
                       maxChildSize: 1,
                       builder: (context, scrollController) {
@@ -230,7 +234,7 @@ class _ActorPage extends State<ActorPage> {
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      MainAxisAlignment.start,
                                       children: List<Widget>.generate(
                                           languages.length, (i) {
                                         return Container(
@@ -239,7 +243,7 @@ class _ActorPage extends State<ActorPage> {
                                                 ? color
                                                 : color.withOpacity(10 / 16),
                                             borderRadius:
-                                                BorderRadius.circular(32),
+                                            BorderRadius.circular(32),
                                           ),
                                           margin: const EdgeInsets.symmetric(
                                               horizontal: 4),
@@ -251,11 +255,11 @@ class _ActorPage extends State<ActorPage> {
                                                   selectedLanguage = i;
                                                   cardScrollController.animateTo(
                                                       (MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              (popUp
-                                                                  ? 48
-                                                                  : 0)) *
+                                                          .size
+                                                          .width -
+                                                          (popUp
+                                                              ? 48
+                                                              : 0)) *
                                                           i,
                                                       duration: Duration(
                                                           milliseconds: 400),
@@ -268,21 +272,21 @@ class _ActorPage extends State<ActorPage> {
                                                   children: <TextSpan>[
                                                     TextSpan(
                                                         text:
-                                                            '${langsInLang[i]}',
+                                                        '${langsInLang[i]}',
                                                         style: TextStyle(
                                                             color: background1,
                                                             fontSize: 14,
                                                             fontFamily:
-                                                                'Poppins')),
+                                                            'Poppins')),
                                                     TextSpan(
                                                         text:
-                                                            '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
+                                                        '\n${Utils.codeToLanguagesInEnglish[languages[i]]}',
                                                         style: TextStyle(
                                                             fontSize: 10,
                                                             fontFamily:
-                                                                'Poppins',
+                                                            'Poppins',
                                                             color:
-                                                                background1)),
+                                                            background1)),
                                                   ],
                                                 ),
                                               )),
@@ -309,8 +313,8 @@ class _ActorPage extends State<ActorPage> {
                                           languages.length, (i) {
                                         return Container(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
+                                              .size
+                                              .width -
                                               24 -
                                               (popUp ? 48 : 0),
                                           margin: EdgeInsets.symmetric(
@@ -319,7 +323,7 @@ class _ActorPage extends State<ActorPage> {
                                           decoration: BoxDecoration(
                                             color: background,
                                             borderRadius:
-                                                BorderRadius.circular(16.0),
+                                            BorderRadius.circular(16.0),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: color,
@@ -335,20 +339,20 @@ class _ActorPage extends State<ActorPage> {
                                                 decoration: InputDecoration(
                                                   enabled: false,
                                                   disabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background)),
+                                                  OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                          background)),
                                                   labelText: 'Artist/Talent',
                                                   labelStyle: TextStyle(
                                                       color: background1,
                                                       fontSize: 14),
                                                   contentPadding:
-                                                      EdgeInsets.all(8),
+                                                  EdgeInsets.all(8),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
+                                                    BorderRadius.circular(
+                                                        8),
                                                   ),
                                                 ),
                                               ),
@@ -357,25 +361,25 @@ class _ActorPage extends State<ActorPage> {
                                               ),
                                               TextField(
                                                 controller:
-                                                    characterControllers[i],
+                                                characterControllers[i],
                                                 decoration: InputDecoration(
                                                   enabled: false,
                                                   disabledBorder:
-                                                      OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  background)),
+                                                  OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                          background)),
                                                   labelText: 'Character Name',
                                                   labelStyle: TextStyle(
                                                       color: background1,
                                                       fontSize: 14),
                                                   focusColor: Colors.white,
                                                   contentPadding:
-                                                      EdgeInsets.all(8),
+                                                  EdgeInsets.all(8),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
+                                                    BorderRadius.circular(
+                                                        8),
                                                   ),
                                                 ),
                                               ),
@@ -402,7 +406,7 @@ class _ActorPage extends State<ActorPage> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                               decoration:
-                                                  TextDecoration.underline,
+                                              TextDecoration.underline,
                                               decorationThickness: 1),
                                         ))),
                                 Container(
@@ -418,7 +422,7 @@ class _ActorPage extends State<ActorPage> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child:
-                                            Text('Scenes', style: headingStyle),
+                                        Text('Scenes', style: headingStyle),
                                       ),
                                       SizedBox(
                                         height: 8,
@@ -427,39 +431,39 @@ class _ActorPage extends State<ActorPage> {
                                         alignment: Alignment.centerLeft,
                                         child: actor.scenes.length < 1
                                             ? Text(
-                                                'No Scenes',
-                                                style: TextStyle(
-                                                    color: background1),
-                                              )
+                                          'No Scenes',
+                                          style: TextStyle(
+                                              color: background1),
+                                        )
                                             : Wrap(
-                                                direction: Axis.horizontal,
-                                                spacing: 4,
-                                                children: List<Widget>.generate(
-                                                  actor.scenes.length,
+                                            direction: Axis.horizontal,
+                                            spacing: 4,
+                                            children: List<Widget>.generate(
+                                              actor.scenes.length,
                                                   (i) {
-                                                    return InkWell(
-                                                      onTap: () {},
-                                                      child: Container(
-                                                        margin:
-                                                            EdgeInsets.all(2),
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 8,
-                                                                vertical: 2),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: color,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      300),
-                                                        ),
-                                                        child: Text(
-                                                            '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
-                                                      ),
-                                                    );
-                                                  },
-                                                )),
+                                                return InkWell(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    margin:
+                                                    EdgeInsets.all(2),
+                                                    padding: EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color: color,
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          300),
+                                                    ),
+                                                    child: Text(
+                                                        '${Utils.scenesMap[actor.scenes[i]].titles[languages[selectedLanguage]]}'),
+                                                  ),
+                                                );
+                                              },
+                                            )),
                                       ),
                                     ],
                                   ),
@@ -473,7 +477,7 @@ class _ActorPage extends State<ActorPage> {
                                               width: 0.5))),
                                   child: Column(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Align(
                                         alignment: Alignment.centerLeft,
@@ -487,60 +491,60 @@ class _ActorPage extends State<ActorPage> {
                                       ),
                                       costumes.length < 1
                                           ? Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                'No Costumes',
-                                                style: TextStyle(
-                                                    color: background1),
-                                              ),
-                                            )
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'No Costumes',
+                                          style: TextStyle(
+                                              color: background1),
+                                        ),
+                                      )
                                           : Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Wrap(
-                                                  spacing: 4,
-                                                  direction: Axis.horizontal,
-                                                  children:
-                                                      List<Widget>.generate(
-                                                    costumes.length,
-                                                    (i) {
-                                                      return InkWell(
-                                                        onLongPress: () async {
-                                                          await Navigator.push(
-                                                              context,
-                                                              Utils.createRoute(
-                                                                  CostumesPage(
-                                                                    project:
-                                                                        project,
-                                                                    costume: Utils
-                                                                            .costumesMap[
-                                                                        costumes
-                                                                            .elementAt(i)],
-                                                                  ),
-                                                                  Utils.DTU));
-                                                          setState(() {});
-                                                        },
-                                                        child: Container(
-                                                          margin:
-                                                              EdgeInsets.all(2),
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal: 8,
-                                                                  vertical: 2),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: color,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        300),
-                                                          ),
-                                                          child: Text(
-                                                              '${Utils.costumesMap[costumes.elementAt(i)].title}'),
-                                                        ),
-                                                      );
-                                                    },
-                                                  )),
-                                            ),
+                                        alignment: Alignment.centerLeft,
+                                        child: Wrap(
+                                            spacing: 4,
+                                            direction: Axis.horizontal,
+                                            children:
+                                            List<Widget>.generate(
+                                              costumes.length,
+                                                  (i) {
+                                                return InkWell(
+                                                  onLongPress: () async {
+                                                    await Navigator.push(
+                                                        context,
+                                                        Utils.createRoute(
+                                                            CostumesPage(
+                                                              project:
+                                                              project,
+                                                              costume: Utils
+                                                                  .costumesMap[
+                                                              costumes
+                                                                  .elementAt(i)],
+                                                            ),
+                                                            Utils.DTU));
+                                                    setState(() {});
+                                                  },
+                                                  child: Container(
+                                                    margin:
+                                                    EdgeInsets.all(2),
+                                                    padding: EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color: color,
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          300),
+                                                    ),
+                                                    child: Text(
+                                                        '${Utils.costumesMap[costumes.elementAt(i)].title}'),
+                                                  ),
+                                                );
+                                              },
+                                            )),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -591,9 +595,9 @@ class _ActorPopUpState extends State<ActorPopUp> {
     languages = project.languages;
     for (var i in languages) {
       nameControllers.add(new TextEditingController(
-          text: '${actor.names[i] != "" ? actor.names[i] : "-"}'));
+          text: '${(actor.names[i]!=null && actor.names[i] != "") ? actor.names[i] : "-"}'));
       characterControllers.add(new TextEditingController(
-          text: '${actor.characters[i] != "" ? actor.characters[i] : "-"}'));
+          text: '${(actor.characters[i]!=null && actor.characters[i] != "") ? actor.characters[i] : "-"}'));
     }
     actor.costumes.forEach((key, value) {
       costumes.addAll(Iterable.castFrom(value));

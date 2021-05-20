@@ -73,7 +73,6 @@ class _PersonalCalendar extends State<PersonalCalendar> {
                     "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
                 selectedNote = notes[selectedDateId];
                 selectedDate = date;
-                print(1);
                 setState(() {});
               },
               headerStyle: HeaderStyle(

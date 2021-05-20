@@ -56,15 +56,51 @@ class _ProjectsList extends State<ProjectsList> {
   getProject(Project proj) async {
     loading = true;
     Utils.showLoadingDialog(context, 'Getting ${proj.name}');
-    Utils.project = await Utils.getProject(context, proj.id);
-    project = Utils.project;
-    await Utils.getArtists(context, proj.id);
-    await Utils.getCostumes(context, proj.id);
-    await Utils.getProps(context, proj.id);
-    await Utils.getLocations(context, proj.id);
-    await Utils.getScenes(context, proj.id);
-    await Utils.getSchedules(context, proj.id);
-    await Utils.getDailyBudgets(context, proj.id);
+    if (Utils.allCrewProjects.containsKey(proj.id)) {
+      Utils.project = Utils.allCrewProjects[proj.id]['project'] ??
+          await Utils.getProject(context, proj.id);
+      project = Utils.project;
+      Utils.artistsMap = Utils.allCrewProjects[proj.id]['artists'] ??
+          await Utils.getArtists(context, proj.id);
+      Utils.artists = Utils.artistsMap.values.toList();
+      Utils.costumesMap = Utils.allCrewProjects[proj.id]['costumes'] ??
+          await Utils.getCostumes(context, proj.id);
+      Utils.costumes = Utils.costumesMap.values.toList();
+      Utils.propsMap = Utils.allCrewProjects[proj.id]['props'] ??
+          await Utils.getProps(context, proj.id);
+      Utils.props = Utils.propsMap.values.toList();
+      Utils.locationsMap = Utils.allCrewProjects[proj.id]['locations'] ??
+          await Utils.getLocations(context, proj.id);
+      Utils.locations = Utils.locationsMap.values.toList();
+      Utils.scenesMap = Utils.allCrewProjects[proj.id]['scenes'] ??
+          await Utils.getScenes(context, proj.id);
+      Utils.scenes = Utils.scenesMap.values.toList();
+      Utils.schedulesMap = Utils.allCrewProjects[proj.id]['schedules'] ??
+          await Utils.getSchedules(context, proj.id);
+      Utils.schedules = Utils.schedulesMap.values.toList();
+      Utils.dailyBudgetsMap = Utils.allCrewProjects[proj.id]['dailyBudgets'] ??
+          await Utils.getDailyBudgets(context, proj.id);
+      Utils.dailyBudgets = Utils.dailyBudgetsMap.values.toList();
+    } else {
+      Utils.project = await Utils.getProject(context, proj.id);
+      project = Utils.project;
+      Utils.allCrewProjects[proj.id] = {};
+      Utils.allCrewProjects[proj.id]['project'] = project;
+      await Utils.getArtists(context, proj.id);
+      Utils.allCrewProjects[proj.id]['artists'] = Utils.artistsMap;
+      await Utils.getCostumes(context, proj.id);
+      Utils.allCrewProjects[proj.id]['costumes'] = Utils.costumesMap;
+      await Utils.getProps(context, proj.id);
+      Utils.allCrewProjects[proj.id]['props'] = Utils.propsMap;
+      await Utils.getLocations(context, proj.id);
+      Utils.allCrewProjects[proj.id]['locations'] = Utils.locationsMap;
+      await Utils.getScenes(context, proj.id);
+      Utils.allCrewProjects[proj.id]['scenes'] = Utils.scenesMap;
+      await Utils.getSchedules(context, proj.id);
+      Utils.allCrewProjects[proj.id]['schedules'] = Utils.schedulesMap;
+      await Utils.getDailyBudgets(context, proj.id);
+      Utils.allCrewProjects[proj.id]['dailyBudgets'] = Utils.dailyBudgetsMap;
+    }
     Navigator.pop(context);
     setState(() {
       loading = false;
@@ -82,7 +118,7 @@ class _ProjectsList extends State<ProjectsList> {
     }
     return DefaultTabController(
       length: 2,
-      initialIndex: 1,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           flexibleSpace: Container(

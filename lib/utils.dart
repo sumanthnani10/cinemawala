@@ -42,6 +42,9 @@ class Utils {
   static Map<String, Schedule> schedulesMap;
   static Map<String, DailyBudget> dailyBudgetsMap;
 
+  static Map<String, dynamic> allCrewProjects = {};
+  static Map<String, dynamic> allCastProjects = {};
+
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
 
   static getUser(context, userId) async {

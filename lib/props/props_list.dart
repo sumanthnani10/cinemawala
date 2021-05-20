@@ -126,12 +126,10 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                                   key: UniqueKey(),
                                   isPopUp: false,
                                   project: project,
-                                  selectedProps: List<
-                                              Prop>.generate(
-                                              scene.props.length,
-                                                  (p) =>
-                                              Utils.propsMap[scene
-                                                  .props[p]]));
+                                  scene: scene,
+                                  selectedProps: List<Prop>.generate(
+                                      scene.props.length,
+                                      (p) => Utils.propsMap[scene.props[p]]));
                                     });
                                   }else{
                                     Navigator.push(
@@ -139,12 +137,11 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                                         Utils.createRoute(
                                             SelectedProps(
                                                 project: project,
-                                                selectedProps: List<
-                                                    Prop>.generate(
-                                                    scene.props.length,
-                                                        (p) =>
-                                                    Utils.propsMap[scene
-                                                        .props[p]])),
+                                        scene: scene,
+                                        selectedProps: List<Prop>.generate(
+                                            scene.props.length,
+                                            (p) => Utils
+                                                .propsMap[scene.props[p]])),
                                             Utils.DTU));
                                   }
                                 },

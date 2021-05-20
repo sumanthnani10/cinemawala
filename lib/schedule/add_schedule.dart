@@ -789,7 +789,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   children: [
                     Spacer(),
                     Text(
-                      "On Shoot",
+                      "On Loc",
                       style: TextStyle(
                           fontSize: 14, decoration: TextDecoration.underline),
                     ),

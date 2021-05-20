@@ -142,8 +142,9 @@ class _CostumesListState extends State<CostumesList>
                                 key: UniqueKey(),
                                 isPopUp: false,
                                 project: project,
+                                scene: scene,
                                 costumes: scene.costumes,
-                            );
+                              );
                           });
                         }
                         else{
@@ -152,8 +153,9 @@ class _CostumesListState extends State<CostumesList>
                               Utils.createRoute(
                                   SelectedCostumes(
                                     project: project,
-                                    costumes: scene.costumes,
-                                  ),
+                                      costumes: scene.costumes,
+                                      scene: scene,
+                                    ),
                                   Utils.DTU));
                           setState(() {
                             costumes = Utils.costumes.sublist(0);

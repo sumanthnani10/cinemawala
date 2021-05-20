@@ -330,6 +330,17 @@ class _SelectedActors extends State<SelectedActors>
                         style: TextStyle(fontSize: 20, color: background1),
                         textAlign: TextAlign.center,
                       ),
+                      Spacer(),
+                      IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddScene(
+                                      project: project, scene: scene.toJson()),
+                                ));
+                          })
                     ],
                   ),
                   TextField(
@@ -373,45 +384,22 @@ class _SelectedActors extends State<SelectedActors>
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => AddScene(
-                                              project: project,
-                                              scene: scene.toJson()),
-                                        ));
-                                  },
-                                  splashColor: background1.withOpacity(0.2),
-                                  child: Container(
-                                    //color: color,
-                                    margin: EdgeInsets.all(2),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: color,
-                                      borderRadius: BorderRadius.circular(300),
-                                    ),
-                                    child: Text('+ Add Artist'),
-                                  ),
-                                )
-                              ] +
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children:
                               List<Widget>.generate(showActors.length, (i) {
-                                Actor actor = showActors[i];
-                                return InkWell(
-                                  onLongPress: () {
-                                    Navigator.push(
-                                        context,
-                                        Utils.createRoute(
-                                            ActorPage(
-                                              popUp: true,
-                                              actor: actor,
-                                              project: project,
-                                            ),
+                            Actor actor = showActors[i];
+                            return InkWell(
+                              onLongPress: () {
+                                Navigator.push(
+                                    context,
+                                    Utils.createRoute(
+                                        ActorPage(
+                                          popUp: true,
+                                          actor: actor,
+                                          project: project,
+                                        ),
                                         Utils.DTU));
                               },
                               splashColor: background1.withOpacity(0.2),

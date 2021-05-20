@@ -358,7 +358,7 @@ class _SchedulePageState extends State<SchedulePage>
                             children: [
                               Spacer(),
                               Text(
-                                "On Shoot",
+                                "On Loc",
                                 style: TextStyle(
                                     fontSize: 14,
                                     decoration: TextDecoration.underline),

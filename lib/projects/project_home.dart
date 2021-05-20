@@ -164,6 +164,15 @@ class _ProjectHome extends State<ProjectHome> {
                         Utils.RTL));
                 Utils.project = Utils.projectsMap[project.id];
                 project = Utils.project;
+
+                Utils.languages = [];
+                Utils.langsInLang = [];
+
+                project.languages.forEach((l) {
+                  Utils.languages.add(Utils.codeToLanguagesInEnglish[l]);
+                  Utils.langsInLang.add(Utils.codeToLanguagesInLanguage[l]);
+                });
+
                 setCategories();
                 setState(() {});
               },

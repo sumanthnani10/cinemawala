@@ -366,7 +366,9 @@ class _ScenesList extends State<ScenesList>
                                             Utils.createRoute(
                                                 SelectedCostumes(
                                                     project: project,
-                                                    costumes: scene.costumes),
+                                                        scene: scene,
+                                                        costumes:
+                                                            scene.costumes),
                                                 Utils.DTU));
                                       },
                                       child: Column(
@@ -409,11 +411,12 @@ class _ScenesList extends State<ScenesList>
                                           Utils.createRoute(
                                               SelectedProps(
                                                   project: project,
-                                                  selectedProps:
-                                                  List<Prop>.generate(
-                                                      scene.artists.length,
+                                                      scene: scene,
+                                                      selectedProps: List<
+                                                              Prop>.generate(
+                                                          scene.artists.length,
                                                           (p) => Utils.propsMap[
-                                                      scene.props[p]])),
+                                                              scene.props[p]])),
                                               Utils.DTU));
                                     },
                                     child: Column(

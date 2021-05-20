@@ -10,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
+import 'add_scene.dart';
+import 'scene.dart';
 
 class SelectCostumes extends StatefulWidget {
   final Project project;
@@ -302,12 +304,19 @@ class SelectedCostumes extends StatefulWidget {
   final Project project;
   final List<dynamic> costumes;
   final bool isPopUp;
-  SelectedCostumes({Key key, @required this.project, @required this.costumes,this.isPopUp})
+  final Scene scene;
+
+  SelectedCostumes(
+      {Key key,
+      @required this.project,
+      @required this.costumes,
+      @required this.scene,
+      this.isPopUp})
       : super(key: key);
 
   @override
   _SelectedCostumes createState() =>
-      _SelectedCostumes(this.project, this.costumes,this.isPopUp);
+      _SelectedCostumes(this.project, this.costumes, this.scene, this.isPopUp);
 }
 
 class _SelectedCostumes extends State<SelectedCostumes>
@@ -316,12 +325,13 @@ class _SelectedCostumes extends State<SelectedCostumes>
   bool isPopUp;
   List<dynamic> costumes;
   Color background, background1, color;
+  final Scene scene;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
   TextStyle nameStyle, characterStyle;
 
-  _SelectedCostumes(this.project, this.costumes,this.isPopUp);
+  _SelectedCostumes(this.project, this.costumes, this.scene, this.isPopUp);
 
   @override
   void initState() {
@@ -375,16 +385,30 @@ class _SelectedCostumes extends State<SelectedCostumes>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        isPopUp ? IconButton(
-                            icon: Icon(Icons.arrow_back_rounded),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }): Container(),
+                        isPopUp
+                            ? IconButton(
+                                icon: Icon(Icons.arrow_back_rounded),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })
+                            : Container(),
                         Text(
                           "Selected Costumes",
                           style: TextStyle(fontSize: 20, color: background1),
                           textAlign: TextAlign.center,
                         ),
+                        Spacer(),
+                        IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddScene(
+                                        project: project,
+                                        scene: scene.toJson()),
+                                  ));
+                            })
                       ],
                     ),
                     TextField(
