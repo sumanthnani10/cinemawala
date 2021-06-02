@@ -139,7 +139,7 @@ class _Register extends State<Register> {
                             textCapitalization: TextCapitalization.none,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'^[a-z0-9_.]+'),
+                                  RegExp(r'^[a-z0-9_]+'),
                                   replacementString: ""),
                             ],
                             onChanged: (v) {
@@ -562,6 +562,7 @@ class _Register extends State<Register> {
       "projects": [],
       "notes": {},
       "acts_in": {},
+      "codes": {},
       "gender": 1
     };
 

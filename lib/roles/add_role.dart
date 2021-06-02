@@ -224,7 +224,7 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                 style: TextStyle(
                                     color: background1, fontSize: 14)),
                             Text(
-                                "@ ${selectedUser == null ? "Tap to choose." : "${selectedUser['username']}"}",
+                                "${selectedUser == null ? "Tap to choose." : "@ ${selectedUser['username']}"}",
                                 style: TextStyle(
                                     color: Colors.black54, fontSize: 12)),
                           ],

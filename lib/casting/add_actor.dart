@@ -86,6 +86,7 @@ class _AddActorState extends State<AddActor>
     // debugPrint('${actor}');
     super.initState();
   }
+
   Widget widget1(){
     return Align(
       alignment: Alignment.topCenter,
@@ -505,9 +506,9 @@ class _AddActorState extends State<AddActor>
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
-          Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
-          Utils.artists = Utils.artistsMap.values.toList();
           if (r['status'] == 'success') {
+            Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
+            Utils.artists = Utils.artistsMap.values.toList();
             await Utils.showSuccessDialog(
                 context,
                 'Artist Added',
@@ -583,10 +584,9 @@ class _AddActorState extends State<AddActor>
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
-          Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
-          Utils.artists = Utils.artistsMap.values.toList();
-
           if (r['status'] == 'success') {
+            Utils.artistsMap[actor['id']] = Actor.fromJson(actor);
+            Utils.artists = Utils.artistsMap.values.toList();
             await Utils.showSuccessDialog(
                 context,
                 'Artist Edited',

@@ -6,12 +6,18 @@ import '../utils.dart';
 class SelectUser extends StatefulWidget {
   final Project project;
   final Map selectedUser;
+  final bool showSelf;
 
-  SelectUser({Key key, @required this.project, @required this.selectedUser})
+  SelectUser(
+      {Key key,
+      @required this.project,
+      @required this.selectedUser,
+      this.showSelf})
       : super(key: key);
 
   @override
-  _SelectUser createState() => _SelectUser(this.project, this.selectedUser);
+  _SelectUser createState() =>
+      _SelectUser(this.project, this.selectedUser, this.showSelf ?? false);
 }
 
 class _SelectUser extends State<SelectUser>
@@ -21,11 +27,12 @@ class _SelectUser extends State<SelectUser>
   List<dynamic> users = [];
   Map selectedUser;
   bool loading = false;
+  final bool showSelf;
 
   TextEditingController search_controller = new TextEditingController();
   String search = '';
 
-  _SelectUser(this.project, this.selectedUser);
+  _SelectUser(this.project, this.selectedUser, this.showSelf);
 
   @override
   void initState() {
@@ -49,8 +56,9 @@ class _SelectUser extends State<SelectUser>
   @override
   Widget build(BuildContext context) {
     var showUsers = users
-        .where(
-            (c) => c['username'].contains(search) || c['name'].contains(search))
+        .where((c) =>
+            ((c['username'].contains(search) || c['name'].contains(search)) &&
+                (c['user_id'] == Utils.USER_ID ? showSelf : true)))
         .toList();
     background = Colors.white;
     color = Color(0xff6fd8a8);

@@ -412,7 +412,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
           }
         },
         "Camera_Department": {
-          "D.O.P": {
+          "DOP": {
             "contact": "",
             "quantity": 0,
             "rate": 0,
@@ -462,7 +462,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
             "use": true,
             "callSheet": 0
           },
-          "D.I.T": {
+          "DIT": {
             "contact": "",
             "quantity": 0,
             "rate": 0,

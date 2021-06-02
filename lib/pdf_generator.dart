@@ -118,7 +118,7 @@ class PdfGenerator {
                     child: RichText(
                       text: TextSpan(
                         children: <TextSpan>[
-                          TextSpan(text: 'DOP: ', style: labelStyle),
+                          TextSpan(text: 'D.O.P: ', style: labelStyle),
                           TextSpan(text: '${project.dop}', style: valueStyle),
                         ],
                       ),

@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/casting/add_actor.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
+import 'package:cinemawala/roles/select_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 
 import '../utils.dart';
 import 'actor.dart';
@@ -13,8 +17,7 @@ class ActorPage extends StatefulWidget {
   final Project project;
   final bool popUp;
 
-  const ActorPage(
-      {Key key, @required this.actor, @required this.project, this.popUp})
+  const ActorPage({Key key, @required this.actor, @required this.project, this.popUp})
       : super(key: key);
 
   @override
@@ -34,6 +37,7 @@ class _ActorPage extends State<ActorPage> {
   List<TextEditingController> nameControllers = [], characterControllers = [];
   Set<String> costumes = {};
   Actor actor;
+  bool loading = false;
 
   _ActorPage({@required this.actor, @required this.project, this.popUp});
 
@@ -47,7 +51,7 @@ class _ActorPage extends State<ActorPage> {
               '${(actor.names[i] != null && actor.names[i] != "") ? actor.names[i] : "-"}'));
       characterControllers.add(new TextEditingController(
           text:
-              '${(actor.characters[i] != null && actor.characters[i] != "") ? actor.characters[i] : "-"}'));
+          '${(actor.characters[i] != null && actor.characters[i] != "") ? actor.characters[i] : "-"}'));
     }
     actor.costumes.forEach((key, value) {
       costumes.addAll(Iterable.castFrom(value));
@@ -57,8 +61,6 @@ class _ActorPage extends State<ActorPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(languages);
-    print(langsInLang);
     color = Color(0xff6fd8a8);
     background = Colors.white;
     headingStyle = TextStyle(
@@ -85,13 +87,13 @@ class _ActorPage extends State<ActorPage> {
             automaticallyImplyLeading: !popUp ? true : false,
             flexibleSpace: Container(
               decoration: popUp
-                        ? BoxDecoration(
-                            // border: Border(left: BorderSide(color: Colors.black)),
-                            color: Colors.white)
-                        : BoxDecoration(
-                            gradient: Utils.linearGradient,
-                          ),
-                  ),
+                  ? BoxDecoration(
+                // border: Border(left: BorderSide(color: Colors.black)),
+                  color: Colors.white)
+                  : BoxDecoration(
+                gradient: Utils.linearGradient,
+              ),
+            ),
             backgroundColor: color,
             title: Text(
               'Actor Info',
@@ -205,8 +207,8 @@ class _ActorPage extends State<ActorPage> {
                   SizedBox.expand(
                     child: DraggableScrollableSheet(
                       initialChildSize:
-                      310 / MediaQuery.of(context).size.height,
-                      minChildSize: 310 / MediaQuery.of(context).size.height,
+                          318 / MediaQuery.of(context).size.height,
+                      minChildSize: 318 / MediaQuery.of(context).size.height,
                       maxChildSize: 1,
                       builder: (context, scrollController) {
                         return Container(
@@ -229,12 +231,12 @@ class _ActorPage extends State<ActorPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.symmetric(vertical: 16),
+                                  margin: EdgeInsets.fromLTRB(0, 16, 0, 4),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: List<Widget>.generate(
                                           languages.length, (i) {
                                         return Container(
@@ -296,7 +298,7 @@ class _ActorPage extends State<ActorPage> {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(bottom: 16),
+                                  padding: const EdgeInsets.only(bottom: 4),
                                   decoration: BoxDecoration(
                                       border: Border(
                                           bottom: BorderSide(
@@ -313,17 +315,17 @@ class _ActorPage extends State<ActorPage> {
                                           languages.length, (i) {
                                         return Container(
                                           width: MediaQuery.of(context)
-                                              .size
-                                              .width -
+                                                  .size
+                                                  .width -
                                               24 -
                                               (popUp ? 48 : 0),
                                           margin: EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 10),
-                                          padding: EdgeInsets.all(24),
+                                          padding: EdgeInsets.all(16),
                                           decoration: BoxDecoration(
                                             color: background,
                                             borderRadius:
-                                            BorderRadius.circular(16.0),
+                                                BorderRadius.circular(16.0),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: color,
@@ -357,7 +359,7 @@ class _ActorPage extends State<ActorPage> {
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: 24,
+                                                height: 12,
                                               ),
                                               TextField(
                                                 controller:
@@ -390,7 +392,51 @@ class _ActorPage extends State<ActorPage> {
                                     ),
                                   ),
                                 ),
-                                Container(
+                                InkWell(
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.black26,
+                                                  width: 0.5))),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Cast: ${actor.by['username'] == "" ? "Not Assigned" : "@${actor.by['username']}"}',
+                                            style: TextStyle(
+                                                color: background1,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                decorationThickness: 1),
+                                          ),
+                                          if (actor.by['user_id'] != "")
+                                            TextButton(
+                                                onPressed: () async {
+                                                  removeCast();
+                                                },
+                                                child: Text(
+                                                  "Remove",
+                                                  style: TextStyle(
+                                                      color: Colors.deepOrange),
+                                                )),
+                                          if (actor.by['user_id'] == "")
+                                            TextButton(
+                                                onPressed: () async {
+                                                  askCastCredentials();
+                                                },
+                                                child: Text(
+                                                  "Assign",
+                                                  style: TextStyle(
+                                                      color: Colors.blue),
+                                                ))
+                                        ],
+                                      )),
+                                ),
+                                /*Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                         border: Border(
@@ -408,7 +454,7 @@ class _ActorPage extends State<ActorPage> {
                                               decoration:
                                               TextDecoration.underline,
                                               decorationThickness: 1),
-                                        ))),
+                                        ))),*/
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
@@ -560,6 +606,271 @@ class _ActorPage extends State<ActorPage> {
             ),
           )),
     );
+  }
+
+  askCastCredentials() async {
+    Map selectedUser;
+    bool showError = false;
+    TextEditingController codeController = new TextEditingController(text: "");
+    GlobalKey<FormState> formKey = new GlobalKey<FormState>();
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setDState) {
+          return AlertDialog(
+            title: Text("Assign Cast"),
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      var r = await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              SelectUser(
+                                project: project,
+                                selectedUser: selectedUser,
+                                showSelf: true,
+                              ),
+                              Utils.DTU));
+                      setDState(() {
+                        selectedUser = r ?? selectedUser;
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      decoration: BoxDecoration(
+                          gradient: Utils.linearGradient,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Text(
+                          "${selectedUser == null ? "Tap to choose." : "@ ${selectedUser['username']}"}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  if (showError)
+                    Text(
+                      "Select User",
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  TextFormField(
+                    controller: codeController,
+                    textCapitalization: TextCapitalization.none,
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.black)),
+                        labelStyle: TextStyle(color: Colors.black),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        labelText: 'Code',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.black)),
+                        fillColor: Colors.white),
+                    maxLines: 1,
+                    validator: (v) {
+                      if (v.length == 0) {
+                        return 'Code is mandatory';
+                      } else if (v.split(" ").length > 1) {
+                        return "Spaces Not Allowed";
+                      } else if (v.split(" ").first.length != 10) {
+                        return "Code must be 10 characters";
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text("Assign"),
+                onPressed: () async {
+                  if (selectedUser != null) {
+                    if (showError) {
+                      setDState(() {
+                        showError = false;
+                      });
+                    }
+                    if (formKey.currentState.validate()) {
+                      if (await validateCode(
+                              selectedUser['id'], codeController.text) ??
+                          false) {
+                        await assignCast(selectedUser, codeController.text);
+                      }
+                    }
+                  } else {
+                    setDState(() {
+                      showError = true;
+                    });
+                  }
+                },
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
+  validateCode(String userId, String code) async {
+    Utils.showLoadingDialog(context, "Validating Code");
+    var valid = false;
+
+    try {
+      var resp = await http.post(Utils.VALIDATE_CAST_CODE,
+          body: jsonEncode({"user_id": userId, "code": code}),
+          headers: {"Content-Type": "application/json"});
+      debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          valid = r['valid'] ?? false;
+          if (!valid) {
+            await Utils.showErrorDialog(
+                context, 'Invalid', '${r['msg'] ?? "Code is Invalid"}');
+          }
+        } else {
+          await Utils.showErrorDialog(context, 'Invalid', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      debugPrint("$e");
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+
+    return valid;
+  }
+
+  removeCast() async {
+    Utils.showLoadingDialog(context, "Removing");
+
+    try {
+      var resp = await http.post(Utils.REMOVE_CAST,
+          body: jsonEncode({
+            "project_id": project.id,
+            "id": actor.id,
+            "last_edit_by": Utils.USER_ID,
+            "user_id": actor.by['user_id']
+          }),
+          headers: {"Content-Type": "application/json"});
+      // // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          var ar = actor.toJson();
+          ar["by"] = {"username": "", "user_id": ""};
+          Utils.artistsMap[actor.id] = Actor.fromJson(ar);
+          Utils.artists = Utils.artistsMap.values.toList();
+          actor = Utils.artistsMap[actor.id];
+          setState(() {});
+          await Utils.showSuccessDialog(
+              context,
+              'Cast Removed',
+              'Cast has been removed successfully.',
+              Colors.green,
+              background, () {
+            Navigator.pop(context);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      debugPrint("$e");
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+  }
+
+  assignCast(Map selectedUser, String code) async {
+    Utils.showLoadingDialog(context, "Assigning");
+    try {
+      var resp = await http.post(Utils.ASSIGN_CAST,
+          body: jsonEncode({
+            "project_id": project.id,
+            "id": actor.id,
+            "last_edit_by": Utils.USER_ID,
+            "user_id": selectedUser["id"],
+            "username": selectedUser["username"],
+            "code": code
+          }),
+          headers: {"Content-Type": "application/json"});
+      // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          var ar = actor.toJson();
+          ar["by"] = {
+            "user_id": selectedUser["id"],
+            "username": selectedUser["username"],
+          };
+          actor = Actor.fromJson(ar);
+          Utils.artistsMap[actor.id] = actor;
+          Utils.artists = Utils.artistsMap.values.toList();
+          setState(() {});
+          await Utils.showSuccessDialog(
+              context,
+              'Cast Assigned',
+              'Cast has been assigned successfully.',
+              Colors.green,
+              background, () {
+            Navigator.pop(context);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      debugPrint("$e");
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+    Navigator.pop(context);
   }
 }
 

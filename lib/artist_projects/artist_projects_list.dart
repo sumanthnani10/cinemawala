@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 
 import '../utils.dart';
 import 'artist_project_page.dart';
@@ -26,7 +32,7 @@ class _ArtistProjectsState extends State<ArtistProjects> {
 
   @override
   void initState() {
-    loading = true;
+    loading = false;
     super.initState();
   }
 
@@ -42,28 +48,35 @@ class _ArtistProjectsState extends State<ArtistProjects> {
 
   @override
   Widget build(BuildContext context) {
-    return allProjects.length > 0
-        ? SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 0, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Text(
-                      "Casted In",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: const Color(0xff309f86),
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                Text(
+                  "Casted In",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: const Color(0xff309f86),
+                    fontWeight: FontWeight.w600,
                   ),
+                  textAlign: TextAlign.left,
                 ),
-                Flexible(
+                TextButton(
+                    onPressed: () async {
+                      generateCode();
+                    },
+                    child: Text("Codes"))
+              ],
+            ),
+          ),
+          allProjects.length > 0
+              ? Flexible(
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: SingleChildScrollView(
@@ -73,6 +86,7 @@ class _ArtistProjectsState extends State<ArtistProjects> {
                           project = allProjects[i];
                           return ProjectCard(
                             project: project,
+                            artist: true,
                             onTap: () async {
                               Project proj = allProjects[i];
                               if (Utils.artistProject == null ||
@@ -84,15 +98,15 @@ class _ArtistProjectsState extends State<ArtistProjects> {
 
                                 proj.languages.forEach((l) {
                                   Utils.languages
-                                      .add(Utils.codeToLanguagesInEnglish[l]);
-                                  Utils.langsInLang
-                                      .add(Utils.codeToLanguagesInLanguage[l]);
-                                });
-                              }
+                                .add(Utils.codeToLanguagesInEnglish[l]);
+                            Utils.langsInLang
+                                .add(Utils.codeToLanguagesInLanguage[l]);
+                          });
+                        }
 
-                              Navigator.push(
-                                  context,
-                                  Utils.createRoute(
+                        Navigator.push(
+                            context,
+                            Utils.createRoute(
                                       ArtistProjectPage(
                                         artistProject: Utils.artistProject,
                                       ),
@@ -103,13 +117,101 @@ class _ArtistProjectsState extends State<ArtistProjects> {
                       ),
                     ),
                   ),
+                )
+              : Text(loading ? '' : 'No Projects.'),
+        ],
+      ),
+    );
+  }
+
+  generateCode() async {
+    Utils.showLoadingDialog(context, "Generating Code");
+    String code = "";
+
+    try {
+      var resp = await http.post(Utils.GENERATE_CAST_CODE,
+          body: jsonEncode({
+            "user_id": Utils.USER_ID,
+          }),
+          headers: {"Content-Type": "application/json"});
+      // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          code = r['code'];
+          if (code.length != 10) {
+            await Utils.showErrorDialog(
+                context, 'Something went wrong.', '${r['msg'] ?? "Try Again"}');
+          } else {
+            showCodeShareDialog(code);
+          }
+        } else {
+          await Utils.showErrorDialog(
+              context, 'Something went wrong.', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      debugPrint("$e");
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+  }
+
+  showCodeShareDialog(String code) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black26,
+                  borderRadius: BorderRadius.circular(4),
                 ),
-              ],
-            ),
-          )
-        : Center(
-            child: Text(loading ? '' : 'No Projects.'),
-          );
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("$code"),
+                    IconButton(
+                        icon: Icon(Icons.copy_rounded),
+                        onPressed: () async {
+                          Clipboard.setData(ClipboardData(text: "$code"));
+                        })
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                  "This code is valid only for 7 days and can only be used once.",
+                  style: TextStyle(fontSize: 10))
+            ],
+          ),
+          actions: [
+            TextButton.icon(
+                onPressed: () async {
+                  await Share.share(
+                      "Cinemawala \nAdd Me As Cast Using This: \n \nUsername: ${Utils.user.username} \nCode: $code");
+                },
+                icon: Icon(Icons.share),
+                label: Text("Share"))
+          ],
+        );
+      },
+    );
   }
 
   @override

@@ -88,7 +88,9 @@ class Project {
         artists: i["artists"],
         artistIDs: i["artist_ids"],
         schedules: i["schedules"],
-        role: Role.fromJson(i["roles"]["${Utils.USER_ID}"]),
+        role: i["roles"] != null
+            ? Role.fromJson(i["roles"]["${Utils.USER_ID}"])
+            : null,
         productionName: i["production_name"],
         productionNumber: i["production_number"],
         producer: i["producer"],

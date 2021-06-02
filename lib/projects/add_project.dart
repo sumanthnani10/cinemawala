@@ -1491,8 +1491,14 @@ class _AddProject extends State<AddProject>
 
     try {
       if (imageUploaded) {
+        var bdy = {};
+        bdy.addAll(project);
+        bdy.remove("roles");
+        bdy.remove("roles_ids");
+        bdy.remove("artists");
+        bdy.remove("artist_ids");
         var resp = await http.post(Utils.EDIT_PROJECT,
-            body: jsonEncode(project),
+            body: jsonEncode(bdy),
             headers: {"Content-Type": "application/json"});
         // debugPrint(resp.body);
         var r = jsonDecode(resp.body);

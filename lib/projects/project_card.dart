@@ -8,21 +8,24 @@ import 'project.dart';
 class ProjectCard extends StatefulWidget {
   final Project project;
   final VoidCallback onTap;
+  final bool artist;
 
-  const ProjectCard({Key key, @required this.project, @required this.onTap})
+  const ProjectCard(
+      {Key key, @required this.project, @required this.onTap, this.artist})
       : super(key: key);
 
   @override
   _ProjectCardState createState() =>
-      _ProjectCardState(this.project, this.onTap);
+      _ProjectCardState(this.project, this.onTap, this.artist ?? false);
 }
 
 class _ProjectCardState extends State<ProjectCard>
     with SingleTickerProviderStateMixin {
   final Project project;
   final VoidCallback onTap;
+  final bool artist;
 
-  _ProjectCardState(this.project, this.onTap);
+  _ProjectCardState(this.project, this.onTap, this.artist);
 
   AnimationController _controller;
   Animation animation;
@@ -117,7 +120,7 @@ class _ProjectCardState extends State<ProjectCard>
                               textAlign: TextAlign.center,
                             ),
                             Text(
-                              "${project.role.role}",
+                              "${artist ? "Artist" : project.role.role}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
