@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -469,26 +468,18 @@ class _AddActorState extends State<AddActor>
 
     if (actorImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': actorImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/casting/${actor['id']}.png')
-              .putData(await actorImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/casting/${actor['id']}.png')
-              .putFile(actorImage, metadata);
+        actor['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: actorImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${actor["id"]}",
+            type: "casting",
+            process: "add");
+        imageUploaded = r[0];
+        if (r[0]) {
+          actor['image'] = r[1];
         }
-
-        actor['image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/casting/${actor['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);
@@ -547,26 +538,18 @@ class _AddActorState extends State<AddActor>
 
     if (actorImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': actorImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/casting/${actor['id']}.png')
-              .putData(await actorImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/casting/${actor['id']}.png')
-              .putFile(actorImage, metadata);
+        actor['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: actorImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${actor["id"]}",
+            type: "casting",
+            process: "edit");
+        imageUploaded = r[0];
+        if (r[0]) {
+          actor['image'] = r[1];
         }
-
-        actor['image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/casting/${actor['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);
@@ -617,28 +600,5 @@ class _AddActorState extends State<AddActor>
           context, 'Something went wrong.', 'Please try again after sometime.');
     }
     Navigator.pop(context);
-  }
-
-  uploadArtistImage() async {
-    var req = http.MultipartRequest(
-        'POST', Uri.parse('${Utils.UPLOAD_ARTIST_IMAGE}'));
-    Map<dynamic, String> headers = {"Content-type": "multipart/form-data"};
-
-    req.headers.addAll(headers);
-    req.fields
-        .addAll({"name": "test", "email": "test@gmail.com", "id": "12345"});
-
-    req.files.add(
-      http.MultipartFile(
-        'image',
-        actorImage.readAsBytes().asStream(),
-        actorImage.lengthSync(),
-        filename: 'image',
-      ),
-    );
-    // debugPrint("request: " + req.toString());
-    // var res = await req.send();
-    // debugPrint("${res}");
-    // debugPrint("${res.statusCode}");
   }
 }

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -175,6 +174,7 @@ class _AddCostume extends State<AddCostume>
       ),
     );
   }
+
   Widget widget2(){
     return Align(
       alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
@@ -291,6 +291,7 @@ class _AddCostume extends State<AddCostume>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -345,26 +346,18 @@ class _AddCostume extends State<AddCostume>
 
     if (costumeImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': costumeImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/costumes/${costume['id']}.png')
-              .putData(await costumeImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/costumes/${costume['id']}.png')
-              .putFile(costumeImage, metadata);
+        costume['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: costumeImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${costume["id"]}",
+            type: "costumes",
+            process: "add");
+        imageUploaded = r[0];
+        if (r[0]) {
+          costume['image'] = r[1];
         }
-
-        costume['reference_image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/costumes/${costume['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);
@@ -425,26 +418,18 @@ class _AddCostume extends State<AddCostume>
 
     if (costumeImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': costumeImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/costumes/${costume['id']}.png')
-              .putData(await costumeImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/costumes/${costume['id']}.png')
-              .putFile(costumeImage, metadata);
+        costume['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: costumeImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${costume["id"]}",
+            type: "costumes",
+            process: "edit");
+        imageUploaded = r[0];
+        if (r[0]) {
+          costume['image'] = r[1];
         }
-
-        costume['reference_image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/costumes/${costume['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);

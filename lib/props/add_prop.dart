@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -142,6 +141,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
   Widget widget2(){
     return Align(
       alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
@@ -258,6 +258,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
   @override
   void initState() {
     propImage = null;
@@ -343,26 +344,18 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     if (propImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': propImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/props/${prop['id']}.png')
-              .putData(await propImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/props/${prop['id']}.png')
-              .putFile(propImage, metadata);
+        prop['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: propImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${prop["id"]}",
+            type: "props",
+            process: "add");
+        imageUploaded = r[0];
+        if (r[0]) {
+          prop['image'] = r[1];
         }
-
-        prop['reference_image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/props/${prop['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);
@@ -423,26 +416,18 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     if (propImage != null) {
       try {
-        final metadata = SettableMetadata(
-            contentType: 'image/png',
-            customMetadata: {'picked-file-path': propImage.path});
-
-        if (kIsWeb) {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/props/${prop['id']}.png')
-              .putData(await propImage.readAsBytes(), metadata);
-        } else {
-          await FirebaseStorage.instance
-              .ref()
-              .child('projects/${project.id}/props/${prop['id']}.png')
-              .putFile(propImage, metadata);
+        prop['image'] = "";
+        var r = await Utils.uploadImage(context,
+            file: propImage,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${prop["id"]}",
+            type: "props",
+            process: "edit");
+        imageUploaded = r[0];
+        if (r[0]) {
+          prop['image'] = r[1];
         }
-
-        prop['reference_image'] = await FirebaseStorage.instance
-            .ref()
-            .child('projects/${project.id}/props/${prop['id']}.png')
-            .getDownloadURL();
       } catch (e) {
         imageUploaded = false;
         // debugPrint(e.message);

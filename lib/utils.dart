@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
@@ -48,7 +49,7 @@ class Utils {
 /*--------------------------------------------GET CATEGORIES---------------------------------------------------*/
 
   static getUser(context, userId) async {
-    var resp = await http.post(Utils.GET_USER, body: {"id": "${userId}"});
+    var resp = await http.post(GET_USER, body: {"id": "${userId}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
@@ -68,7 +69,7 @@ class Utils {
   }
 
   static getUserNames(context, userId) async {
-    var resp = await http.post(Utils.GET_USERNAMES, body: {"id": "${userId}"});
+    var resp = await http.post(GET_USERNAMES, body: {"id": "${userId}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
@@ -87,8 +88,8 @@ class Utils {
   }
 
   static getProject(context, projectId) async {
-    var resp = await http.post(Utils.GET_PROJECT,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_PROJECT,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
@@ -106,8 +107,8 @@ class Utils {
   }
 
   static getArtistProject(context, projectId) async {
-    var resp = await http.post(Utils.GET_ARTIST_PROJECT,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_ARTIST_PROJECT,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
@@ -124,17 +125,16 @@ class Utils {
   }
 
   static getProjects(context) async {
-    var resp = await http
-        .post(Utils.GET_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_PROJECTS, body: {"user_id": "${USER_ID}"});
 
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.projects = [];
-        Utils.projectsMap = {};
+        projects = [];
+        projectsMap = {};
         r['projects'].forEach((i) {
-          Utils.projects.add(Project.fromJson(i));
-          Utils.projectsMap[Utils.projects.last.id] = Utils.projects.last;
+          projects.add(Project.fromJson(i));
+          projectsMap[projects.last.id] = projects.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -143,22 +143,21 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.projects;
+    return projects;
   }
 
   static getArtistProjects(context) async {
-    var resp = await http
-        .post(Utils.GET_ARTIST_PROJECTS, body: {"user_id": "${Utils.USER_ID}"});
+    var resp =
+        await http.post(GET_ARTIST_PROJECTS, body: {"user_id": "${USER_ID}"});
 
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.artistProjects = [];
-        Utils.artistProjectsMap = {};
+        artistProjects = [];
+        artistProjectsMap = {};
         r['projects'].forEach((i) {
-          Utils.artistProjects.add(Project.fromJson(i));
-          Utils.artistProjectsMap[Utils.artistProjects.last.id] =
-              Utils.artistProjects.last;
+          artistProjects.add(Project.fromJson(i));
+          artistProjectsMap[artistProjects.last.id] = artistProjects.last;
         });
       } else {
         showErrorDialog(context, '', '${r['msg']}');
@@ -166,21 +165,21 @@ class Utils {
     } else {
       showErrorDialog(context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.artistProjects;
+    return artistProjects;
   }
 
   static getArtists(context, projectId) async {
-    var resp = await http.post(Utils.GET_ARTISTS,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_ARTISTS,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.artists = [];
-        Utils.artistsMap = {};
+        artists = [];
+        artistsMap = {};
         r['actors'].forEach((i) {
-          Utils.artists.add(Actor.fromJson(i));
-          Utils.artistsMap[Utils.artists.last.id] = Utils.artists.last;
+          artists.add(Actor.fromJson(i));
+          artistsMap[artists.last.id] = artists.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -189,21 +188,21 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.artists;
+    return artists;
   }
 
   static getCostumes(context, projectId) async {
-    var resp = await http.post(Utils.GET_COSTUMES,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_COSTUMES,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.costumes = [];
-        Utils.costumesMap = {};
+        costumes = [];
+        costumesMap = {};
         r['costumes'].forEach((i) {
           costumes.add(Costume.fromJson(i));
-          costumesMap[Utils.costumes.last.id] = Utils.costumes.last;
+          costumesMap[costumes.last.id] = costumes.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -212,21 +211,21 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.costumes;
+    return costumes;
   }
 
   static getProps(context, projectId) async {
-    var resp = await http.post(Utils.GET_PROPS,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_PROPS,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.props = [];
-        Utils.propsMap = {};
+        props = [];
+        propsMap = {};
         r['props'].forEach((i) {
-          Utils.props.add(Prop.fromJson(i));
-          Utils.propsMap[Utils.props.last.id] = Utils.props.last;
+          props.add(Prop.fromJson(i));
+          propsMap[props.last.id] = props.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -235,21 +234,21 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.props;
+    return props;
   }
 
   static getLocations(context, projectId) async {
-    var resp = await http.post(Utils.GET_LOCATIONS,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_LOCATIONS,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
-        Utils.locations = [];
-        Utils.locationsMap = {};
+        locations = [];
+        locationsMap = {};
         r['locations'].forEach((i) {
-          Utils.locations.add(Location.fromJson(i));
-          Utils.locationsMap[Utils.locations.last.id] = Utils.locations.last;
+          locations.add(Location.fromJson(i));
+          locationsMap[locations.last.id] = locations.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -258,22 +257,22 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.locations;
+    return locations;
   }
 
   static getScenes(context, projectId) async {
-    var resp = await http.post(Utils.GET_SCENES,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_SCENES,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       // print(r);
       if (r['status'] == 'success') {
-        Utils.scenes = [];
-        Utils.scenesMap = {};
+        scenes = [];
+        scenesMap = {};
         r['scenes'].forEach((i) {
-          Utils.scenes.add(Scene.fromJson(i));
-          Utils.scenesMap[Utils.scenes.last.id] = Utils.scenes.last;
+          scenes.add(Scene.fromJson(i));
+          scenesMap[scenes.last.id] = scenes.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -282,22 +281,22 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.scenes;
+    return scenes;
   }
 
   static getSchedules(context, projectId) async {
-    var resp = await http.post(Utils.GET_SCHEDULES,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_SCHEDULES,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       // print(r);
       if (r['status'] == 'success') {
-        Utils.schedules = [];
-        Utils.schedulesMap = {};
+        schedules = [];
+        schedulesMap = {};
         r['schedules'].forEach((i) {
-          Utils.schedules.add(Schedule.fromJson(i));
-          Utils.schedulesMap[Utils.schedules.last.id] = Utils.schedules.last;
+          schedules.add(Schedule.fromJson(i));
+          schedulesMap[schedules.last.id] = schedules.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -306,23 +305,22 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.schedules;
+    return schedules;
   }
 
   static getDailyBudgets(context, projectId) async {
-    var resp = await http.post(Utils.GET_DAILY_BUDGETS,
-        body: {"project_id": "${projectId}", "user_id": "${Utils.USER_ID}"});
+    var resp = await http.post(GET_DAILY_BUDGETS,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
     // debugPrint(resp.body);
     if (resp.statusCode == 200) {
       var r = jsonDecode(resp.body);
       // print(r);
       if (r['status'] == 'success') {
-        Utils.dailyBudgets = [];
-        Utils.dailyBudgetsMap = {};
+        dailyBudgets = [];
+        dailyBudgetsMap = {};
         r['daily_budgets'].forEach((i) {
-          Utils.dailyBudgets.add(DailyBudget.fromJson(i));
-          Utils.dailyBudgetsMap[Utils.dailyBudgets.last.id] =
-              Utils.dailyBudgets.last;
+          dailyBudgets.add(DailyBudget.fromJson(i));
+          dailyBudgetsMap[dailyBudgets.last.id] = dailyBudgets.last;
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -331,7 +329,114 @@ class Utils {
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
-    return Utils.schedules;
+    return schedules;
+  }
+
+/*-------------------------------------------------------------------------------------------------------------*/
+
+/*-------------------------------------------------IMAGE UPLOAD-------------------------------------------------------*/
+
+  static uploadImage(context,
+      {File file,
+      String type,
+      String projectId,
+      String id,
+      String userId,
+      String process}) async {
+    var req = http.MultipartRequest('POST', UPLOAD_IMAGE);
+
+    req.files.add(http.MultipartFile(
+        'image_file', file.readAsBytes().asStream(), file.lengthSync(),
+        filename: file.path.split('/').last));
+
+    req.fields.addAll({
+      "type": type,
+      "project_id": projectId,
+      "id": id,
+      "user_id": userId,
+      "process": process,
+    });
+
+    req.headers['data-type'] = "image";
+    // req.headers['content-type'] = "multipart/form-data";
+
+    try {
+      var resp = await req.send();
+      var res = await http.Response.fromStream(resp);
+      var r = jsonDecode(res.body);
+      print(r);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          print("Uploaded");
+          return [true, r['link']];
+        } else {
+          await showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+    } catch (e) {
+      print(e);
+      await showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+
+    return [false, ""];
+  }
+
+  static uploadImages(context,
+      {Map<String, File> files,
+      String type,
+      String projectId,
+      String id,
+      String userId,
+      String process}) async {
+    var req = http.MultipartRequest('POST', UPLOAD_IMAGES);
+
+    var keys = files.keys.toList();
+    for (int i = 0; i < keys.length; i++) {
+      req.files.add(http.MultipartFile('${keys[i]}',
+          files[keys[i]].readAsBytes().asStream(), files[keys[i]].lengthSync(),
+          filename: files[keys[i]].path.split('/').last));
+    }
+
+    req.fields.addAll({
+      "type": type,
+      "project_id": projectId,
+      "id": id,
+      "user_id": userId,
+      "process": process,
+    });
+
+    req.headers['data-type'] = "images";
+    // req.headers['content-type'] = "multipart/form-data";
+
+    try {
+      var resp = await req.send();
+      var res = await http.Response.fromStream(resp);
+      print(res.body);
+      var r = jsonDecode(res.body);
+      if (resp.statusCode == 200) {
+        print(r);
+        if (r['status'] == 'success') {
+          print("Uploaded");
+          return [true, r['links']];
+        } else {
+          await showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        print(r);
+        await showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+    } catch (e) {
+      print(e);
+      await showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+
+    return [false, []];
   }
 
 /*-------------------------------------------------------------------------------------------------------------*/
@@ -343,10 +448,13 @@ class Utils {
 
   static const String DOMAIN =
       "ec2-13-233-167-9.ap-south-1.compute.amazonaws.com";
+  static const String URL_PATH = "";
 
   // static const String DOMAIN = "us-central1-cinemawala-2021b.cloudfunctions.net";
   // static const String URL_PATH = "/cinemawala";
-  static const String URL_PATH = "";
+
+  static Uri UPLOAD_IMAGE = Uri.http('${DOMAIN}', '${URL_PATH}/uploadImage');
+  static Uri UPLOAD_IMAGES = Uri.http('${DOMAIN}', '${URL_PATH}/uploadImages');
 
   static Uri GET_USER = Uri.http('${DOMAIN}', '${URL_PATH}/getUser');
   static Uri ADD_USER = Uri.http('${DOMAIN}', '${URL_PATH}/addUser');

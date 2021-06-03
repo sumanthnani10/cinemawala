@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -71,6 +70,7 @@ class _AddLocation extends State<AddLocation>
 
     super.initState();
   }
+
   Widget widget1(){
     return Align(
       alignment: isPopUp ? Alignment.topCenter : Alignment.center,
@@ -177,6 +177,7 @@ class _AddLocation extends State<AddLocation>
                             String image_path =
                             await Utils.askSource(context);
                             if (image_path != null) {
+                              location['images'][i] = "";
                               locationImages[i] = File(image_path);
                             }
                             setState(() {});
@@ -194,10 +195,10 @@ class _AddLocation extends State<AddLocation>
             );
           }),
         ) ,
-
       ),
     );
   }
+
   Widget widget2(){
     return Align(
       alignment: isPopUp ? Alignment.bottomCenter : Alignment.center,
@@ -338,10 +339,9 @@ class _AddLocation extends State<AddLocation>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    // // debugPrint("${location}");
-    // // debugPrint("${locationImages}");
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -395,51 +395,47 @@ class _AddLocation extends State<AddLocation>
     bool imageUploaded = true;
 
     var imagesLinks = [];
+    Map<String, File> tempLocImages = {};
 
-    for (int i = 0; i < 4; i++) {
-      File locationImage = locationImages[i];
-      if (locationImage != null) {
-        try {
-          final metadata = SettableMetadata(
-              contentType: 'image/png',
-              customMetadata: {'picked-file-path': locationImage.path});
+    var i = 0;
 
-          if (kIsWeb) {
-            await FirebaseStorage.instance
-                .ref()
-                .child(
-                    'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-                .putData(await locationImage.readAsBytes(), metadata);
-          } else {
-            await FirebaseStorage.instance
-                .ref()
-                .child(
-                    'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-                .putFile(locationImage, metadata);
-          }
+    locationImages.forEach((file) {
+      if (file != null) {
+        tempLocImages["image_files_${i + 1}"] = locationImages[i];
+        i += 1;
+      }
+    });
 
-          imagesLinks.add(await FirebaseStorage.instance
-              .ref()
-              .child(
-                  'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-              .getDownloadURL());
-        } catch (e) {
-          imageUploaded = false;
-          // // debugPrint(e.message);
+    if (tempLocImages.length > 0) {
+      try {
+        imagesLinks = [];
+
+        var r = await Utils.uploadImages(context,
+            files: tempLocImages,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${location["id"]}",
+            type: "locations",
+            process: "add");
+
+        imageUploaded = r[0];
+        if (r[0]) {
+          imagesLinks = r[1];
         }
+      } catch (e) {
+        imageUploaded = false;
+        debugPrint("$e");
       }
     }
 
-    location['images'] = imagesLinks;
-
-    // // debugPrint("${location}");
-
     try {
       if (imageUploaded) {
+        location['images'] = imagesLinks;
+
         var resp = await http.post(Utils.ADD_LOCATION,
             body: jsonEncode(location),
             headers: {"Content-Type": "application/json"});
-        // // // debugPrint(resp.body);
+        // debugPrint(resp.body);
         var r = jsonDecode(resp.body);
         Navigator.pop(context);
         if (resp.statusCode == 200) {
@@ -485,53 +481,46 @@ class _AddLocation extends State<AddLocation>
     bool imageUploaded = true;
 
     var imagesLinks = [];
+    Map<String, File> tempLocImages = {};
+    int j = 1;
 
     for (int i = 0; i < 4; i++) {
-      File locationImage = locationImages[i];
-      if (locationImage != null) {
-        try {
-          final metadata = SettableMetadata(
-              contentType: 'image/png',
-              customMetadata: {'picked-file-path': locationImage.path});
-
-          if (kIsWeb) {
-            await FirebaseStorage.instance
-                .ref()
-                .child(
-                    'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-                .putData(await locationImage.readAsBytes(), metadata);
-          } else {
-            await FirebaseStorage.instance
-                .ref()
-                .child(
-                    'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-                .putFile(locationImage, metadata);
-          }
-
-          imagesLinks.add(await FirebaseStorage.instance
-              .ref()
-              .child(
-                  'projects/${project.id}/locations/${location['id']}/${location['id']}_${imagesLinks.length}.png')
-              .getDownloadURL());
-        } catch (e) {
-          imageUploaded = false;
-          // // debugPrint(e.message);
-        }
-      } else {
-        if (i < location['images'].length) {
-          if (location['images'][i] != '') {
-            imagesLinks.add(location['images'][i]);
-          }
-        }
+      if (location['images'][i] != "") {
+        imagesLinks.add(location['images'][i]);
+        j++;
+      } else if (locationImages[i] != null) {
+        tempLocImages["image_files_$j"] = locationImages[i];
+        j++;
       }
     }
 
-    location['images'] = imagesLinks;
+    if (tempLocImages.length > 0) {
+      try {
+        var r = await Utils.uploadImages(context,
+            files: tempLocImages,
+            projectId: "${project.id}",
+            userId: "${Utils.USER_ID}",
+            id: "${location["id"]}",
+            type: "locations",
+            process: "add");
 
-    // // debugPrint("${location}");
+        imageUploaded = r[0];
+        if (r[0]) {
+          imagesLinks += r[1];
+          if (imagesLinks.length > 4) {
+            imagesLinks = imagesLinks.sublist(0, 4);
+          }
+        }
+      } catch (e) {
+        imageUploaded = false;
+        debugPrint("$e");
+      }
+    }
 
     try {
       if (imageUploaded) {
+        location['images'] = imagesLinks;
+
         var resp = await http.post(Utils.EDIT_LOCATION,
             body: jsonEncode(location),
             headers: {"Content-Type": "application/json"});
