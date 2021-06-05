@@ -45,6 +45,7 @@ class _SchedulesState extends State<Schedules>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getSchedules();
     });
+
     super.initState();
   }
 
@@ -138,6 +139,7 @@ class _SchedulesState extends State<Schedules>
       schedule: selectedSchedule,
       date: selectedDate,
       id: selectedDateId,
+          scheduless: schedules,
       getAll: () {
         schedules = Utils.schedulesMap ?? {};
 
@@ -244,6 +246,7 @@ class _SchedulesState extends State<Schedules>
                   schedule: selectedSchedule,
                   date: selectedDate,
                   id: selectedDateId,
+                      scheduless: schedules,
                   isPopUp: false,
                   getAll: () {
                     schedules = Utils.schedulesMap ?? {};
@@ -255,6 +258,7 @@ class _SchedulesState extends State<Schedules>
                     selectedSchedule = schedules[selectedDateId];
                     setState(() {});
                   },
+
                   workingDay: wd,
                   nextDate: () async {
                     selectedDate = selectedDate.add(Duration(days: 1));

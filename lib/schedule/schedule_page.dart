@@ -20,6 +20,7 @@ import '../utils.dart';
 class SchedulePage extends StatefulWidget {
   final Project project;
   final Schedule schedule;
+  final Map<dynamic,Schedule> scheduless;
   final DateTime date;
   final String id;
   final int workingDay;
@@ -30,6 +31,7 @@ class SchedulePage extends StatefulWidget {
       {Key key,
       @required this.project,
       @required this.schedule,
+        this.scheduless,
       @required this.date,
       @required this.id,
       @required this.getAll,
@@ -50,6 +52,7 @@ class SchedulePage extends StatefulWidget {
         this.getAll,
         this.workingDay,
         this.isPopUp,
+        this.scheduless,
       );
 }
 
@@ -60,12 +63,13 @@ class _SchedulePageState extends State<SchedulePage>
   final String id;
   final Project project;
   Schedule schedule;
+  Map<dynamic,Schedule> scheduless;
   final int workingDay;
   final DateTime date;
   final VoidCallback nextDate, prevDate, getAll;
 
   _SchedulePageState(this.nextDate, this.prevDate, this.project, this.schedule,
-      this.date, this.id, this.getAll, this.workingDay, this.isPopUp);
+      this.date, this.id, this.getAll, this.workingDay, this.isPopUp,this.scheduless);
 
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   List<Scene> selectedScenes = [];
@@ -78,7 +82,15 @@ class _SchedulePageState extends State<SchedulePage>
       callSheetTimings = {},
       sfxTimings = {},
       vfxTimings = {};
+  List scheduleNames = [];
   bool shouldUpdate = false;
+  bool showDates;
+  List selectedScheduleIndex;
+  Map<dynamic,List<dynamic>> test = {};
+  List name = [];
+
+
+
   ScrollPhysics scroll = AlwaysScrollableScrollPhysics(),
       noScroll = NeverScrollableScrollPhysics();
   var bottomSheetHeadingStyle =
@@ -140,11 +152,17 @@ class _SchedulePageState extends State<SchedulePage>
   void initState() {
     isPopUp = isPopUp ?? true;
     setContent();
-    // print(project.role.permissions);
+    selectedScheduleIndex = [];
+    showDates = false;
     super.initState();
     animationController = AnimationController(vsync: this);
+    print(project.schedules);
+    scheduleNames = project.schedules;
+    checkschedules();
   }
+  void checkschedules(){
 
+  }
   setContent() async {
     if (schedule != null) {
       addlTimings = schedule.additionalTimings;
@@ -190,7 +208,7 @@ class _SchedulePageState extends State<SchedulePage>
     }
   }
 
-  Widget widget2(ScrollController scrollController) {
+  Widget widget2(ScrollController scrollController,scheduless) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -1147,7 +1165,66 @@ class _SchedulePageState extends State<SchedulePage>
                   },
                   child: Text("+ Add Schedule"),
                   style: ElevatedButton.styleFrom(primary: color),
-                )
+                ),
+                Padding(padding: EdgeInsets.all(12),
+                child:Text("Schedules",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),),
+                ),
+                Column(
+                  children: List.generate(scheduleNames.length, (i){
+                    test = {};
+                    List<dynamic> schelist = scheduless.keys.toList();
+                    for(int j=0;j<schelist.length;j++){
+                      Schedule check = scheduless[schelist[j]];
+                      if(check.name==scheduleNames[i]){
+                        if(test[check.name]==null){
+                          test[check.name] = [];
+                        }
+                        test[check.name].add("WD: ${j+1}  ${check.day}/${check.month}/${check.year} ");
+                      }
+                    }
+                    return Column(
+                      children: [
+                        InkWell(
+                            onTap : (){
+                              if(selectedScheduleIndex.contains(i)){
+                                selectedScheduleIndex.remove(i);
+                              }
+                              else{
+                                selectedScheduleIndex.add(i);
+                              }
+                              if(showDates && !selectedScheduleIndex.contains(i)){
+                                showDates = false;
+                              }else{
+                                showDates = true;
+                              }
+                              setState(() {});
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin:EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+                              padding : EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: color = Color(0xff6fd8a8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text("${scheduleNames[i]}"),)),
+                        if(showDates || selectedScheduleIndex!=null)
+                          Column(
+                            children: List.generate(test[scheduleNames[i]].length, (j){
+                              return selectedScheduleIndex.contains(i) ? Container(
+                                  padding: EdgeInsets.all(2),
+                                  margin: EdgeInsets.symmetric(vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: color = Color(0xff6fd8a8),
+                                    borderRadius: BorderRadius.circular(300),
+                                  ),
+                                  child: Text("${test[scheduleNames[i]][j]}")) : Container();
+                            }),
+                          ),
+                      ],
+                    );
+                  }),
+                ),
               ],
             ),
     );
@@ -1155,6 +1232,17 @@ class _SchedulePageState extends State<SchedulePage>
 
   @override
   Widget build(BuildContext context) {
+    print(scheduless.keys);
+    print(scheduless.values.last.name);
+    for(int i = 0;i<scheduleNames.length;i++){
+      for(int j=0;j<scheduless.keys.length;j++){
+
+      }
+    }
+    print(scheduless.values.first.year);
+    print(scheduless.values.first.day);
+    print(scheduless.values.first.month);
+    print(date);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -1170,10 +1258,10 @@ class _SchedulePageState extends State<SchedulePage>
             minChildSize: 300 / MediaQuery.of(context).size.height,
             maxChildSize: 1,
             builder: (context, scrollController) {
-              return widget2(scrollController);
+              return widget2(scrollController,scheduless);
             },
           )
-        : widget2(ScrollController());
+        : widget2(ScrollController(),scheduless);
   }
 
   editSchedule() async {
