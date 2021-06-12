@@ -26,6 +26,7 @@ class _RolesList extends State<RolesList> {
   @override
   void initState() {
     loading = true;
+    print(project.roles.length);
     project.roles.forEach((key, value) {
       roles.add(Role.fromJson(value));
     });

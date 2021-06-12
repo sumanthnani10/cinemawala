@@ -82,24 +82,11 @@ class _ProjectsList extends State<ProjectsList> {
           await Utils.getDailyBudgets(context, proj.id);
       Utils.dailyBudgets = Utils.dailyBudgetsMap.values.toList();
     } else {
-      Utils.project = await Utils.getProject(context, proj.id);
-      project = Utils.project;
       Utils.allCrewProjects[proj.id] = {};
-      Utils.allCrewProjects[proj.id]['project'] = project;
-      await Utils.getArtists(context, proj.id);
-      Utils.allCrewProjects[proj.id]['artists'] = Utils.artistsMap;
-      await Utils.getCostumes(context, proj.id);
-      Utils.allCrewProjects[proj.id]['costumes'] = Utils.costumesMap;
-      await Utils.getProps(context, proj.id);
-      Utils.allCrewProjects[proj.id]['props'] = Utils.propsMap;
-      await Utils.getLocations(context, proj.id);
-      Utils.allCrewProjects[proj.id]['locations'] = Utils.locationsMap;
-      await Utils.getScenes(context, proj.id);
-      Utils.allCrewProjects[proj.id]['scenes'] = Utils.scenesMap;
-      await Utils.getSchedules(context, proj.id);
-      Utils.allCrewProjects[proj.id]['schedules'] = Utils.schedulesMap;
-      await Utils.getDailyBudgets(context, proj.id);
-      Utils.allCrewProjects[proj.id]['dailyBudgets'] = Utils.dailyBudgetsMap;
+      await Utils.getCompleteProject(context, proj.id);
+      project = Utils.project;
+      print(project.roles);
+      print(project.roles.length);
     }
     Navigator.pop(context);
     setState(() {
@@ -247,7 +234,7 @@ class _ProjectsList extends State<ProjectsList> {
                                         context,
                                         Utils.createRoute(
                                             ProjectHome(
-                                              project: proj,
+                                              project: project,
                                             ),
                                             Utils.RTL));
                                   },
@@ -299,6 +286,8 @@ class _ProjectsList extends State<ProjectsList> {
                                       Utils.locations = null;
                                       Utils.scenesMap = null;
 
+                                      await getProject(proj);
+
                                       Utils.languages = [];
                                       Utils.langsInLang = [];
 
@@ -308,15 +297,13 @@ class _ProjectsList extends State<ProjectsList> {
                                         Utils.langsInLang.add(
                                             Utils.codeToLanguagesInLanguage[l]);
                                       });
-
-                                      await getProject(proj);
                                     }
 
                                     Navigator.push(
                                         context,
                                         Utils.createRoute(
                                             ProjectHome(
-                                              project: proj,
+                                              project: project,
                                             ),
                                             Utils.RTL));
                                   },
