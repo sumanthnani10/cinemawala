@@ -106,6 +106,89 @@ class Utils {
     return null;
   }
 
+  static getCompleteProject(context, projectId) async {
+    var resp = await http.post(GET_COMPLETE_PROJECT,
+        body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
+    // debugPrint(resp.body);
+    if (resp.statusCode == 200) {
+      var r = jsonDecode(resp.body);
+      if (r['status'] == 'success') {
+        var proj = r['project'];
+        print(proj['project']['roles']);
+        print(proj['project']['roles'].length);
+        projectsMap[proj['project']['id']] = Project.fromJson(proj['project']);
+        projects = projectsMap.values.toList();
+        project = projectsMap[proj['project']['id']];
+        allCrewProjects[proj['project']['id']]['project'] = project;
+        print(project.roles);
+        print(project.roles.length);
+
+        artists = [];
+        artistsMap = {};
+        proj['artists'].forEach((i) {
+          artists.add(Actor.fromJson(i));
+          artistsMap[artists.last.id] = artists.last;
+        });
+        allCrewProjects[proj['project']['id']]['artists'] = artistsMap;
+
+        costumes = [];
+        costumesMap = {};
+        proj['costumes'].forEach((i) {
+          costumes.add(Costume.fromJson(i));
+          costumesMap[costumes.last.id] = costumes.last;
+        });
+        allCrewProjects[proj['project']['id']]['costumes'] = costumesMap;
+
+        props = [];
+        propsMap = {};
+        proj['props'].forEach((i) {
+          props.add(Prop.fromJson(i));
+          propsMap[props.last.id] = props.last;
+        });
+        allCrewProjects[proj['project']['id']]['props'] = propsMap;
+
+        locations = [];
+        locationsMap = {};
+        proj['locations'].forEach((i) {
+          locations.add(Location.fromJson(i));
+          locationsMap[locations.last.id] = locations.last;
+        });
+        allCrewProjects[proj['project']['id']]['locations'] = locationsMap;
+
+        scenes = [];
+        scenesMap = {};
+        proj['scenes'].forEach((i) {
+          scenes.add(Scene.fromJson(i));
+          scenesMap[scenes.last.id] = scenes.last;
+        });
+        allCrewProjects[proj['project']['id']]['scenes'] = scenesMap;
+
+        schedules = [];
+        schedulesMap = {};
+        proj['schedules'].forEach((i) {
+          schedules.add(Schedule.fromJson(i));
+          schedulesMap[schedules.last.id] = schedules.last;
+        });
+        allCrewProjects[proj['project']['id']]['schedules'] = schedulesMap;
+
+        dailyBudgets = [];
+        dailyBudgetsMap = {};
+        proj['dailybudgets'].forEach((i) {
+          dailyBudgets.add(DailyBudget.fromJson(i));
+          dailyBudgetsMap[dailyBudgets.last.id] = dailyBudgets.last;
+        });
+        allCrewProjects[proj['project']['id']]['dailyBudgets'] =
+            dailyBudgetsMap;
+      } else {
+        await showErrorDialog(context, '', '${r['msg']}');
+      }
+    } else {
+      await showErrorDialog(
+          context, '', 'Something went Wrong. Please try again');
+    }
+    return null;
+  }
+
   static getArtistProject(context, projectId) async {
     var resp = await http.post(GET_ARTIST_PROJECT,
         body: {"project_id": "${projectId}", "user_id": "${USER_ID}"});
@@ -468,6 +551,8 @@ class Utils {
 
   static Uri GET_PROJECTS = Uri.http('${DOMAIN}', '${URL_PATH}/getProjects');
   static Uri GET_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/getProject');
+  static Uri GET_COMPLETE_PROJECT =
+      Uri.http('${DOMAIN}', '${URL_PATH}/getCompleteProject');
   static Uri ADD_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/addProject');
   static Uri EDIT_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/editProject');
 
@@ -1208,4 +1293,3 @@ class Utils {
     stops: [0.0, 0.536, 1.0],
   );
 }
-
