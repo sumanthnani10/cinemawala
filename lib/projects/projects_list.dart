@@ -199,9 +199,9 @@ class _ProjectsList extends State<ProjectsList> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: List.generate(ownProjects.length, (i) {
-                                project = ownProjects[i];
+                                Project tempProject = ownProjects[i];
                                 return ProjectCard(
-                                  project: project,
+                                  project: tempProject,
                                   onTap: () async {
                                     Project proj = ownProjects[i];
                                     if (Utils.project == null ||
@@ -268,9 +268,9 @@ class _ProjectsList extends State<ProjectsList> {
                             child: Row(
                               children:
                                   List.generate(otherProjects.length, (i) {
-                                project = otherProjects[i];
+                                    Project tempProject = otherProjects[i];
                                 return ProjectCard(
-                                  project: project,
+                                  project: tempProject,
                                   onTap: () async {
                                     Project proj = otherProjects[i];
                                     if (Utils.project == null ||

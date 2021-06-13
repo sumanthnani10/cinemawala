@@ -21,7 +21,7 @@ import '../utils.dart';
 class SchedulePage extends StatefulWidget {
   final Project project;
   final Schedule schedule;
-  final Map<dynamic,Schedule> scheduless;
+  final Map<dynamic, Schedule> scheduless;
   final DateTime date;
   final String id;
   final int workingDay;
@@ -32,7 +32,7 @@ class SchedulePage extends StatefulWidget {
       {Key key,
       @required this.project,
       @required this.schedule,
-        this.scheduless,
+      this.scheduless,
       @required this.date,
       @required this.id,
       @required this.getAll,
@@ -64,13 +64,22 @@ class _SchedulePageState extends State<SchedulePage>
   final String id;
   final Project project;
   Schedule schedule;
-  Map<dynamic,Schedule> scheduless;
+  Map<dynamic, Schedule> scheduless;
   final int workingDay;
   final DateTime date;
   final VoidCallback nextDate, prevDate, getAll;
 
-  _SchedulePageState(this.nextDate, this.prevDate, this.project, this.schedule,
-      this.date, this.id, this.getAll, this.workingDay, this.isPopUp,this.scheduless);
+  _SchedulePageState(
+      this.nextDate,
+      this.prevDate,
+      this.project,
+      this.schedule,
+      this.date,
+      this.id,
+      this.getAll,
+      this.workingDay,
+      this.isPopUp,
+      this.scheduless);
 
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   List<Scene> selectedScenes = [];
@@ -87,10 +96,8 @@ class _SchedulePageState extends State<SchedulePage>
   bool shouldUpdate = false;
   bool showDates;
   List selectedScheduleIndex;
-  Map<dynamic,List<dynamic>> test = {};
+  Map<dynamic, List<dynamic>> test = {};
   List name = [];
-
-
 
   ScrollPhysics scroll = AlwaysScrollableScrollPhysics(),
       noScroll = NeverScrollableScrollPhysics();
@@ -206,8 +213,8 @@ class _SchedulePageState extends State<SchedulePage>
     }
   }
 
-  Widget widget2(scrollController,scheduless) {
-   if (selectedScenes.length != 0) {
+  Widget widget2(scrollController, scheduless) {
+    if (selectedScenes.length != 0) {
       locationScene = selectedScenes[selectedSceneIndex];
       sceneLoc = Utils.locationsMap[locationScene.location];
     }
@@ -360,7 +367,8 @@ class _SchedulePageState extends State<SchedulePage>
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   //Text("Call Sheet Timing (${sceneLoc.location})"),
                                   Text("Call Sheet Timing"),
@@ -374,19 +382,20 @@ class _SchedulePageState extends State<SchedulePage>
                                               onTap: () async {},
                                               child: Text(
                                                 "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                                style:
-                                                    TextStyle(color: Colors.indigo),
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
                                               )),
                                           Text(
                                             " to ",
-                                            style: TextStyle(color: background1),
+                                            style:
+                                                TextStyle(color: background1),
                                           ),
                                           InkWell(
                                               onTap: () async {},
                                               child: Text(
                                                 "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                                style:
-                                                    TextStyle(color: Colors.indigo),
+                                                style: TextStyle(
+                                                    color: Colors.indigo),
                                               )),
                                         ],
                                       );
@@ -395,8 +404,11 @@ class _SchedulePageState extends State<SchedulePage>
                                 ],
                               ),
                             ),
-                            Padding(padding: const EdgeInsets.only(left: 8.0,right: 8,bottom: 8),
-                            child: Text("(@${sceneLoc.shootLocation})"),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 8.0, right: 8, bottom: 8),
+                              child: Text(
+                                  "(${sceneLoc.location} @${sceneLoc.shootLocation})"),
                             ),
                           ],
                         ),
@@ -821,7 +833,7 @@ class _SchedulePageState extends State<SchedulePage>
                               ],
                             ),
                           ),
-                        if(project.role.permissions["costumes"]["view"])
+                        if (project.role.permissions["costumes"]["view"])
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Align(
@@ -1081,8 +1093,10 @@ class _SchedulePageState extends State<SchedulePage>
                                       },
                                       onTap: () async {
                                         selectedSceneIndex = i;
-                                        locationScene = selectedScenes[selectedSceneIndex];
-                                        sceneLoc = Utils.locationsMap[locationScene.location];
+                                        locationScene =
+                                            selectedScenes[selectedSceneIndex];
+                                        sceneLoc = Utils.locationsMap[
+                                            locationScene.location];
                                         selectedScene = selectedScenes[i];
                                         selectedCostumes.clear();
                                         for (var i in selectedScene.costumes) {
@@ -1140,61 +1154,61 @@ class _SchedulePageState extends State<SchedulePage>
                       children: [
                         IconButton(
                           icon: Icon(CupertinoIcons.back),
-                    onPressed: prevDate,
+                          onPressed: prevDate,
+                        ),
+                        Text(
+                          "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          icon: Icon(CupertinoIcons.forward),
+                          onPressed: nextDate,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    thickness: 2,
+                  ),
+                  SizedBox(
+                    height: 50,
                   ),
                   Text(
-                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                    style: TextStyle(fontSize: 18),
+                    "No Schedule.",
+                    style: TextStyle(fontSize: 20),
                   ),
-                  IconButton(
-                    icon: Icon(CupertinoIcons.forward),
-                    onPressed: nextDate,
+                  ElevatedButton(
+                    onPressed: () async {
+                      var now = DateTime.now();
+                      Map<dynamic, dynamic> schedule = {
+                        "day": date.day,
+                        "project_id": project.id,
+                        "scenes": [],
+                        "name": "None",
+                        "month": date.month,
+                        "artist_timings": {},
+                        "addl_timings": {},
+                        "call_timings": {},
+                        "sfx_timings": {},
+                        "vfx_timings": {},
+                        "added_by": Utils.USER_ID,
+                        "id": id,
+                        "year": date.year,
+                        "last_edit_by": Utils.USER_ID,
+                        "last_edit_on": now.millisecondsSinceEpoch,
+                        "created": now.millisecondsSinceEpoch
+                      };
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              AddSchedule(schedule: schedule, project: project),
+                              Utils.DTU));
+                      getAll();
+                    },
+                    child: Text("+ Add Schedule"),
+                    style: ElevatedButton.styleFrom(primary: color),
                   ),
-                ],
-              ),
-            ),
-            Divider(
-              thickness: 2,
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text(
-              "No Schedule.",
-              style: TextStyle(fontSize: 20),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                var now = DateTime.now();
-                Map<dynamic, dynamic> schedule = {
-                  "day": date.day,
-                  "project_id": project.id,
-                  "scenes": [],
-                  "name": "None",
-                  "month": date.month,
-                  "artist_timings": {},
-                  "addl_timings": {},
-                  "call_timings": {},
-                  "sfx_timings": {},
-                  "vfx_timings": {},
-                  "added_by": Utils.USER_ID,
-                  "id": id,
-                  "year": date.year,
-                  "last_edit_by": Utils.USER_ID,
-                  "last_edit_on": now.millisecondsSinceEpoch,
-                  "created": now.millisecondsSinceEpoch
-                };
-                await Navigator.push(
-                    context,
-                    Utils.createRoute(
-                        AddSchedule(schedule: schedule, project: project),
-                        Utils.DTU));
-                getAll();
-              },
-              child: Text("+ Add Schedule"),
-              style: ElevatedButton.styleFrom(primary: color),
-            ),
-            Padding(
+                  Padding(
                     padding: EdgeInsets.all(12),
                     child: Text(
                       "Other Schedules",
@@ -1202,23 +1216,23 @@ class _SchedulePageState extends State<SchedulePage>
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     ),
                   ),
-            Column(
-              children: List.generate(scheduleNames.length, (i){
-                return Column(
-                  children: [
-                    InkWell(
-                        onTap : (){
-                          if(selectedScheduleIndex.contains(i)){
-                            selectedScheduleIndex.remove(i);
-                          }
-                          else{
-                            selectedScheduleIndex.add(i);
-                          }
-                          if(showDates && !selectedScheduleIndex.contains(i)){
-                            showDates = false;
-                          }else{
-                            showDates = true;
-                          }
+                  Column(
+                    children: List.generate(scheduleNames.length, (i) {
+                      return Column(
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                if (selectedScheduleIndex.contains(i)) {
+                                  selectedScheduleIndex.remove(i);
+                                } else {
+                                  selectedScheduleIndex.add(i);
+                                }
+                                if (showDates &&
+                                    !selectedScheduleIndex.contains(i)) {
+                                  showDates = false;
+                                } else {
+                                  showDates = true;
+                                }
                                 setState(() {});
                               },
                               child: Container(
@@ -1275,23 +1289,21 @@ class _SchedulePageState extends State<SchedulePage>
                                                   "${test[scheduleNames[i]][j]}"))
                                           : Container();
                                     }),
-                      ),
-                  ],
-                );
-              }),
+                            ),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-          ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    for(int i = 0;i<scheduleNames.length;i++){
-      for(int j=0;j<scheduless.keys.length;j++){
-
-      }
+    for (int i = 0; i < scheduleNames.length; i++) {
+      for (int j = 0; j < scheduless.keys.length; j++) {}
     }
     background = Colors.white;
     color = Color(0xff6fd8a8);
@@ -1304,16 +1316,16 @@ class _SchedulePageState extends State<SchedulePage>
     unselectedIndicator.copyWith(color: background);
     return isPopUp
         ? SizedBox.expand(
-          child: DraggableScrollableSheet(
+            child: DraggableScrollableSheet(
               initialChildSize: 300 / MediaQuery.of(context).size.height,
               minChildSize: 300 / MediaQuery.of(context).size.height,
               maxChildSize: 1,
               builder: (context, scrollController) {
-                return widget2(scrollController,scheduless);
+                return widget2(scrollController, scheduless);
               },
             ),
-        )
-        : widget2(ScrollController(),scheduless);
+          )
+        : widget2(ScrollController(), scheduless);
   }
 
   editSchedule() async {

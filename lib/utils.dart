@@ -218,6 +218,7 @@ class Utils {
         r['projects'].forEach((i) {
           projects.add(Project.fromJson(i));
           projectsMap[projects.last.id] = projects.last;
+          allCrewProjects = {};
         });
       } else {
         await showErrorDialog(context, '', '${r['msg']}');
@@ -241,6 +242,7 @@ class Utils {
         r['projects'].forEach((i) {
           artistProjects.add(Project.fromJson(i));
           artistProjectsMap[artistProjects.last.id] = artistProjects.last;
+          allCastProjects = {};
         });
       } else {
         showErrorDialog(context, '', '${r['msg']}');
