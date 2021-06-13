@@ -327,7 +327,8 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                         child: Column(
                                           children: [
                                             Row(
-                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Transform.scale(
                                                   scale: 1.1,
