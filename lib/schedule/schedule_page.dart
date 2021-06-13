@@ -1198,7 +1198,9 @@ class _SchedulePageState extends State<SchedulePage>
                           if(test[check.name]==null){
                             test[check.name] = [];
                           }
-                          test[check.name].add("WD: ${j+1}  ${check.day}/${check.month}/${check.year} ");
+                          DateTime dt = DateTime.parse('${schelist[j].substring(0,4)}-${schelist[j].substring(4,6)}-${schelist[j].substring(6,8)} 03:04:05');
+                          //test[check.name].add("WD: ${j+1}  ${schelist[j].substring(0,4)}-${schelist[j].substring(4,6)}-${schelist[j].substring(6,8)}  ${check.day}/${check.month}/${check.year} ");
+                          test[check.name].add("WD: ${j+1}   ${schelist[j].substring(6,8)}-${schelist[j].substring(4,6)}-${schelist[j].substring(0,4)},  ${weeksDays[dt.weekday-1]}");
                         }
                       }
                       return Column(
@@ -1231,7 +1233,7 @@ class _SchedulePageState extends State<SchedulePage>
                             Column(
                               children: List.generate(test[scheduleNames[i]].length, (j){
                                 return selectedScheduleIndex.contains(i) ? Container(
-                                    padding: EdgeInsets.all(2),
+                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 2),
                                     margin: EdgeInsets.symmetric(vertical: 2),
                                     decoration: BoxDecoration(
                                       color: color = Color(0xff6fd8a8),
