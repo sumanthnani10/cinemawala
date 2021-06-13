@@ -68,7 +68,7 @@ class _ProjectHome extends State<ProjectHome> {
         "color": Colors.red[100],
       },
       {
-        "title": "One Line Order",
+        "title": "Strip Board",
         "key": "scenes",
         "image": "assets/images/scene.png",
         "onClick": ScenesList(

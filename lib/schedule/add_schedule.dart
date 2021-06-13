@@ -7,6 +7,7 @@ import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
+import 'package:cinemawala/scenes/add_scene.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/select_scenes.dart';
 import 'package:cinemawala/schedule/select_schedule.dart';
@@ -55,6 +56,7 @@ class _AddScheduleState extends State<AddSchedule> {
   Set<Actor> selectedArtists = {};
   Set<Prop> selectedProps = {};
   Set<Location> selectedLocations = {};
+  List<Scene> editScene = [];//assigned on 8 june
   Set<Costume> selectedCostumes = {};
   Map<dynamic, dynamic> artistTimings = {},
       addlTimings = {},
@@ -82,6 +84,7 @@ class _AddScheduleState extends State<AddSchedule> {
     vfxTimings = schedule['vfx_timings'];
     schedule['scenes'].forEach((s) {
       Scene scene = Utils.scenesMap[s];
+      editScene.add(scene);//added now
       selectedScenes.add(scene);
       scene.artists.forEach((a) {
         selectedArtists.add(Utils.artistsMap[a]);
@@ -148,6 +151,47 @@ class _AddScheduleState extends State<AddSchedule> {
         actions: [
           TextButton.icon(
             onPressed: () async {
+              print("this is selectedsceneindex ${selectedSceneIndex}");
+              await Navigator.push(
+                  context,
+                  Utils.createRoute(
+                      AddScene(project: project, scene: editScene[selectedSceneIndex].toJson()),
+                      Utils.RTL));
+            },
+            label: Text(
+              "Edit",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.edit,
+              size: 18,
+              color: Colors.indigo,
+            ),
+          ),
+          SizedBox(width: 4,),
+          TextButton.icon(
+            onPressed: () async {
+              if (edit) {
+                editSchedule();
+              } else {
+                addSchedule();
+              }
+            },
+            label: Text(
+              "Save",
+              style: TextStyle(color: Colors.indigo),
+              textAlign: TextAlign.right,
+            ),
+            icon: Icon(
+              Icons.save,
+              size: 18,
+              color: Colors.indigo,
+            ),
+          ),
+          SizedBox(width: 4,),
+          /*TextButton.icon(
+            onPressed: () async {
               if (edit) {
                 editSchedule();
               } else {
@@ -164,7 +208,7 @@ class _AddScheduleState extends State<AddSchedule> {
               size: 18,
               color: Colors.indigo,
             ),
-          )
+          ),*/
         ],
       ),
       body: SingleChildScrollView(
@@ -782,219 +826,6 @@ class _AddScheduleState extends State<AddSchedule> {
                     ],
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Spacer(),
-                    Text(
-                      "On Loc",
-                      style: TextStyle(
-                          fontSize: 14, decoration: TextDecoration.underline),
-                    ),
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Text(
-                      "On Set",
-                      style: TextStyle(
-                          fontSize: 14, decoration: TextDecoration.underline),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                  ],
-                ),
-              ),
-              // VFX TIMING
-              if (selectedScenes.length > 0)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("VFX Timing"),
-                      Builder(
-                        builder: (context) {
-                          var timings = vfxTimings[selectedScene.id];
-                          return Row(
-                            children: [
-                              InkWell(
-                                  onTap: () async {
-                                    TimeOfDay pickedTime = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.fromDateTime(
-                                            DateTime(
-                                                selectedDate.year,
-                                                selectedDate.month,
-                                                selectedDate.day,
-                                                timings['start'][2] == 1
-                                                    ? timings['start'][0] + 12
-                                                    : timings['start'][0],
-                                                timings['start'][1])));
-                                    if (pickedTime != null) {
-                                      timings['start'][0] =
-                                          pickedTime.hourOfPeriod;
-                                      timings['start'][1] = pickedTime.minute;
-
-                                      if (pickedTime.hourOfPeriod ==
-                                          pickedTime.hour) {
-                                        timings['start'][2] = 0;
-                                      } else {
-                                        timings['start'][2] = 1;
-                                      }
-
-                                      vfxTimings[selectedScene.id] = timings;
-                                      schedule['vfx_timings'] = vfxTimings;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Text(
-                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                    style: TextStyle(color: Colors.indigo),
-                                  )),
-                              Text(
-                                "    ",
-                                style: TextStyle(color: background1),
-                              ),
-                              InkWell(
-                                  onTap: () async {
-                                    TimeOfDay pickedTime = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.fromDateTime(
-                                            DateTime(
-                                                selectedDate.year,
-                                                selectedDate.month,
-                                                selectedDate.day,
-                                                timings['end'][2] == 1
-                                                    ? timings['end'][0] + 12
-                                                    : timings['end'][0],
-                                                timings['end'][1])));
-                                    if (pickedTime != null) {
-                                      timings['end'][0] =
-                                          pickedTime.hourOfPeriod;
-                                      timings['end'][1] = pickedTime.minute;
-
-                                      if (pickedTime.hourOfPeriod ==
-                                          pickedTime.hour) {
-                                        timings['end'][2] = 0;
-                                      } else {
-                                        timings['end'][2] = 1;
-                                      }
-
-                                      vfxTimings[selectedScene.id] = timings;
-                                      schedule['vfx_timings'] = vfxTimings;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Text(
-                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                    style: TextStyle(color: Colors.indigo),
-                                  )),
-                            ],
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              // SFX TIMING
-              if (selectedScenes.length > 0)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("SFX Timing"),
-                      Builder(
-                        builder: (context) {
-                          var timings = sfxTimings[selectedScene.id];
-                          return Row(
-                            children: [
-                              InkWell(
-                                  onTap: () async {
-                                    TimeOfDay pickedTime = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.fromDateTime(
-                                            DateTime(
-                                                selectedDate.year,
-                                                selectedDate.month,
-                                                selectedDate.day,
-                                                timings['start'][2] == 1
-                                                    ? timings['start'][0] + 12
-                                                    : timings['start'][0],
-                                                timings['start'][1])));
-                                    if (pickedTime != null) {
-                                      timings['start'][0] =
-                                          pickedTime.hourOfPeriod;
-                                      timings['start'][1] = pickedTime.minute;
-
-                                      if (pickedTime.hourOfPeriod ==
-                                          pickedTime.hour) {
-                                        timings['start'][2] = 0;
-                                      } else {
-                                        timings['start'][2] = 1;
-                                      }
-
-                                      sfxTimings[selectedScene.id] = timings;
-                                      schedule['sfx_timings'] = sfxTimings;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Text(
-                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                    style: TextStyle(color: Colors.indigo),
-                                  )),
-                              Text(
-                                "    ",
-                                style: TextStyle(color: background1),
-                              ),
-                              InkWell(
-                                  onTap: () async {
-                                    TimeOfDay pickedTime = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.fromDateTime(
-                                            DateTime(
-                                                selectedDate.year,
-                                                selectedDate.month,
-                                                selectedDate.day,
-                                                timings['end'][2] == 1
-                                                    ? timings['end'][0] + 12
-                                                    : timings['end'][0],
-                                                timings['end'][1])));
-                                    if (pickedTime != null) {
-                                      timings['end'][0] =
-                                          pickedTime.hourOfPeriod;
-                                      timings['end'][1] = pickedTime.minute;
-
-                                      if (pickedTime.hourOfPeriod ==
-                                          pickedTime.hour) {
-                                        timings['end'][2] = 0;
-                                      } else {
-                                        timings['end'][2] = 1;
-                                      }
-
-                                      sfxTimings[selectedScene.id] = timings;
-                                      schedule['sfx_timings'] = sfxTimings;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Text(
-                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                    style: TextStyle(color: Colors.indigo),
-                                  )),
-                            ],
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
               Divider(
                 thickness: 2,
               ),
@@ -1473,6 +1304,219 @@ class _AddScheduleState extends State<AddSchedule> {
               Divider(
                 thickness: 2,
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Spacer(),
+                    Text(
+                      "On Loc",
+                      style: TextStyle(
+                          fontSize: 14, decoration: TextDecoration.underline),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                    Text(
+                      "On Set",
+                      style: TextStyle(
+                          fontSize: 14, decoration: TextDecoration.underline),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                  ],
+                ),
+              ),
+              // VFX TIMING
+              if (selectedScenes.length > 0)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("VFX Timing"),
+                      Builder(
+                        builder: (context) {
+                          var timings = vfxTimings[selectedScene.id];
+                          return Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['start'][2] == 1
+                                                    ? timings['start'][0] + 12
+                                                    : timings['start'][0],
+                                                timings['start'][1])));
+                                    if (pickedTime != null) {
+                                      timings['start'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['start'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['start'][2] = 0;
+                                      } else {
+                                        timings['start'][2] = 1;
+                                      }
+
+                                      vfxTimings[selectedScene.id] = timings;
+                                      schedule['vfx_timings'] = vfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                              Text(
+                                "    ",
+                                style: TextStyle(color: background1),
+                              ),
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['end'][2] == 1
+                                                    ? timings['end'][0] + 12
+                                                    : timings['end'][0],
+                                                timings['end'][1])));
+                                    if (pickedTime != null) {
+                                      timings['end'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['end'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['end'][2] = 0;
+                                      } else {
+                                        timings['end'][2] = 1;
+                                      }
+
+                                      vfxTimings[selectedScene.id] = timings;
+                                      schedule['vfx_timings'] = vfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              // SFX TIMING
+              if (selectedScenes.length > 0)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("SFX Timing"),
+                      Builder(
+                        builder: (context) {
+                          var timings = sfxTimings[selectedScene.id];
+                          return Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['start'][2] == 1
+                                                    ? timings['start'][0] + 12
+                                                    : timings['start'][0],
+                                                timings['start'][1])));
+                                    if (pickedTime != null) {
+                                      timings['start'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['start'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['start'][2] = 0;
+                                      } else {
+                                        timings['start'][2] = 1;
+                                      }
+
+                                      sfxTimings[selectedScene.id] = timings;
+                                      schedule['sfx_timings'] = sfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                              Text(
+                                "    ",
+                                style: TextStyle(color: background1),
+                              ),
+                              InkWell(
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(
+                                            DateTime(
+                                                selectedDate.year,
+                                                selectedDate.month,
+                                                selectedDate.day,
+                                                timings['end'][2] == 1
+                                                    ? timings['end'][0] + 12
+                                                    : timings['end'][0],
+                                                timings['end'][1])));
+                                    if (pickedTime != null) {
+                                      timings['end'][0] =
+                                          pickedTime.hourOfPeriod;
+                                      timings['end'][1] = pickedTime.minute;
+
+                                      if (pickedTime.hourOfPeriod ==
+                                          pickedTime.hour) {
+                                        timings['end'][2] = 0;
+                                      } else {
+                                        timings['end'][2] = 1;
+                                      }
+
+                                      sfxTimings[selectedScene.id] = timings;
+                                      schedule['sfx_timings'] = sfxTimings;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Text(
+                                    "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                    style: TextStyle(color: Colors.indigo),
+                                  )),
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Align(

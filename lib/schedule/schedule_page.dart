@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cinemawala/casting/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
+import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/pdf_generator.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/prop.dart';
@@ -102,6 +103,8 @@ class _SchedulePageState extends State<SchedulePage>
       unselectedIndicator = BorderSide(width: 3);
   int selectedSceneIndex = 0;
   Scene selectedScene;
+  Scene locationScene;
+  Location sceneLoc;
   String check;
   Color background, background1, color;
 
@@ -208,7 +211,11 @@ class _SchedulePageState extends State<SchedulePage>
     }
   }
 
-  Widget widget2(ScrollController scrollController,scheduless) {
+  Widget widget2(scrollController,scheduless) {
+   if(selectedScenes.length!=0){
+     locationScene = selectedScenes[selectedSceneIndex];
+     sceneLoc = Utils.locationsMap[locationScene.location];
+   }
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -332,146 +339,53 @@ class _SchedulePageState extends State<SchedulePage>
                           ),
                         ),
                         // CALL SHEET TIMING
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Call Sheet Timing"),
-                              Builder(
-                                builder: (context) {
-                                  var timings =
-                                      callSheetTimings[selectedScene.id];
-                                  return Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () async {},
-                                          child: Text(
-                                            "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                            style:
-                                                TextStyle(color: Colors.indigo),
-                                          )),
-                                      Text(
-                                        " to ",
-                                        style: TextStyle(color: background1),
-                                      ),
-                                      InkWell(
-                                          onTap: () async {},
-                                          child: Text(
-                                            "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                            style:
-                                                TextStyle(color: Colors.indigo),
-                                          )),
-                                    ],
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Spacer(),
-                              Text(
-                                "On Loc",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    decoration: TextDecoration.underline),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  //Text("Call Sheet Timing (${sceneLoc.location})"),
+                                  Text("Call Sheet Timing"),
+                                  Builder(
+                                    builder: (context) {
+                                      var timings =
+                                          callSheetTimings[selectedScene.id];
+                                      return Row(
+                                        children: [
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                                style:
+                                                    TextStyle(color: Colors.indigo),
+                                              )),
+                                          Text(
+                                            " to ",
+                                            style: TextStyle(color: background1),
+                                          ),
+                                          InkWell(
+                                              onTap: () async {},
+                                              child: Text(
+                                                "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                                style:
+                                                    TextStyle(color: Colors.indigo),
+                                              )),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                ],
                               ),
-                              SizedBox(
-                                width: 18,
-                              ),
-                              Text(
-                                "On Set",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    decoration: TextDecoration.underline),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                            ],
-                          ),
+                            ),
+                            Padding(padding: const EdgeInsets.only(left: 8.0,right: 8,bottom: 8),
+                            child: Text("(@${sceneLoc.shootLocation})"),
+                            ),
+                          ],
                         ),
                         // VFX TIMING
-                        if (selectedScenes.length > 0)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("VFX Timing"),
-                                Builder(
-                                  builder: (context) {
-                                    var timings = vfxTimings[selectedScene.id];
-                                    return Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () async {},
-                                            child: Text(
-                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                              style: TextStyle(
-                                                  color: Colors.indigo),
-                                            )),
-                                        Text(
-                                          "    ",
-                                          style: TextStyle(color: background1),
-                                        ),
-                                        InkWell(
-                                            onTap: () async {},
-                                            child: Text(
-                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                              style: TextStyle(
-                                                  color: Colors.indigo),
-                                            )),
-                                      ],
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        // SFX TIMING
-                        if (selectedScenes.length > 0)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("SFX Timing"),
-                                Builder(
-                                  builder: (context) {
-                                    var timings = sfxTimings[selectedScene.id];
-                                    return Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () async {},
-                                            child: Text(
-                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
-                                              style: TextStyle(
-                                                  color: Colors.indigo),
-                                            )),
-                                        Text(
-                                          "    ",
-                                          style: TextStyle(color: background1),
-                                        ),
-                                        InkWell(
-                                            onTap: () async {},
-                                            child: Text(
-                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
-                                              style: TextStyle(
-                                                  color: Colors.indigo),
-                                            )),
-                                      ],
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
                         if (project.role.permissions["casting"]["view"])
                           Divider(
                             thickness: 2,
@@ -752,6 +666,108 @@ class _SchedulePageState extends State<SchedulePage>
                           Divider(
                             thickness: 2,
                           ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Spacer(),
+                              Text(
+                                "On Loc",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline),
+                              ),
+                              SizedBox(
+                                width: 18,
+                              ),
+                              Text(
+                                "On Set",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline),
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (selectedScenes.length > 0)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("VFX Timing"),
+                                Builder(
+                                  builder: (context) {
+                                    var timings = vfxTimings[selectedScene.id];
+                                    return Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () async {},
+                                            child: Text(
+                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            )),
+                                        Text(
+                                          "    ",
+                                          style: TextStyle(color: background1),
+                                        ),
+                                        InkWell(
+                                            onTap: () async {},
+                                            child: Text(
+                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            )),
+                                      ],
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        // SFX TIMING
+                        if (selectedScenes.length > 0)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("SFX Timing"),
+                                Builder(
+                                  builder: (context) {
+                                    var timings = sfxTimings[selectedScene.id];
+                                    return Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () async {},
+                                            child: Text(
+                                              "${oneDigitToTwo(timings['start'][0])}:${timings['start'][1] == 0 ? "00" : oneDigitToTwo(timings['start'][1])} ${timings['start'][2] == 0 ? "AM" : "PM"}",
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            )),
+                                        Text(
+                                          "    ",
+                                          style: TextStyle(color: background1),
+                                        ),
+                                        InkWell(
+                                            onTap: () async {},
+                                            child: Text(
+                                              "${oneDigitToTwo(timings['end'][0])}:${timings['end'][1] == 0 ? "00" : oneDigitToTwo(timings['end'][1])} ${timings['end'][2] == 0 ? "AM" : "PM"}",
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            )),
+                                      ],
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
                         if (project.role.permissions["costumes"]["view"])
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -793,7 +809,7 @@ class _SchedulePageState extends State<SchedulePage>
                               ],
                             ),
                           ),
-                        if (project.role.permissions["costumes"]["view"])
+                        if(project.role.permissions["costumes"]["view"])
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Align(
@@ -1057,6 +1073,8 @@ class _SchedulePageState extends State<SchedulePage>
                                       },
                                       onTap: () async {
                                         selectedSceneIndex = i;
+                                        locationScene = selectedScenes[selectedSceneIndex];
+                                        sceneLoc = Utils.locationsMap[locationScene.location];
                                         selectedScene = selectedScenes[i];
                                         selectedCostumes.clear();
                                         for (var i in selectedScene.costumes) {
@@ -1101,132 +1119,134 @@ class _SchedulePageState extends State<SchedulePage>
                 ],
               ),
             )
-          : Column(
-              children: [
-                SizedBox(
-                  height: 8,
-                ),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(CupertinoIcons.back),
-                        onPressed: prevDate,
-                      ),
-                      Text(
-                        "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      IconButton(
-                        icon: Icon(CupertinoIcons.forward),
-                        onPressed: nextDate,
-                      ),
-                    ],
+          : SingleChildScrollView(
+            child: Column(
+                children: [
+                  SizedBox(
+                    height: 8,
                   ),
-                ),
-                Divider(
-                  thickness: 2,
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Text(
-                  "No Schedule.",
-                  style: TextStyle(fontSize: 20),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    var now = DateTime.now();
-                    Map<dynamic, dynamic> schedule = {
-                      "day": date.day,
-                      "project_id": project.id,
-                      "scenes": [],
-                      "name": "None",
-                      "month": date.month,
-                      "artist_timings": {},
-                      "addl_timings": {},
-                      "call_timings": {},
-                      "sfx_timings": {},
-                      "vfx_timings": {},
-                      "added_by": Utils.USER_ID,
-                      "id": id,
-                      "year": date.year,
-                      "last_edit_by": Utils.USER_ID,
-                      "last_edit_on": now.millisecondsSinceEpoch,
-                      "created": now.millisecondsSinceEpoch
-                    };
-                    await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            AddSchedule(schedule: schedule, project: project),
-                            Utils.DTU));
-                    getAll();
-                  },
-                  child: Text("+ Add Schedule"),
-                  style: ElevatedButton.styleFrom(primary: color),
-                ),
-                Padding(padding: EdgeInsets.all(12),
-                child:Text("Schedules",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),),
-                ),
-                Column(
-                  children: List.generate(scheduleNames.length, (i){
-                    test = {};
-                    List<dynamic> schelist = scheduless.keys.toList();
-                    for(int j=0;j<schelist.length;j++){
-                      Schedule check = scheduless[schelist[j]];
-                      if(check.name==scheduleNames[i]){
-                        if(test[check.name]==null){
-                          test[check.name] = [];
-                        }
-                        test[check.name].add("WD: ${j+1}  ${check.day}/${check.month}/${check.year} ");
-                      }
-                    }
-                    return Column(
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                            onTap : (){
-                              if(selectedScheduleIndex.contains(i)){
-                                selectedScheduleIndex.remove(i);
-                              }
-                              else{
-                                selectedScheduleIndex.add(i);
-                              }
-                              if(showDates && !selectedScheduleIndex.contains(i)){
-                                showDates = false;
-                              }else{
-                                showDates = true;
-                              }
-                              setState(() {});
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin:EdgeInsets.symmetric(vertical: 4,horizontal: 12),
-                              padding : EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: color = Color(0xff6fd8a8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text("${scheduleNames[i]}"),)),
-                        if(showDates || selectedScheduleIndex!=null)
-                          Column(
-                            children: List.generate(test[scheduleNames[i]].length, (j){
-                              return selectedScheduleIndex.contains(i) ? Container(
-                                  padding: EdgeInsets.all(2),
-                                  margin: EdgeInsets.symmetric(vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: color = Color(0xff6fd8a8),
-                                    borderRadius: BorderRadius.circular(300),
-                                  ),
-                                  child: Text("${test[scheduleNames[i]][j]}")) : Container();
-                            }),
-                          ),
+                        IconButton(
+                          icon: Icon(CupertinoIcons.back),
+                          onPressed: prevDate,
+                        ),
+                        Text(
+                          "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          icon: Icon(CupertinoIcons.forward),
+                          onPressed: nextDate,
+                        ),
                       ],
-                    );
-                  }),
-                ),
-              ],
-            ),
+                    ),
+                  ),
+                  Divider(
+                    thickness: 2,
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    "No Schedule.",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      var now = DateTime.now();
+                      Map<dynamic, dynamic> schedule = {
+                        "day": date.day,
+                        "project_id": project.id,
+                        "scenes": [],
+                        "name": "None",
+                        "month": date.month,
+                        "artist_timings": {},
+                        "addl_timings": {},
+                        "call_timings": {},
+                        "sfx_timings": {},
+                        "vfx_timings": {},
+                        "added_by": Utils.USER_ID,
+                        "id": id,
+                        "year": date.year,
+                        "last_edit_by": Utils.USER_ID,
+                        "last_edit_on": now.millisecondsSinceEpoch,
+                        "created": now.millisecondsSinceEpoch
+                      };
+                      await Navigator.push(
+                          context,
+                          Utils.createRoute(
+                              AddSchedule(schedule: schedule, project: project),
+                              Utils.DTU));
+                      getAll();
+                    },
+                    child: Text("+ Add Schedule"),
+                    style: ElevatedButton.styleFrom(primary: color),
+                  ),
+                  Padding(padding: EdgeInsets.all(12),
+                  child:Text("Schedules",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),),
+                  ),
+                  Column(
+                    children: List.generate(scheduleNames.length, (i){
+                      test = {};
+                      List<dynamic> schelist = scheduless.keys.toList();
+                      for(int j=0;j<schelist.length;j++){
+                        Schedule check = scheduless[schelist[j]];
+                        if(check.name==scheduleNames[i]){
+                          if(test[check.name]==null){
+                            test[check.name] = [];
+                          }
+                          test[check.name].add("WD: ${j+1}  ${check.day}/${check.month}/${check.year} ");
+                        }
+                      }
+                      return Column(
+                        children: [
+                          InkWell(
+                              onTap : (){
+                                if(selectedScheduleIndex.contains(i)){
+                                  selectedScheduleIndex.remove(i);
+                                }
+                                else{
+                                  selectedScheduleIndex.add(i);
+                                }
+                                if(showDates && !selectedScheduleIndex.contains(i)){
+                                  showDates = false;
+                                }else{
+                                  showDates = true;
+                                }
+                                setState(() {});
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin:EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+                                padding : EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: color = Color(0xff6fd8a8),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text("${scheduleNames[i]}"),)),
+                          if(showDates || selectedScheduleIndex!=null)
+                            Column(
+                              children: List.generate(test[scheduleNames[i]].length, (j){
+                                return selectedScheduleIndex.contains(i) ? Container(
+                                    padding: EdgeInsets.all(2),
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: color = Color(0xff6fd8a8),
+                                      borderRadius: BorderRadius.circular(300),
+                                    ),
+                                    child: Text("${test[scheduleNames[i]][j]}")) : Container();
+                              }),
+                            ),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
+              ),
+          ),
     );
   }
 
@@ -1239,6 +1259,7 @@ class _SchedulePageState extends State<SchedulePage>
 
       }
     }
+    print("see ${isPopUp}");
     print(scheduless.values.first.year);
     print(scheduless.values.first.day);
     print(scheduless.values.first.month);
@@ -1253,14 +1274,16 @@ class _SchedulePageState extends State<SchedulePage>
     selectedIndicator.copyWith(color: color);
     unselectedIndicator.copyWith(color: background);
     return isPopUp
-        ? DraggableScrollableSheet(
-            initialChildSize: 300 / MediaQuery.of(context).size.height,
-            minChildSize: 300 / MediaQuery.of(context).size.height,
-            maxChildSize: 1,
-            builder: (context, scrollController) {
-              return widget2(scrollController,scheduless);
-            },
-          )
+        ? SizedBox.expand(
+          child: DraggableScrollableSheet(
+              initialChildSize: 300 / MediaQuery.of(context).size.height,
+              minChildSize: 300 / MediaQuery.of(context).size.height,
+              maxChildSize: 1,
+              builder: (context, scrollController) {
+                return widget2(scrollController,scheduless);
+              },
+            ),
+        )
         : widget2(ScrollController(),scheduless);
   }
 

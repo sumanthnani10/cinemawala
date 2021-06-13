@@ -207,15 +207,17 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                               var field =
                                                   category['field_values'][k]
                                                       ['${fields[j]}'];
-
                                               if (fields[j] == "id")
                                                 return Container();
 
-                                              // print(field);
-
+                                              print(field.runtimeType);
                                               textFieldControllers.add(
                                                   new TextEditingController(
-                                                      text: '$field'));
+                                                      //text: '$field'
+                                                      text: '${field}'
+
+                                                  )
+                                              );
                                               if (field.runtimeType == int) {
                                                 return Padding(
                                                   padding: const EdgeInsets

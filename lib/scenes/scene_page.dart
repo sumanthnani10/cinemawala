@@ -31,7 +31,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
   Scene scene;
   bool popUp;
   _ScenePage(this.project, this.scene, this.popUp);
-
   Color background, background1, color;
   List<Actor> selectedArtists = [];
   List<Prop> selectedProps = [];
@@ -71,7 +70,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
 
   setScene() async {
     selectedLocation = Utils.locationsMap[scene.location];
-
     for (var i in languages) {
       titleControllers.add(new TextEditingController(
           text:
@@ -291,8 +289,8 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
             ),
           ),
           iconTheme: IconThemeData(color: background1),
-          title: Text(
-            "1 Line Order",
+              title: Text(
+            "Strip Board",
             style: TextStyle(color: background1),
           ),
           actions: [
@@ -345,7 +343,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                             Navigator.pop(context);
                           }),
                       Text(
-                        "1 Line Order",
+                        "Strip Board",
                         style: TextStyle(fontSize: 20, color: background1),
                         textAlign: TextAlign.center,
                       ),

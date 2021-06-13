@@ -344,7 +344,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         ),
         iconTheme: IconThemeData(color: background1),
         title: Text(
-          edit ? "Edit 1 Line Order" : "Add 1 Line Order",
+          edit ? "Edit Strip Board" : "Add Strip Board",
           style: TextStyle(color: background1),
         ),
         actions: [
