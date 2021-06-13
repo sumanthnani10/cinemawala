@@ -86,7 +86,6 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
       callSheetControllers;
 
   var pickedDate, startTime, endTime;
-  var formattedTimeOfDay;
   int viewCats = 3;
   List<String> weeksDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
@@ -98,6 +97,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
     // print(isPopUp);
     super.initState();
   }
+
   Future<String> createAlertDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -127,6 +127,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
           );
         });
   }
+
   String reFormatKey(String s) {
     s = s.replaceAll("_", " ");
     s = s.toLowerCase();
@@ -150,8 +151,6 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
 
   @override
   Widget build(BuildContext context) {
-    final localizations = MaterialLocalizations.of(context);
-    formattedTimeOfDay = localizations.formatTimeOfDay(TimeOfDay.now());
     contactControllers = [];
     quantityControllers = [];
     callSheetControllers = [];
@@ -180,9 +179,9 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
           ? NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (OverscrollIndicatorNotification overscroll) {
                 overscroll.disallowGlow();
-                Timer(Duration(milliseconds: 500), () {
+                Timer(Duration(milliseconds: 100), () {
                   viewCats += 3;
-                  // print(viewCats);
+                  print(viewCats);
                   setState(() {});
                 });
                 return;

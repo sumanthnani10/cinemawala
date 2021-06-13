@@ -118,7 +118,6 @@ class _SchedulePageState extends State<SchedulePage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(selectedArtists.length, (i) {
-                  //print(selectedArtists.length);
                   setIterator = selectedArtists.elementAt(i);
                   return Container(
                     width: MediaQuery.of(context).size.width,
@@ -159,13 +158,9 @@ class _SchedulePageState extends State<SchedulePage>
     showDates = false;
     super.initState();
     animationController = AnimationController(vsync: this);
-    print(project.schedules);
     scheduleNames = project.schedules;
-    checkschedules();
   }
-  void checkschedules(){
 
-  }
   setContent() async {
     if (schedule != null) {
       addlTimings = schedule.additionalTimings;
@@ -212,10 +207,30 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   Widget widget2(scrollController,scheduless) {
-   if(selectedScenes.length!=0){
-     locationScene = selectedScenes[selectedSceneIndex];
-     sceneLoc = Utils.locationsMap[locationScene.location];
-   }
+   if (selectedScenes.length != 0) {
+      locationScene = selectedScenes[selectedSceneIndex];
+      sceneLoc = Utils.locationsMap[locationScene.location];
+    }
+    List<dynamic> schelist;
+    test = {};
+    if (schedule == null) {
+      schelist = scheduless.keys.toList();
+      for (int j = 0; j < schelist.length; j++) {
+        Schedule check = scheduless[schelist[j]];
+        if (!test.containsKey(check.name)) {
+          test[check.name] = [];
+        }
+        DateTime dt = DateTime.parse(
+            '${schelist[j].substring(0, 4)}-${schelist[j].substring(4, 6)}-${schelist[j].substring(6, 8)} 03:04:05');
+        test[check.name].add(
+            "WD: ${j + 1}   ${schelist[j].substring(6, 8)}-${schelist[j].substring(4, 6)}-${schelist[j].substring(0, 4)},  ${weeksDays[dt.weekday - 1]}");
+      }
+      for (int j = 0; j < scheduleNames.length; j++) {
+        if (!test.containsKey(scheduleNames[j])) {
+          test[scheduleNames[j]] = [];
+        }
+      }
+    }
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -512,7 +527,6 @@ class _SchedulePageState extends State<SchedulePage>
                                         var artist = {"Name": '$key'};
                                         var timings =
                                             addlTimings[selectedScene.id][key];
-                                        print(artist['Name']);
                                         return Column(
                                           children: [
                                             Padding(
@@ -788,8 +802,6 @@ class _SchedulePageState extends State<SchedulePage>
                                         context, "Generating PDF");
                                     var d =
                                         "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                    //print(selectedArtists.last.names["English"]);
-                                    //print(selectedArtists.runtimeType);
                                     await PdfGenerator.costumeCallSheet(
                                       project,
                                       context,
@@ -875,8 +887,6 @@ class _SchedulePageState extends State<SchedulePage>
                                         context, "Generating PDF");
                                     var d =
                                         "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                    //print(selectedArtists.last.names["English"]);
-                                    //print(selectedArtists.runtimeType);
                                     await PdfGenerator.propertiesCallSheet(
                                       project,
                                       context,
@@ -997,8 +1007,6 @@ class _SchedulePageState extends State<SchedulePage>
                                         context, "Generating PDF");
                                     var d =
                                         "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
-                                    //print(selectedArtists.last.names["English"]);
-                                    //print(selectedArtists.runtimeType);
                                     await PdfGenerator.sceneCallSheet(
                                       project,
                                       context,
@@ -1120,7 +1128,8 @@ class _SchedulePageState extends State<SchedulePage>
               ),
             )
           : SingleChildScrollView(
-            child: Column(
+        controller: scrollController,
+              child: Column(
                 children: [
                   SizedBox(
                     height: 8,
@@ -1131,141 +1140,159 @@ class _SchedulePageState extends State<SchedulePage>
                       children: [
                         IconButton(
                           icon: Icon(CupertinoIcons.back),
-                          onPressed: prevDate,
-                        ),
-                        Text(
-                          "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        IconButton(
-                          icon: Icon(CupertinoIcons.forward),
-                          onPressed: nextDate,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    thickness: 2,
-                  ),
-                  SizedBox(
-                    height: 50,
+                    onPressed: prevDate,
                   ),
                   Text(
-                    "No Schedule.",
-                    style: TextStyle(fontSize: 20),
+                    "${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}",
+                    style: TextStyle(fontSize: 18),
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      var now = DateTime.now();
-                      Map<dynamic, dynamic> schedule = {
-                        "day": date.day,
-                        "project_id": project.id,
-                        "scenes": [],
-                        "name": "None",
-                        "month": date.month,
-                        "artist_timings": {},
-                        "addl_timings": {},
-                        "call_timings": {},
-                        "sfx_timings": {},
-                        "vfx_timings": {},
-                        "added_by": Utils.USER_ID,
-                        "id": id,
-                        "year": date.year,
-                        "last_edit_by": Utils.USER_ID,
-                        "last_edit_on": now.millisecondsSinceEpoch,
-                        "created": now.millisecondsSinceEpoch
-                      };
-                      await Navigator.push(
-                          context,
-                          Utils.createRoute(
-                              AddSchedule(schedule: schedule, project: project),
-                              Utils.DTU));
-                      getAll();
-                    },
-                    child: Text("+ Add Schedule"),
-                    style: ElevatedButton.styleFrom(primary: color),
+                  IconButton(
+                    icon: Icon(CupertinoIcons.forward),
+                    onPressed: nextDate,
                   ),
-                  Padding(padding: EdgeInsets.all(12),
-                  child:Text("Schedules",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),),
+                ],
+              ),
+            ),
+            Divider(
+              thickness: 2,
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Text(
+              "No Schedule.",
+              style: TextStyle(fontSize: 20),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                var now = DateTime.now();
+                Map<dynamic, dynamic> schedule = {
+                  "day": date.day,
+                  "project_id": project.id,
+                  "scenes": [],
+                  "name": "None",
+                  "month": date.month,
+                  "artist_timings": {},
+                  "addl_timings": {},
+                  "call_timings": {},
+                  "sfx_timings": {},
+                  "vfx_timings": {},
+                  "added_by": Utils.USER_ID,
+                  "id": id,
+                  "year": date.year,
+                  "last_edit_by": Utils.USER_ID,
+                  "last_edit_on": now.millisecondsSinceEpoch,
+                  "created": now.millisecondsSinceEpoch
+                };
+                await Navigator.push(
+                    context,
+                    Utils.createRoute(
+                        AddSchedule(schedule: schedule, project: project),
+                        Utils.DTU));
+                getAll();
+              },
+              child: Text("+ Add Schedule"),
+              style: ElevatedButton.styleFrom(primary: color),
+            ),
+            Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      "Other Schedules",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                    ),
                   ),
-                  Column(
-                    children: List.generate(scheduleNames.length, (i){
-                      test = {};
-                      List<dynamic> schelist = scheduless.keys.toList();
-                      for(int j=0;j<schelist.length;j++){
-                        Schedule check = scheduless[schelist[j]];
-                        if(check.name==scheduleNames[i]){
-                          if(test[check.name]==null){
-                            test[check.name] = [];
+            Column(
+              children: List.generate(scheduleNames.length, (i){
+                return Column(
+                  children: [
+                    InkWell(
+                        onTap : (){
+                          if(selectedScheduleIndex.contains(i)){
+                            selectedScheduleIndex.remove(i);
                           }
-                          DateTime dt = DateTime.parse('${schelist[j].substring(0,4)}-${schelist[j].substring(4,6)}-${schelist[j].substring(6,8)} 03:04:05');
-                          //test[check.name].add("WD: ${j+1}  ${schelist[j].substring(0,4)}-${schelist[j].substring(4,6)}-${schelist[j].substring(6,8)}  ${check.day}/${check.month}/${check.year} ");
-                          test[check.name].add("WD: ${j+1}   ${schelist[j].substring(6,8)}-${schelist[j].substring(4,6)}-${schelist[j].substring(0,4)},  ${weeksDays[dt.weekday-1]}");
-                        }
-                      }
-                      return Column(
-                        children: [
-                          InkWell(
-                              onTap : (){
-                                if(selectedScheduleIndex.contains(i)){
-                                  selectedScheduleIndex.remove(i);
-                                }
-                                else{
-                                  selectedScheduleIndex.add(i);
-                                }
-                                if(showDates && !selectedScheduleIndex.contains(i)){
-                                  showDates = false;
-                                }else{
-                                  showDates = true;
-                                }
+                          else{
+                            selectedScheduleIndex.add(i);
+                          }
+                          if(showDates && !selectedScheduleIndex.contains(i)){
+                            showDates = false;
+                          }else{
+                            showDates = true;
+                          }
                                 setState(() {});
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
-                                margin:EdgeInsets.symmetric(vertical: 4,horizontal: 12),
-                                padding : EdgeInsets.all(12),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 12),
+                                padding: EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: color = Color(0xff6fd8a8),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text("${scheduleNames[i]}"),)),
-                          if(showDates || selectedScheduleIndex!=null)
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("${scheduleNames[i]}"),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        child: Text(
+                                          "${test[scheduleNames[i]].length}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                  ],
+                                ),
+                              )),
+                          if ((showDates || selectedScheduleIndex != null) &&
+                              test.containsKey(scheduleNames[i]))
                             Column(
-                              children: List.generate(test[scheduleNames[i]].length, (j){
-                                return selectedScheduleIndex.contains(i) ? Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 2),
-                                    margin: EdgeInsets.symmetric(vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: color = Color(0xff6fd8a8),
-                                      borderRadius: BorderRadius.circular(300),
-                                    ),
-                                    child: Text("${test[scheduleNames[i]][j]}")) : Container();
-                              }),
-                            ),
-                        ],
-                      );
-                    }),
-                  ),
-                ],
-              ),
+                              children: test[scheduleNames[i]].length == 0
+                                  ? selectedScheduleIndex.contains(i)
+                                      ? <Widget>[Text("No Schedules")]
+                                      : <Widget>[Container()]
+                                  : List<Widget>.generate(
+                                      test[scheduleNames[i]].length, (j) {
+                                      return selectedScheduleIndex.contains(i)
+                                          ? Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8, vertical: 2),
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: color =
+                                                    Color(0xff6fd8a8),
+                                                borderRadius:
+                                                    BorderRadius.circular(300),
+                                              ),
+                                              child: Text(
+                                                  "${test[scheduleNames[i]][j]}"))
+                                          : Container();
+                                    }),
+                      ),
+                  ],
+                );
+              }),
+            ),
+          ],
+        ),
           ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print(scheduless.keys);
-    print(scheduless.values.last.name);
     for(int i = 0;i<scheduleNames.length;i++){
       for(int j=0;j<scheduless.keys.length;j++){
 
       }
     }
-    print("see ${isPopUp}");
-    print(scheduless.values.first.year);
-    print(scheduless.values.first.day);
-    print(scheduless.values.first.month);
-    print(date);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {

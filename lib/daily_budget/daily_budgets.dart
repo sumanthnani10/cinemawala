@@ -138,6 +138,7 @@ class _DailyBudgetsState extends State<DailyBudgets>
     } else {
       background1 = Colors.white;
     }
+    var w;
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
@@ -189,11 +190,15 @@ class _DailyBudgetsState extends State<DailyBudgets>
             children: [
               widget1(),
               DraggableScrollableSheet(
+                  expand: true,
                   initialChildSize: 300 / MediaQuery.of(context).size.height,
                   minChildSize: 300 / MediaQuery.of(context).size.height,
                   maxChildSize: 1,
-                  builder: (_,sc){
-                    return widget2(sc);
+                  builder: (_, sc) {
+                    if (w == null) {
+                      w = widget2(sc);
+                    }
+                    return w;
                   })
             ],
           );
