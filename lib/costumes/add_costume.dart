@@ -14,7 +14,7 @@ class AddCostume extends StatefulWidget {
   final Project project;
   final Map<dynamic, dynamic> costume;
   final bool isPopUp;
-  AddCostume({Key key, @required this.project, this.costume,this.isPopUp}) : super(key: key);
+  AddCostume({Key key, @required this.project, this.costume,@required this.isPopUp}) : super(key: key);
 
   @override
   _AddCostume createState() => _AddCostume(project, costume,isPopUp);
@@ -34,6 +34,7 @@ class _AddCostume extends State<AddCostume>
 
   @override
   void initState() {
+    isPopUp = isPopUp ?? true;
     costumeImage = null;
     if (costume == null) {
       costume = {

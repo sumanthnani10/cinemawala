@@ -1281,9 +1281,31 @@ class Utils {
         "yo": 'Yoruba',
         "zu": 'Zulu',
       };
-
+  static void notAllowed(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(""),
+            content: Container(
+              child: Text("You need additional permission,Contact your Administrator"),
+            ),
+            actions: [
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 2,horizontal: 6),
+                  child: Text("OK",style: TextStyle(color: Colors.indigo),),
+                ),
+              )
+            ],
+          );
+        });
+  }
   static final mobileWidth = 480.0;
-
+  static final Color notPermitted = Colors.grey;
   static final linearGradient = LinearGradient(
     begin: Alignment(-1.0, 0.0),
     end: Alignment(1.0, 0.0),

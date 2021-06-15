@@ -60,7 +60,8 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     if (popUp) {
       minus = 48;
     }
-
+    print("roles");
+    print(project.role.permissions);
     languages = project.languages;
 
     setScene();
@@ -526,19 +527,20 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () async {
-                            await Navigator.push(
-                                context,
-                                Utils.createRoute(
-                                    LocationPage(
-                                      project: project,
-                                      location: selectedLocation,
-                                    ),
-                                    Utils.DTU));
-                            setState(() {});
+
+                              await Navigator.push(
+                                  context,
+                                  Utils.createRoute(
+                                      LocationPage(
+                                        project: project,
+                                        location: selectedLocation,
+                                      ),
+                                      Utils.DTU));
+                              setState(() {});
                           },
                           child: Container(
                             margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
+                                vertical: 8,horizontal: 16),
                             decoration: BoxDecoration(
                               gradient: Utils.linearGradient,
                               borderRadius: BorderRadius.circular(8),

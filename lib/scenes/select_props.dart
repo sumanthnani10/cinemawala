@@ -94,6 +94,33 @@ class _SelectProps extends State<SelectProps> {
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
+                      InkWell(
+                        onTap: () {
+                          if(project.role.permissions["props"]["add"] ||
+                              project.role.permissions["scenes"]["add"] ||
+                              project.role.permissions["schedule"]["add"] ||
+                              project.role.permissions["props"]["edit"] ||
+                              project.role.permissions["scenes"]["edit"] ||
+                              project.role.permissions["schedule"]["edit"]){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddProp(
+                                    project: project,
+                                  ),
+                                ));
+                          }
+                          else{
+                            Utils.notAllowed(context);
+                          }
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(2),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          child: Text('+ Add Prop'),
+                        ),
+                      ),
                       TextButton.icon(
                         onPressed: () {
                           List<dynamic> selected = [];
@@ -155,44 +182,33 @@ class _SelectProps extends State<SelectProps> {
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => AddProp(
-                                            project: project,
-                                          ),
-                                        ));
-                                  },
-                                  splashColor: background1.withOpacity(0.2),
-                                  child: Container(
-                                    margin: EdgeInsets.all(2),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: color.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(300),
-                                    ),
-                                    child: Text('+ Add Prop'),
-                                  ),
-                                )
+
                               ] +
                               List<Widget>.generate(showProps.length, (i) {
                                 Prop prop = props[i];
                                 return InkWell(
                                   onTap: () {
-                                    setState(() {
-                                      if (selectedProps
-                                          .contains(showProps[i])) {
-                                        selectedProps.remove(showProps[i]);
-                                      } else {
-                                        selectedProps.add(showProps[i]);
-                                      }
-                                    });
+                                    if(project.role.permissions["props"]["add"] ||
+                                        project.role.permissions["props"]["edit"] ||
+                                        project.role.permissions["scenes"]["edit"] ||
+                                        project.role.permissions["scenes"]["add"] ||
+                                        project.role.permissions["schedule"]["edit"] ||
+                                        project.role.permissions["schedule"]["add"]){
+                                      setState(() {
+                                        if (selectedProps
+                                            .contains(showProps[i])) {
+                                          selectedProps.remove(showProps[i]);
+                                        } else {
+                                          selectedProps.add(showProps[i]);
+                                        }
+                                      });
+                                    }else{
+                                      Utils.notAllowed(context);
+                                    }
                                   },
                                   onLongPress: () {
                                     Navigator.push(
@@ -325,6 +341,25 @@ class _SelectedProps extends State<SelectedProps>
                           style: TextStyle(fontSize: 20, color: background1),
                           textAlign: TextAlign.center,
                         ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddScene(
+                                      project: project,
+                                      scene: scene.toJson()),
+                                ));
+                          },
+                          child: Container(
+                            //color: color,
+                            margin: EdgeInsets.all(2),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            child: Text('+ Add Prop'),
+                          ),
+                        ),
                       ],
                     ),
                     TextField(
@@ -368,33 +403,10 @@ class _SelectedProps extends State<SelectedProps>
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                          child: Wrap(
-                            direction: Axis.horizontal,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AddScene(
-                                                project: project,
-                                                scene: scene.toJson()),
-                                          ));
-                                    },
-                                    splashColor: background1.withOpacity(0.2),
-                                    child: Container(
-                                      //color: color,
-                                      margin: EdgeInsets.all(2),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: color,
-                                        borderRadius:
-                                            BorderRadius.circular(300),
-                                      ),
-                                      child: Text('+ Add Prop'),
-                                    ),
-                                  )
                                 ] +
                                 List<Widget>.generate(showProps.length, (i) {
                                   Prop prop = showProps[i];

@@ -154,28 +154,34 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                           var prop = props[i];
                           return InkWell(
                             onTap: () async {
-                              if(maxWidth>Utils.mobileWidth){
-                                setState(() {
-                                  sideWidget = PropPage(
-                                    prop: prop,
-                                    key: UniqueKey(),
-                                    isPopUp: false,
-                                    project: project,
-                                  );
-                                });
-                              }
-                              else{
-                                await Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        PropPage(
-                                          prop: prop,
-                                          project: project,
-                                        ),
-                                        Utils.DTU));
-                                setState(() {
-                                  props = Utils.props.sublist(0);
-                                });
+                              if(project.role.permissions["props"]["view"]||
+                                  project.role.permissions["scenes"]["view"]||
+                                  project.role.permissions["schedule"]["view"]){
+                                if(maxWidth>Utils.mobileWidth){
+                                  setState(() {
+                                    sideWidget = PropPage(
+                                      prop: prop,
+                                      key: UniqueKey(),
+                                      isPopUp: false,
+                                      project: project,
+                                    );
+                                  });
+                                }
+                                else{
+                                  await Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          PropPage(
+                                            prop: prop,
+                                            project: project,
+                                          ),
+                                          Utils.DTU));
+                                  setState(() {
+                                    props = Utils.props.sublist(0);
+                                  });
+                                }
+                              }else{
+                                Utils.notAllowed(context);
                               }
                             },
                             child: Container(
@@ -255,15 +261,24 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                 ),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () async {
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddProp(isPopUp: maxWidth>Utils.mobileWidth ? false : true,project: project)));
-                    setState(() {
-                      props = Utils.props.sublist(0);
-                    });
+                    if(project.role.permissions["props"]["add"]||
+                        project.role.permissions["scenes"]["add"]||
+                        project.role.permissions["schedule"]["add"]){
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddProp(isPopUp: maxWidth>Utils.mobileWidth ? false : true,project: project)));
+                      setState(() {
+                        props = Utils.props.sublist(0);
+                      });
+                    }else{
+                      Utils.notAllowed(context);
+                    }
                   },
-                  backgroundColor: color,
+                  backgroundColor: project.role.permissions["props"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"] ?
+                  color : Utils.notPermitted,
                   child: Icon(
                     Icons.add,
                     color: background,

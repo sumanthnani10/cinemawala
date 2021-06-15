@@ -94,6 +94,32 @@ class _SelectActors extends State<SelectActors>
                         textAlign: TextAlign.center,
                       ),
                       Spacer(),
+                      InkWell(
+                        onTap: () {
+                          if(
+                          project.role.permissions["casting"]["add"] || project.role.permissions["schedule"]["add"] ||
+                              project.role.permissions["scenes"]["add"]
+                          ){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddActor(
+                                    project: project,
+                                  ),
+                                ));
+                          }
+                          else{
+                            Utils.notAllowed(context);
+                          }
+                        },
+                        child: Container(
+                          //color: color,
+                          margin: EdgeInsets.all(2),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          child: Text('+ Add Artist'),
+                        ),
+                      ),
                       TextButton.icon(
                         onPressed: () {
                           List<dynamic> selected = [];
@@ -155,55 +181,50 @@ class _SelectActors extends State<SelectActors>
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          //direction: Axis.vertical,
                           children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => AddActor(
-                                            project: project,
-                                          ),
-                                        ));
-                                  },
-                                  splashColor: background1.withOpacity(0.2),
-                                  child: Container(
-                                    //color: color,
-                                    margin: EdgeInsets.all(2),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: color.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(300),
-                                    ),
-                                    child: Text('+ Add Artist'),
-                                  ),
-                                )
                               ] +
                               List<Widget>.generate(showActors.length, (i) {
                                 Actor actor = actors[i];
                                 return InkWell(
                                   onTap: () {
                                     setState(() {
-                                      if (selectedActors
-                                          .contains(showActors[i])) {
-                                        selectedActors.remove(showActors[i]);
-                                      } else {
-                                        selectedActors.add(showActors[i]);
+                                      if(
+                                      project.role.permissions["casting"]["add"] || project.role.permissions["schedule"]["add"] ||
+                                          project.role.permissions["scenes"]["add"] ||
+                                      project.role.permissions["casting"]["edit"] || project.role.permissions["schedule"]["edit"] ||
+                                      project.role.permissions["scenes"]["edit"]
+                                      ){
+                                        if (selectedActors
+                                            .contains(showActors[i])) {
+                                          selectedActors.remove(showActors[i]);
+                                        } else {
+                                          selectedActors.add(showActors[i]);
+                                        }
+                                      }
+                                      else{
+                                        Utils.notAllowed(context);
                                       }
                                     });
                                   },
                                   onLongPress: () {
-                                    Navigator.push(
-                                        context,
-                                        Utils.createRoute(
-                                            ActorPage(
-                                                popUp: true,
-                                                actor: actor,
-                                                project: project),
-                                            Utils.DTU));
+                                    if(
+                                    project.role.permissions["casting"]["view"] || project.role.permissions["schedule"]["view"] ||
+                                        project.role.permissions["scenes"]["view"]){
+                                      Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              ActorPage(
+                                                  popUp: true,
+                                                  actor: actor,
+                                                  project: project),
+                                              Utils.DTU));
+                                    }else{
+                                      Utils.notAllowed(context);
+                                    }
                                   },
                                   splashColor: background1.withOpacity(0.2),
                                   child: Container(

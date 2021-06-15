@@ -155,29 +155,6 @@ class _SelectCostumes extends State<SelectCostumes>
                             borderSide: BorderSide(color: Colors.black)),
                         fillColor: Colors.white),
                   ),
-                  Material(
-                    color: background,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectActors(
-                                  project: project,
-                                ),
-                                Utils.DTU));
-                      },
-                      splashColor: background1.withOpacity(0.2),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "+ Add Artist",
-                          style: TextStyle(color: Colors.indigo),
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                    ),
-                  ),
                   Flexible(
                     child: SingleChildScrollView(
                       child: Column(
@@ -188,39 +165,51 @@ class _SelectCostumes extends State<SelectCostumes>
                             var actorCostumes = showActors[i];
                             return ListTile(
                               onTap: () async {
-                                List<Costume> selectedCostumes = [];
-                                actorCostumes['costumes'].forEach((c) {
-                                  selectedCostumes.add(Utils.costumesMap['$c']);
-                                });
-                                var costs = await Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        SelectCostume(
-                                          actor: '${actor.names['en']}',
-                                          character:
-                                              '${actor.characters['en']}',
-                                          project: project,
-                                          selectedCostumes: selectedCostumes,
-                                          sceneTitle: '',
-                                        ),
-                                        Utils.DTU));
-                                if (costs != null) {
-                                  costumes[costumes.indexWhere((element) =>
-                                          element['id'] == actor.id)]
-                                      ['costumes'] = costs;
+                                if(project.role.permissions["costumes"]["view"] ||
+                                    project.role.permissions["scenes"]["view"] ||
+                                    project.role.permissions["schedule"]["view"]){
+                                  List<Costume> selectedCostumes = [];
+                                  actorCostumes['costumes'].forEach((c) {
+                                    selectedCostumes.add(Utils.costumesMap['$c']);
+                                  });
+                                  var costs = await Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          SelectCostume(
+                                            actor: '${actor.names['en']}',
+                                            character:
+                                            '${actor.characters['en']}',
+                                            project: project,
+                                            selectedCostumes: selectedCostumes,
+                                            sceneTitle: '',
+                                          ),
+                                          Utils.DTU));
+                                  if (costs != null) {
+                                    costumes[costumes.indexWhere((element) =>
+                                    element['id'] == actor.id)]
+                                    ['costumes'] = costs;
+                                  }
+                                  setState(() {});
+                                }else{
+                                  Utils.notAllowed(context);
                                 }
-                                setState(() {});
                               },
                               onLongPress: () async {
-                                Navigator.push(
-                                    context,
-                                    Utils.createRoute(
-                                        ActorPage(
-                                          popUp: true,
-                                          actor: actor,
-                                          project: project,
-                                        ),
-                                        Utils.DTU));
+                                if(project.role.permissions["costumes"]["view"] ||
+                                    project.role.permissions["scenes"]["view"] ||
+                                    project.role.permissions["schedule"]["view"]){
+                                  Navigator.push(
+                                      context,
+                                      Utils.createRoute(
+                                          ActorPage(
+                                            popUp: true,
+                                            actor: actor,
+                                            project: project,
+                                          ),
+                                          Utils.DTU));
+                                }else{
+                                  Utils.notAllowed(context);
+                                }
                               },
                               title: Text(
                                 "${actor.names['en']}",
@@ -239,7 +228,10 @@ class _SelectCostumes extends State<SelectCostumes>
                                         width: 25,
                                         height: 25,
                                         decoration: BoxDecoration(
-                                          color: color,
+                                          color:project.role.permissions["costumes"]["view"] ||
+                                              project.role.permissions["scenes"]["view"] ||
+                                              project.role.permissions["schedule"]["view"] ?
+                                          color : Colors.grey,
                                           borderRadius:
                                               BorderRadius.circular(4),
                                         ),
@@ -278,7 +270,10 @@ class _SelectCostumes extends State<SelectCostumes>
                                         width: 25,
                                         height: 25,
                                         decoration: BoxDecoration(
-                                          color: color,
+                                          color:project.role.permissions["costumes"]["view"] ||
+                                              project.role.permissions["scenes"]["view"] ||
+                                              project.role.permissions["schedule"]["view"] ?
+                                          color : Colors.grey,
                                           borderRadius:
                                               BorderRadius.circular(4),
                                         ),
@@ -520,8 +515,7 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                                         )),
                                                       ),
                                               useOldImageOnUrlChange: true,
-                                              imageUrl:
-                                                  costume.referenceImage ?? ''),
+                                              imageUrl: costume.referenceImage ?? ''),
                                         ),
                                       ),
                                     );

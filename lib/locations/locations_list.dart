@@ -271,18 +271,27 @@ class _LocationsList extends State<LocationsList>
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddLocation(
-                            isPopUp: maxWidth>Utils.mobileWidth ? false : true,
-                                project: project,
-                              )));
-                  setState(() {
-                    locations = Utils.locations.sublist(0);
-                  });
+                  if(project.role.permissions["locations"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"]){
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddLocation(
+                              isPopUp: maxWidth>Utils.mobileWidth ? false : true,
+                              project: project,
+                            )));
+                    setState(() {
+                      locations = Utils.locations.sublist(0);
+                    });
+                  }else{
+                    Utils.notAllowed(context);
+                  }
                 },
-                backgroundColor: color,
+                backgroundColor:project.role.permissions["locations"]["add"]||
+                    project.role.permissions["scenes"]["add"]||
+                    project.role.permissions["schedule"]["add"]?
+                color : Utils.notPermitted,
                 child: Icon(
                   Icons.add,
                   color: background,

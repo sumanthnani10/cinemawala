@@ -46,6 +46,8 @@ class _CostumesPageState extends State<CostumesPage> {
       background1 = Colors.white;
     }
 
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
@@ -97,20 +99,31 @@ class _CostumesPageState extends State<CostumesPage> {
                               top: 4,
                               right: 4,
                               child: CircleAvatar(
-                                backgroundColor: color,
+                                backgroundColor: project.role.permissions["casting"]["edit"]||
+                                    project.role.permissions["scenes"]["edit"]||
+                                    project.role.permissions["schedule"]["edit"] ?
+                                color : Utils.notPermitted,
                                 child: IconButton(
                                   onPressed: () async {
-                                    await Navigator.push(
-                                        context,
-                                        Utils.createRoute(
-                                            AddCostume(
-                                              project: project,
-                                              costume: costume.toJson(),
-                                            ),
-                                            Utils.RTL));
-                                    setState(() {
-                                      costume = Utils.costumesMap[costume.id];
-                                    });
+                                    if(project.role.permissions["costumes"]["edit"] ||
+                                        project.role.permissions["schedule"]["edit"] ||
+                                        project.role.permissions["scenes"]["edit"]
+                                    ){
+                                      await Navigator.push(
+                                          context,
+                                          Utils.createRoute(
+                                              AddCostume(
+                                                isPopUp: constraints.maxWidth>Utils.mobileWidth ? false : true,
+                                                project: project,
+                                                costume: costume.toJson(),
+                                              ),
+                                              Utils.RTL));
+                                      setState(() {
+                                        costume = Utils.costumesMap[costume.id];
+                                      });
+                                    }else{
+                                      Utils.notAllowed(context);
+                                    }
                                   },
                                   icon: Icon(
                                     Icons.edit,
@@ -296,6 +309,6 @@ class _CostumesPageState extends State<CostumesPage> {
           ),
         ),
       ),
-    );
+    );});
   }
 }

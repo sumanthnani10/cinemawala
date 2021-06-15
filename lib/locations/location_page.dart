@@ -116,21 +116,31 @@ class _LocationPageState extends State<LocationPage> {
                                     top: 4,
                                     right: 4,
                                     child: CircleAvatar(
-                                      backgroundColor: color,
+                                      backgroundColor: project.role.permissions["locations"]["edit"]||
+                                          project.role.permissions["scenes"]["edit"]||
+                                          project.role.permissions["schedule"]["edit"] ?
+                                      color : Utils.notPermitted,
                                       child: IconButton(
                                         onPressed: () async {
-                                          await Navigator.push(
-                                              context,
-                                              Utils.createRoute(
-                                                  AddLocation(
-                                                    isPopUp: isPopUp ?true : false,
-                                                    project: project,
-                                                    location: location.toJson(),
-                                                  ),
-                                                  Utils.RTL));
-                                          location =
-                                              Utils.locationsMap[location.id];
-                                          setState(() {});
+                                          if(project.role.permissions["locations"]["edit"]||
+                                              project.role.permissions["scenes"]["edit"]||
+                                              project.role.permissions["schedule"]["edit"]){
+                                            await Navigator.push(
+                                                context,
+                                                Utils.createRoute(
+                                                    AddLocation(
+                                                      isPopUp: isPopUp ?true : false,
+                                                      project: project,
+                                                      location: location.toJson(),
+                                                    ),
+                                                    Utils.RTL));
+                                            location =
+                                            Utils.locationsMap[location.id];
+                                            setState(() {});
+                                          }
+                                          else{
+                                            Utils.notAllowed(context);
+                                          }
                                         },
                                         icon: Icon(
                                           Icons.edit,

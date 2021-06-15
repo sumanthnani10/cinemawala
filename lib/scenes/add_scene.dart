@@ -414,6 +414,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       },
                                       controller: titleControllers[i],
                                       decoration: InputDecoration(
+                                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                                            project.role.permissions["schedule"]["edit"]) ||
+                                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                                        true : false,
                                         enabledBorder: OutlineInputBorder(
                                             borderSide:
                                                 BorderSide(color: background1)),
@@ -438,6 +442,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       maxLines: null,
                                       controller: gistControllers[i],
                                       decoration: InputDecoration(
+                                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                                            project.role.permissions["schedule"]["edit"]) ||
+                                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                                        true : false,
                                         enabledBorder: OutlineInputBorder(
                                             borderSide:
                                                 BorderSide(color: background1)
@@ -466,25 +474,31 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: InkWell(
                       onTap: () async {
-                        Utils.showLoadingDialog(context, 'Loading');
-                        var selected = await Navigator.push(
-                                context,
-                                Utils.createRoute(
-                                    SelectLocation(
-                                      project: project,
-                                    ),
-                                    Utils.DTU)) ??
-                            null;
-                        if (selected != null) {
-                          scene["location"] = selected.id;
-                          selectedLocation = selected;
-                          setState(() {});
+                        if(project.role.permissions["locations"]["view"] ||project.role.permissions["scenes"]["view"]||
+                            project.role.permissions["schedule"]["view"]){
+                          Utils.showLoadingDialog(context, 'Loading');
+                          var selected = await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  SelectLocation(
+                                    project: project,
+                                  ),
+                                  Utils.DTU)) ??
+                              null;
+                          if (selected != null) {
+                            scene["location"] = selected.id;
+                            selectedLocation = selected;
+                            setState(() {});
+                          }
+                          Navigator.pop(context);
+                        }else{
+                          Utils.notAllowed(context);
                         }
-                        Navigator.pop(context);
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: color,
+                          color: project.role.permissions["locations"]["view"] ||project.role.permissions["scenes"]["view"]||
+                              project.role.permissions["schedule"]["view"] ? color : Colors.grey,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: ListTile(
@@ -538,7 +552,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   // Day/Night
                   Container(
                     decoration: BoxDecoration(
-                      color: color,
+                      color: project.role.permissions["scenes"]["view"] || project.role.permissions["schedule"]["view"] ? color : Colors.grey,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -558,9 +572,17 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   elevation: isPopUp ? scene['day'] ? 4 : 0 : scene['day'] ? 2 : 0,
                                 ),
                                 onPressed: () {
+                                  if(
+                                  (edit && (project.role.permissions["schedule"]["edit"] ||project.role.permissions["scenes"]["edit"])) ||
+                                      (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
+                                  )
+                                  {
                                   setState(() {
                                     scene['day'] = true;
                                   });
+                                  }else{
+                                    Utils.notAllowed(context);
+                                  }
                                 },
                                 icon: Icon(Icons.wb_sunny_outlined,
                                     size: 22, color: background1),
@@ -586,9 +608,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   elevation: isPopUp ? !scene['day'] ? 4 : 0 : !scene['day'] ? 2 : 0,
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    scene['day'] = false;
-                                  });
+                                  if(
+                                  (edit && (project.role.permissions["schedule"]["edit"] ||project.role.permissions["scenes"]["edit"])) ||
+                                      (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
+                                  ){
+                                    setState(() {
+                                      scene['day'] = false;
+                                    });
+                                  }else{
+                                    Utils.notAllowed(context);
+                                  }
                                 },
                                 icon: Icon(Icons.nightlight_round,
                                     size: 22, color: background1),
@@ -609,7 +638,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: color,
+                      color: project.role.permissions["scenes"]["view"] || project.role.permissions["schedule"]["view"] ? color : Colors.grey,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -628,9 +657,17 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   elevation: isPopUp ? scene['interior'] ? 4 : 0 : scene['interior'] ? 2 : 0,
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    scene['interior'] = true;
-                                  });
+                                  if(
+                                  (edit && (project.role.permissions["schedule"]["edit"] ||project.role.permissions["scenes"]["edit"])) ||
+                                      (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
+                                  ){
+                                    setState(() {
+                                      scene['interior'] = true;
+                                    });
+                                  }
+                                  else{
+                                    Utils.notAllowed(context);
+                                  }
                                 },
                                 child: Text(
                                   "Interior",
@@ -655,9 +692,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   elevation: isPopUp ? !scene['interior'] ? 4 : 0 : !scene['interior'] ? 2 : 0,
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    scene['interior'] = false;
-                                  });
+                                  if(
+                                  (edit && (project.role.permissions["schedule"]["edit"] ||project.role.permissions["scenes"]["edit"])) ||
+                                      (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
+                                  ){
+                                    setState(() {
+                                      scene['interior'] = false;
+                                    });
+                                  }else{
+                                    Utils.notAllowed(context);
+                                  }
                                 },
                                 child: Text(
                                   "Exterior",
@@ -677,56 +721,66 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: InkWell(
                       onTap: () async {
-                        Utils.showLoadingDialog(context, 'Loading');
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectActors(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['artists'] = selected[0];
-                          selectedArtists = selected[1];
-                          artistsImages = [];
-                          var costumes = [];
-                          for (var i in selectedArtists) {
-                            artistsImages.add(i.image ?? '');
-                          }
-                          int ind = 0;
-                          scene['artists'].forEach((a) {
-                            costumes.add({"id": a});
-                            var oldCostume = scene['costumes'].firstWhere(
-                                    (e) => e['id'] == a,
-                                orElse: () => null);
-                            if (oldCostume != null) {
-                              costumes[ind]['costumes'] = oldCostume["costumes"];
-                            } else {
-                              costumes[ind]['costumes'] = [];
+                        if(
+                        project.role.permissions["casting"]["view"] || project.role.permissions["schedule"]["view"] ||
+                            project.role.permissions["scenes"]["view"]
+                        ){
+                          Utils.showLoadingDialog(context, 'Loading');
+                          var selected = await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  SelectActors(
+                                    project: project,
+                                    selectedActors: selectedArtists,
+                                  ),
+                                  Utils.DTU));
+                          if (selected != null) {
+                            scene['artists'] = selected[0];
+                            selectedArtists = selected[1];
+                            artistsImages = [];
+                            var costumes = [];
+                            for (var i in selectedArtists) {
+                              artistsImages.add(i.image ?? '');
                             }
-                            ind++;
-                          });
-                          scene['costumes'] = costumes;
+                            int ind = 0;
+                            scene['artists'].forEach((a) {
+                              costumes.add({"id": a});
+                              var oldCostume = scene['costumes'].firstWhere(
+                                      (e) => e['id'] == a,
+                                  orElse: () => null);
+                              if (oldCostume != null) {
+                                costumes[ind]['costumes'] = oldCostume["costumes"];
+                              } else {
+                                costumes[ind]['costumes'] = [];
+                              }
+                              ind++;
+                            });
+                            scene['costumes'] = costumes;
 
-                          for (var i in scene['costumes']) {
-                            for (var j in i['costumes']) {
-                              Costume costume = Utils.costumesMap[j];
-                              selectedCostumes.add(costume);
-                              costumesImages.add(costume.referenceImage ?? '');
+                            for (var i in scene['costumes']) {
+                              for (var j in i['costumes']) {
+                                Costume costume = Utils.costumesMap[j];
+                                selectedCostumes.add(costume);
+                                costumesImages.add(costume.referenceImage ?? '');
+                              }
                             }
-                          }
 
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
+                            Navigator.pop(context);
+                            setState(() {});
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        }else{
+                          Utils.notAllowed(context);
                         }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                          color: color,
+                          color:
+                        project.role.permissions["casting"]["view"] || project.role.permissions["schedule"]["view"] ||
+                        project.role.permissions["scenes"]["view"]
+                          ? color : Colors.grey,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -751,30 +805,40 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     child: InkWell(
                       onTap: () async {
                         // print(scene['addl_artists']);
-                        var addlArtists = Utils.additionalArtists;
-                        for (var k in addlArtists.keys) {
-                          addlArtists['$k']['field_values'] =
-                          scene['addl_artists']['$k'];
-                        }
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                AddCompanyArtists(
-                                  additionalArtists: addlArtists,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          for (var k in selected.keys) {
-                            scene['addl_artists']['$k'] =
-                            selected['$k']['field_values'];
+                        if(
+                        (project.role.permissions["scenes"]["view"] &&
+                            project.role.permissions["scenes"]["add"]) ||
+                            (project.role.permissions["schedule"]["view"] &&
+                                project.role.permissions["schedule"]["add"])
+                        ){
+                          var addlArtists = Utils.additionalArtists;
+                          for (var k in addlArtists.keys) {
+                            addlArtists['$k']['field_values'] =
+                            scene['addl_artists']['$k'];
                           }
-                          setState(() {});
+                          var selected = await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  AddCompanyArtists(
+                                    additionalArtists: addlArtists,
+                                  ),
+                                  Utils.DTU));
+                          if (selected != null) {
+                            for (var k in selected.keys) {
+                              scene['addl_artists']['$k'] =
+                              selected['$k']['field_values'];
+                            }
+                            setState(() {});
+                          }
+                        }else{
+                          Utils.notAllowed(context);
                         }
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            color: color,
+                            color: project.role.permissions["scenes"]["view"] || project.role.permissions["schedule"]["view"]
+                            ? color : Colors.grey,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding:
@@ -791,40 +855,47 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: InkWell(
                       onTap: () async {
-                        Utils.showLoadingDialog(context, "Loading");
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectCostumes(
-                                  project: project,
-                                  selectedActors: selectedArtists,
-                                  costumes: scene['costumes'],
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['costumes'] = selected;
-                          selectedCostumes.clear();
-                          selectedCostumes = [];
-                          costumesImages.clear();
-                          costumesImages = [];
-                          for (var i in scene['costumes']) {
-                            for (var j in i['costumes']) {
-                              Costume costume = Utils.costumesMap[j];
-                              selectedCostumes.add(costume);
-                              costumesImages.add(costume.referenceImage ?? '');
+                        if(project.role.permissions["scenes"]["view"] || project.role.permissions["schedule"]["view"] ||
+                            project.role.permissions["costumes"]["view"]){
+                          Utils.showLoadingDialog(context, "Loading");
+                          var selected = await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  SelectCostumes(
+                                    project: project,
+                                    selectedActors: selectedArtists,
+                                    costumes: scene['costumes'],
+                                  ),
+                                  Utils.DTU));
+                          if (selected != null) {
+                            scene['costumes'] = selected;
+                            selectedCostumes.clear();
+                            selectedCostumes = [];
+                            costumesImages.clear();
+                            costumesImages = [];
+                            for (var i in scene['costumes']) {
+                              for (var j in i['costumes']) {
+                                Costume costume = Utils.costumesMap[j];
+                                selectedCostumes.add(costume);
+                                costumesImages.add(costume.referenceImage ?? '');
+                              }
                             }
-                          }
 
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
+                            Navigator.pop(context);
+                            setState(() {});
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        }else{
+                          Utils.notAllowed(context);
                         }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                          color: color,
+                          color: project.role.permissions["scenes"]["view"] || project.role.permissions["schedule"]["view"] ||
+                          project.role.permissions["costumes"]["view"] ?
+                          color : Colors.grey,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -849,32 +920,42 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: InkWell(
                       onTap: () async {
-                        Utils.showLoadingDialog(context, 'Loading');
-                        var selected = await Navigator.push(
-                            context,
-                            Utils.createRoute(
-                                SelectProps(
-                                  project: project,
-                                  selectedProps: selectedProps,
-                                ),
-                                Utils.DTU));
-                        if (selected != null) {
-                          scene['props'] = selected[0];
-                          selectedProps = selected[1];
-                          propsImages = [];
-                          for (var i in selectedProps) {
-                            propsImages.add(i.referenceImage ?? '');
+                        if(project.role.permissions["props"]["view"] ||
+                            project.role.permissions["scenes"]["view"] ||
+                            project.role.permissions["schedule"]["view"]
+                        ){
+                          Utils.showLoadingDialog(context, 'Loading');
+                          var selected = await Navigator.push(
+                              context,
+                              Utils.createRoute(
+                                  SelectProps(
+                                    project: project,
+                                    selectedProps: selectedProps,
+                                  ),
+                                  Utils.DTU));
+                          if (selected != null) {
+                            scene['props'] = selected[0];
+                            selectedProps = selected[1];
+                            propsImages = [];
+                            for (var i in selectedProps) {
+                              propsImages.add(i.referenceImage ?? '');
+                            }
+                            Navigator.pop(context);
+                            setState(() {});
+                          } else {
+                            Navigator.pop(context);
                           }
-                          Navigator.pop(context);
-                          setState(() {});
-                        } else {
-                          Navigator.pop(context);
+                        }else{
+                          Utils.notAllowed(context);
                         }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                          color: color,
+                          color:  project.role.permissions["props"]["view"] ||
+                              project.role.permissions["scenes"]["view"] ||
+                              project.role.permissions["schedule"]["view"] ?
+                          color : Colors.grey,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -905,6 +986,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       controller: makeUpTextController,
                       maxLines: null,
                       decoration: InputDecoration(
+                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["edit"]) ||
+                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                        true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
                         labelText: 'Makeup/Hair',
@@ -1004,6 +1089,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       controller: sfxTextController,
                       maxLines: null,
                       decoration: InputDecoration(
+                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["edit"]) ||
+                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                        true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
                         labelText: 'SFX',
@@ -1027,6 +1116,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       controller: vfxTextController,
                       maxLines: null,
                       decoration: InputDecoration(
+                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["edit"]) ||
+                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                        true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
                         labelText: 'VFX',
@@ -1050,6 +1143,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       controller: choreographerTextController,
                       maxLines: 1,
                       decoration: InputDecoration(
+                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["edit"]) ||
+                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                        true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
                         labelText: 'Choreographer',
@@ -1073,6 +1170,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                       controller: fighterTextController,
                       maxLines: 1,
                       decoration: InputDecoration(
+                        enabled: (edit && project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["edit"]) ||
+                            (!edit && project.role.permissions["scenes"]["add"] || project.role.permissions["schedule"]["add"]) ?
+                        true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
                         labelText: 'Fighter',

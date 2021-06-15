@@ -88,19 +88,28 @@ class _PropPageState extends State<PropPage> {
                             top: 4,
                             right: 4,
                             child: CircleAvatar(
-                              backgroundColor: color,
+                              backgroundColor: project.role.permissions["props"]["edit"]||
+                                  project.role.permissions["scenes"]["edit"]||
+                                  project.role.permissions["schedule"]["edit"] ?
+                              color : Utils.notPermitted,
                               child: IconButton(
                                 onPressed: () async {
-                                  await Navigator.push(
-                                      context,
-                                      Utils.createRoute(
-                                          AddProp(
-                                            project: project,
-                                            prop: prop.toJson(),
-                                          ),
-                                          Utils.RTL));
-                                  prop = Utils.propsMap[prop.id];
-                                  setState(() {});
+                                  if(project.role.permissions["props"]["edit"]||
+                                      project.role.permissions["scenes"]["edit"]||
+                                      project.role.permissions["schedule"]["edit"]){
+                                    await Navigator.push(
+                                        context,
+                                        Utils.createRoute(
+                                            AddProp(
+                                              project: project,
+                                              prop: prop.toJson(),
+                                            ),
+                                            Utils.RTL));
+                                    prop = Utils.propsMap[prop.id];
+                                    setState(() {});
+                                  }else{
+                                    Utils.notAllowed(context);
+                                  }
                                 },
                                 icon: Icon(
                                   Icons.edit,

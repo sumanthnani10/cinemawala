@@ -401,19 +401,28 @@ class _ActorsListState extends State<ActorsList>
                     ]),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddActor(
-                            project: project,
-                            isPopUp: maxWidth>Utils.mobileWidth ? false : true,
-                          ),
-                          Utils.DTU));
-                  setState(() {
-                    artists = Utils.artists.sublist(0);
-                  });
+                  if(project.role.permissions["casting"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"]){
+                    await Navigator.push(
+                        context,
+                        Utils.createRoute(
+                            AddActor(
+                              project: project,
+                              isPopUp: maxWidth>Utils.mobileWidth ? false : true,
+                            ),
+                            Utils.DTU));
+                    setState(() {
+                      artists = Utils.artists.sublist(0);
+                    });
+                  }else{
+                    print('you are not permitted');
+                  }
                 },
-                backgroundColor: Color(0xff6fd8a8),
+                backgroundColor: project.role.permissions["casting"]["add"]||
+                    project.role.permissions["scenes"]["add"]||
+                    project.role.permissions["schedule"]["add"] ?
+                Color(0xff6fd8a8) : Utils.notPermitted,
                 child: Icon(
                   Icons.add,
                   color: background,

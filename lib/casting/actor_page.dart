@@ -103,16 +103,26 @@ class _ActorPage extends State<ActorPage> {
             actions: [
               TextButton.icon(
                 onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      Utils.createRoute(
-                          AddActor(
-                            project: project,
-                            actor: actor.toJson(),
-                          ),
-                          Utils.RTL));
-                  actor = Utils.artistsMap[actor.id];
-                  setState(() {});
+                  if(project.role.permissions["casting"]["edit"]||
+                      project.role.permissions["scenes"]["edit"]||
+                      project.role.permissions["schedule"]["edit"]||
+                      project.role.permissions["casting"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"]
+                  ){
+                    await Navigator.push(
+                        context,
+                        Utils.createRoute(
+                            AddActor(
+                              project: project,
+                              actor: actor.toJson(),
+                            ),
+                            Utils.RTL));
+                    actor = Utils.artistsMap[actor.id];
+                    setState(() {});
+                  }else{
+                    Utils.notAllowed(context);
+                  }
                 },
                 label: Text(
                   "Edit",
@@ -426,12 +436,29 @@ class _ActorPage extends State<ActorPage> {
                                           if (actor.by['user_id'] == "")
                                             TextButton(
                                                 onPressed: () async {
-                                                  askCastCredentials();
+                                                  if(project.role.permissions["casting"]["edit"]||
+                                                      project.role.permissions["scenes"]["edit"]||
+                                                      project.role.permissions["schedule"]["edit"]||
+                                                      project.role.permissions["casting"]["add"]||
+                                                      project.role.permissions["scenes"]["add"]||
+                                                      project.role.permissions["schedule"]["add"]
+                                                  ){
+                                                    askCastCredentials();
+                                                  }
+                                                  else{
+                                                    Utils.notAllowed(context);
+                                                  }
                                                 },
                                                 child: Text(
                                                   "Assign",
                                                   style: TextStyle(
-                                                      color: Colors.blue),
+                                                      color:project.role.permissions["casting"]["edit"]||
+                                                          project.role.permissions["scenes"]["edit"]||
+                                                          project.role.permissions["schedule"]["edit"]||
+                                                          project.role.permissions["casting"]["add"]||
+                                                          project.role.permissions["scenes"]["add"]||
+                                                          project.role.permissions["schedule"]["add"] ?
+                                                      Colors.blue : Utils.notPermitted),
                                                 ))
                                         ],
                                       )),

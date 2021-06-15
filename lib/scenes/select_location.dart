@@ -93,20 +93,28 @@ class _SelectLocation extends State<SelectLocation>
                       Material(
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddLocation(
-                                    project: project,
-                                  ),
-                                ));
+                            if(project.role.permissions["locations"]["add"] ||project.role.permissions["scenes"]["add"]||
+                                project.role.permissions["schedule"]["add"]){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddLocation(
+                                      project: project,
+                                    ),
+                                  ));
+                            }else{
+                              Utils.notAllowed(context);
+                            }
                           },
                           splashColor: background1.withOpacity(0.2),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               "+ Add Location",
-                              style: TextStyle(color: Colors.indigo),
+                              style: TextStyle(color:
+                              project.role.permissions["locations"]["add"] ||project.role.permissions["scenes"]["add"]||
+                                  project.role.permissions["schedule"]["add"] ?
+                              Colors.indigo : Colors.grey),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -162,7 +170,14 @@ class _SelectLocation extends State<SelectLocation>
                           Location location = showLocations[i];
                           return InkWell(
                             onTap: () {
-                              Navigator.of(context).pop(location);
+                              if(project.role.permissions["locations"]["add"] || project.role.permissions["locations"]["edit"]
+                              ||project.role.permissions["scenes"]["add"] || project.role.permissions["scenes"]["edit"] ||
+                                  project.role.permissions["schedule"]["add"] || project.role.permissions["schedule"]["edit"]
+                              ){
+                                Navigator.of(context).pop(location);
+                              }else{
+                                Utils.notAllowed(context);
+                              }
                             },
                             onLongPress: () async {
                               await Navigator.push(

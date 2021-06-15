@@ -109,9 +109,7 @@ class _CostumesListState extends State<CostumesList>
                     Tab(
                       text: 'Scene Wise',
                     ),
-                    Tab(
-                      text: 'Costume Wise',
-                    ),
+                    Tab(text: 'Costume Wise',),
                   ],
                 ),
                 iconTheme: IconThemeData(color: background1),
@@ -281,18 +279,27 @@ class _CostumesListState extends State<CostumesList>
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddCostume(
-                                isPopUp: maxWidth>Utils.mobileWidth ? false : true,
-                                project: project,
-                              )));
-                  setState(() {
-                    costumes = Utils.costumes.sublist(0);
-                  });
+                  if(project.role.permissions["casting"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"]){
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddCostume(
+                              isPopUp: maxWidth>Utils.mobileWidth ? false : true,
+                              project: project,
+                            )));
+                    setState(() {
+                      costumes = Utils.costumes.sublist(0);
+                    });
+                  }else{
+                    Utils.notAllowed(context);
+                  }
                 },
-                backgroundColor: color,
+                backgroundColor:project.role.permissions["casting"]["add"]||
+                    project.role.permissions["scenes"]["add"]||
+                    project.role.permissions["schedule"]["add"] ?
+                color : Utils.notPermitted,
                 child: Icon(
                   Icons.add,
                   color: background,

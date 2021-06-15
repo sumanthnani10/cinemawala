@@ -162,16 +162,34 @@ class _SelectCostume extends State<SelectCostume>
                   ),
                   TextButton.icon(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddCostume(
-                                    project: project,
-                                  )));
+                      if(project.role.permissions["costumes"]["add"] ||
+                          project.role.permissions["scenes"]["add"] ||
+                          project.role.permissions["schedule"]["add"]||
+                          project.role.permissions["costumes"]["edit"] ||
+                          project.role.permissions["scenes"]["edit"] ||
+                          project.role.permissions["schedule"]["edit"]
+                      ){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCostume(
+                                  project: project,
+                                )));
+                      }
+                      else{
+                        Utils.notAllowed(context);
+                      }
                     },
                     label: Text(
                       "Add Costume",
-                      style: TextStyle(color: Colors.indigo),
+                      style: TextStyle(
+                          color:project.role.permissions["costumes"]["add"] ||
+                      project.role.permissions["scenes"]["add"] ||
+                      project.role.permissions["schedule"]["add"]||
+                      project.role.permissions["costumes"]["edit"] ||
+                      project.role.permissions["scenes"]["edit"] ||
+                      project.role.permissions["schedule"]["edit"]
+                      ? Colors.indigo : Colors.grey),
                       textAlign: TextAlign.right,
                     ),
                     icon: Icon(
@@ -191,15 +209,26 @@ class _SelectCostume extends State<SelectCostume>
                           return InkWell(
                             splashColor: background1.withOpacity(0.2),
                             onTap: () {
-                              setState(() {
-                                if (selectedCostumes.contains(costume)) {
-                                  selectedCostumes.remove(costume);
-                                } else {
-                                  if (selectedCostumes.length < 3) {
-                                    selectedCostumes.add(costume);
-                                  } else {}
-                                }
-                              });
+                              if(project.role.permissions["costumes"]["add"] ||
+                                  project.role.permissions["scenes"]["add"] ||
+                                  project.role.permissions["schedule"]["add"]||
+                                  project.role.permissions["costumes"]["edit"] ||
+                                  project.role.permissions["scenes"]["edit"] ||
+                                  project.role.permissions["schedule"]["edit"]
+                              ){
+                                setState(() {
+                                  if (selectedCostumes.contains(costume)) {
+                                    selectedCostumes.remove(costume);
+                                  } else {
+                                    if (selectedCostumes.length < 3) {
+                                      selectedCostumes.add(costume);
+                                    } else {}
+                                  }
+                                });
+                              }
+                              else{
+                                Utils.notAllowed(context);
+                              }
                             },
                             onLongPress: () {
                               Navigator.push(
