@@ -559,7 +559,7 @@ class _Register extends State<Register> {
       "password": "$newPassword",
       "name": "$name",
       "id": "${Utils.generateId("user_")}",
-      "projects": [],
+      "projects": {},
       "notes": {},
       "acts_in": {},
       "codes": {},
