@@ -709,7 +709,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                 padding: EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 16),
                                 child: Text(
-                                  'Company/Additional Artists',
+                                  'Additional Artists',
                                   style: TextStyle(
                                       color: background1,
                                       fontWeight: FontWeight.bold),

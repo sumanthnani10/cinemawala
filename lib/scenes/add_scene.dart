@@ -357,12 +357,12 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               }
             },
             label: Text(
-              edit ? "Edit" : "Add",
+              edit ? "Save" : "Add",
               style: TextStyle(color: Colors.indigo),
               textAlign: TextAlign.right,
             ),
             icon: Icon(
-              edit ? Icons.edit : Icons.add,
+              edit ? Icons.done : Icons.add,
               size: 18,
               color: Colors.indigo,
             ),
@@ -844,7 +844,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                           padding:
                           EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           child: Text(
-                            'Company/Additional Artists',
+                            'Additional Artists',
                             style: TextStyle(
                                 color: background1, fontWeight: FontWeight.bold),
                           )),

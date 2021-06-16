@@ -355,7 +355,7 @@ class _ActorPage extends State<ActorPage> {
                                                       borderSide: BorderSide(
                                                           color:
                                                           background)),
-                                                  labelText: 'Artist/Talent',
+                                                  labelText: 'Artist/Talent:',
                                                   labelStyle: TextStyle(
                                                       color: background1,
                                                       fontSize: 14),
@@ -381,7 +381,7 @@ class _ActorPage extends State<ActorPage> {
                                                       borderSide: BorderSide(
                                                           color:
                                                           background)),
-                                                  labelText: 'Character Name',
+                                                  labelText: 'Character Name:',
                                                   labelStyle: TextStyle(
                                                       color: background1,
                                                       fontSize: 14),
@@ -416,7 +416,7 @@ class _ActorPage extends State<ActorPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Cast: ${actor.by['username'] == "" ? "Not Assigned" : "@${actor.by['username']}"}',
+                                            'Username: ${actor.by['username'] == "" ? "Not Assigned" : "@${actor.by['username']}"}',
                                             style: TextStyle(
                                                 color: background1,
                                                 fontWeight: FontWeight.bold,
@@ -573,51 +573,85 @@ class _ActorPage extends State<ActorPage> {
                                       )
                                           : Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Wrap(
-                                            spacing: 4,
-                                            direction: Axis.horizontal,
-                                            children:
-                                            List<Widget>.generate(
-                                              costumes.length,
-                                                  (i) {
-                                                return InkWell(
-                                                  onLongPress: () async {
-                                                    await Navigator.push(
-                                                        context,
-                                                        Utils.createRoute(
-                                                            CostumesPage(
-                                                              project:
-                                                              project,
-                                                              costume: Utils
-                                                                  .costumesMap[
-                                                              costumes
-                                                                  .elementAt(i)],
-                                                            ),
-                                                            Utils.DTU));
-                                                    setState(() {});
+                                            child: Wrap(
+                                                //spacing: 4,
+                                                direction: Axis.horizontal,
+                                                children:
+                                                List<Widget>.generate(
+                                                  costumes.length,
+                                                      (i) {
+                                                    print(costumes);
+                                                    print(Utils.costumesMap[costumes.elementAt(i)]);
+                                                    return InkWell(
+                                                      onLongPress: () async {
+                                                        await Navigator.push(
+                                                            context,
+                                                            Utils.createRoute(
+                                                                CostumesPage(
+                                                                  project:
+                                                                  project,
+                                                                  costume: Utils
+                                                                      .costumesMap[
+                                                                  costumes
+                                                                      .elementAt(i)],
+                                                                ),
+                                                                Utils.DTU));
+                                                        setState(() {});
+                                                      },
+                                                      child:Container(
+                                                        height: 70,
+                                                        width: 70,
+                                                        padding: EdgeInsets.all(2),
+                                                        margin: EdgeInsets.all(2),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey,
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(4),
+                                                          child: CachedNetworkImage(
+                                                              fit: BoxFit.cover,
+                                                              progressIndicatorBuilder:
+                                                                  (context, url, progress) =>
+                                                                  LinearProgressIndicator(
+                                                                    value: progress.progress,
+                                                                  ),
+                                                              errorWidget: (context, url, error) =>
+                                                                  Container(
+                                                                    color: background,
+                                                                    child: Center(
+                                                                        child: Text(
+                                                                          '${Utils.costumesMap[costumes.elementAt(i)].title}',
+                                                                          style:
+                                                                          TextStyle(color: background1),
+                                                                        )),
+                                                                  ),
+                                                              useOldImageOnUrlChange: true,
+                                                              imageUrl: Utils.costumesMap[costumes.elementAt(i)].referenceImage),
+                                                        ),
+                                                      ),
+                                                      /*Container(
+                                                        margin:
+                                                        EdgeInsets.all(2),
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 8,
+                                                            vertical: 2),
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          color: color,
+                                                          borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                              300),
+                                                        ),
+                                                        child: Text(
+                                                            '${Utils.costumesMap[costumes.elementAt(i)].title}'),
+                                                      ),*/
+                                                    );
                                                   },
-                                                  child: Container(
-                                                    margin:
-                                                    EdgeInsets.all(2),
-                                                    padding: EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 2),
-                                                    decoration:
-                                                    BoxDecoration(
-                                                      color: color,
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          300),
-                                                    ),
-                                                    child: Text(
-                                                        '${Utils.costumesMap[costumes.elementAt(i)].title}'),
-                                                  ),
-                                                );
-                                              },
-                                            )),
-                                      ),
+                                                )),
+                                          ),
                                     ],
                                   ),
                                 ),

@@ -76,7 +76,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                           Navigator.pop(context);
                         }),
                     Text(
-                      "Company/Additional Artists",
+                      "Additional Artists",
                       style: TextStyle(
                           fontSize: 12,
                           color: background1,
@@ -425,7 +425,7 @@ class _ViewCompanyArtists extends State<ViewCompanyArtists>
                           Navigator.pop(context);
                         }),
                     Text(
-                      "Company/Additional Artists",
+                      "Additional Artists",
                       style: TextStyle(
                           fontSize: 14,
                           color: background1,

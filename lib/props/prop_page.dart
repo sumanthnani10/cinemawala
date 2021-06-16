@@ -177,7 +177,7 @@ class _PropPageState extends State<PropPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Used In :',
+                              'Assigned In :',
                               style: TextStyle(color: background1, fontSize: 14),
                             ),
                           ),

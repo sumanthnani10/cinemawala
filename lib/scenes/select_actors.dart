@@ -129,7 +129,7 @@ class _SelectActors extends State<SelectActors>
                           Navigator.pop(context, [selected, selectedActors]);
                         },
                         label: Text(
-                          "Done",
+                          "Save",
                           style: TextStyle(color: Colors.indigo),
                           textAlign: TextAlign.right,
                         ),

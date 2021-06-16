@@ -87,6 +87,8 @@ class _SchedulePageState extends State<SchedulePage>
   Set<Costume> selectedCostumes = {};
   Actor selectedArtist;
   Actor setIterator;
+  String sceneDate;//added on june 16
+  bool sceneStatus;//added on june 16
   Map<dynamic, dynamic> artistTimings = {},
       addlTimings = {},
       callSheetTimings = {},
@@ -159,6 +161,8 @@ class _SchedulePageState extends State<SchedulePage>
 
   @override
   void initState() {
+    sceneStatus = sceneStatus ?? false;
+    print("scene ${sceneStatus}");
     isPopUp = isPopUp ?? true;
     setContent();
     selectedScheduleIndex = [];
@@ -219,6 +223,7 @@ class _SchedulePageState extends State<SchedulePage>
       sceneLoc = Utils.locationsMap[locationScene.location];
     }
     List<dynamic> schelist;
+    sceneDate = "WD: ${workingDay} / ${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
     test = {};
     if (schedule == null) {
       schelist = scheduless.keys.toList();
@@ -343,7 +348,8 @@ class _SchedulePageState extends State<SchedulePage>
                                           border: Border(
                                               bottom: selectedSceneIndex == i
                                                   ? BorderSide(
-                                                      color: color, width: 3)
+                                                      color: sceneStatus ?
+                                                  Colors.lightGreen : Colors.orangeAccent, width: 3)
                                                   : BorderSide(
                                                       color: background,
                                                       width: 3))),
@@ -412,7 +418,73 @@ class _SchedulePageState extends State<SchedulePage>
                             ),
                           ],
                         ),
-                        // VFX TIMING
+                        // Scene Status
+                        if(project.role.permissions["scenes"]["add"] ||
+                            project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["add"] ||
+                            project.role.permissions["schedule"]["edit"])
+                        Divider(
+                          thickness: 2,
+                          height: 1,
+                        ),
+                        if(project.role.permissions["scenes"]["add"] ||
+                            project.role.permissions["scenes"]["edit"] ||
+                            project.role.permissions["schedule"]["add"] ||
+                            project.role.permissions["schedule"]["edit"] || !sceneStatus)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
+                                child: Text("Scene Status",style: bottomSheetHeadingStyle,),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Row(
+                                  //mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    InkWell(
+                                      onTap: (){
+                                        setState(() {
+                                          sceneStatus = true;
+                                          //sceneDate
+                                          print("add sceneDate variable and add scene status to scene");
+                                        });
+
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: Colors.lightGreen,
+                                        ),
+                                        child: Text("Completed"),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: (){
+                                        if(!sceneStatus){
+                                          setState(() {
+                                            sceneStatus = false;
+                                            print("add scene status");
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: Colors.orangeAccent,
+                                        ),
+                                        child: Text("InComplete"),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         if (project.role.permissions["casting"]["view"])
                           Divider(
                             thickness: 2,

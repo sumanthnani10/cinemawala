@@ -120,6 +120,9 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                         subtitle: Text(
                             '${scene.props.length} ${scene.props.length == 1 ? "Prop" : "Props"}'),
                         onTap: () {
+                                  print(scene.props);
+                                  print(Utils.propsMap[scene.props.first]);
+                                  Prop prop = Utils.propsMap[scene.props.first];
                           if (maxWidth > Utils.mobileWidth) {
                             setState(() {
                               sideWidget = SelectedProps(

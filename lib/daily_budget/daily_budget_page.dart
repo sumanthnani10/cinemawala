@@ -364,7 +364,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                                           contactControllers
                                                               .last,
                                                       keyboardType:
-                                                          TextInputType.number,
+                                                          TextInputType.text,
                                                       decoration:
                                                           InputDecoration(
                                                         enabled: false,
@@ -374,7 +374,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                                                     BorderSide(
                                                                         color:
                                                                             background)),
-                                                        labelText: 'Contact#',
+                                                        labelText: 'Name and Contact',
                                                         labelStyle: TextStyle(
                                                             color: background1,
                                                             fontSize: 14),

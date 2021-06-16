@@ -195,7 +195,7 @@ class _SelectCostumes extends State<SelectCostumes>
                                 }
                               },
                               onLongPress: () async {
-                                if(project.role.permissions["costumes"]["view"] ||
+                                if(project.role.permissions["casting"]["view"] ||
                                     project.role.permissions["scenes"]["view"] ||
                                     project.role.permissions["schedule"]["view"]){
                                   Navigator.push(

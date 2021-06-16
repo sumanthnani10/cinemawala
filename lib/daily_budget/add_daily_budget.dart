@@ -1173,12 +1173,12 @@ class _AddDailyBudget extends State<AddDailyBudget>
                 }
               },
               label: Text(
-                edit ? "Edit" : "Add",
+                edit ? "Save" : "Add",
                 style: TextStyle(color: Colors.indigo),
                 textAlign: TextAlign.right,
               ),
               icon: Icon(
-                edit ? Icons.edit : Icons.add,
+                edit ? Icons.done : Icons.add,
                 size: 18,
                 color: Colors.indigo,
               ),
@@ -1387,14 +1387,14 @@ class _AddDailyBudget extends State<AddDailyBudget>
                                             controller:
                                             contactControllers.last,
                                             keyboardType:
-                                            TextInputType.number,
+                                            TextInputType.text,
                                             decoration: InputDecoration(
                                               enabledBorder:
                                               OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color:
                                                       background1)),
-                                              labelText: 'Contact#',
+                                              labelText: 'Name and Contact',
                                               labelStyle: TextStyle(
                                                   color: background1,
                                                   fontSize: 14),

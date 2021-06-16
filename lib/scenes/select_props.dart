@@ -4,7 +4,7 @@ import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../utils.dart';
 import 'add_scene.dart';
 import 'scene.dart';
@@ -130,7 +130,7 @@ class _SelectProps extends State<SelectProps> {
                           Navigator.pop(context, [selected, selectedProps]);
                         },
                         label: Text(
-                          "Done",
+                          "Save",
                           style: TextStyle(color: Colors.indigo),
                           textAlign: TextAlign.right,
                         ),
@@ -182,9 +182,10 @@ class _SelectProps extends State<SelectProps> {
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                        child: Wrap(
+                          direction: Axis.horizontal,
+                          spacing: 4,
+                          runSpacing: 4,
                           children: <Widget>[
 
                               ] +
@@ -221,20 +222,39 @@ class _SelectProps extends State<SelectProps> {
                                             Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
-                                  child: Container(
-                                    //color: color,
-                                    margin: EdgeInsets.all(2),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          selectedProps.contains(showProps[i])
-                                              ? color
-                                              : color.withOpacity(8 / 16),
-                                      borderRadius: BorderRadius.circular(300),
-                                    ),
-                                    child: Text('${showProps[i].title}'),
-                                  ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child:
+                                      prop.referenceImage == ''
+                                          ? Container(
+                                        height: 70,
+                                        width: 70,
+                                        color: Colors.grey,
+                                        child: Center(
+                                            child: Text(
+                                              'No Image',
+                                              style: TextStyle(color: background),
+                                            )),
+                                      )
+                                          : Container(
+                                        height: 70,
+                                        width: 70,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Utils.notPermitted),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) =>
+                                                LinearProgressIndicator(
+                                                  value: progress.progress,
+                                                ),
+                                            errorWidget: (context, url, error) =>
+                                                Center(child: Text('Image')),
+                                            useOldImageOnUrlChange: true,
+                                            imageUrl: prop.referenceImage),
+                                      )),
                                 );
                               }),
                         ),
@@ -403,9 +423,9 @@ class _SelectedProps extends State<SelectedProps>
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                          child: Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
                             children: <Widget>[
                                 ] +
                                 List<Widget>.generate(showProps.length, (i) {
@@ -422,7 +442,38 @@ class _SelectedProps extends State<SelectedProps>
                                               Utils.DTU));
                                 },
                                 splashColor: background1.withOpacity(0.2),
-                                child: Container(
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child:
+                                    prop.referenceImage == ''
+                                        ? Container(
+                                      color: Colors.grey,
+                                      child: Center(
+                                          child: Text(
+                                            'No Image',
+                                            style: TextStyle(color: background),
+                                          )),
+                                    )
+                                        : Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Utils.notPermitted),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                              LinearProgressIndicator(
+                                                value: progress.progress,
+                                              ),
+                                          errorWidget: (context, url, error) =>
+                                              Center(child: Text('Image')),
+                                          useOldImageOnUrlChange: true,
+                                          imageUrl: prop.referenceImage),
+                                        )),
+                                    /*Container(
                                   //color: color,
                                   margin: EdgeInsets.all(2),
                                   padding: EdgeInsets.symmetric(
@@ -432,7 +483,7 @@ class _SelectedProps extends State<SelectedProps>
                                     borderRadius: BorderRadius.circular(300),
                                   ),
                                   child: Text('${prop.title}'),
-                                ),
+                                ),*/
                               );
                             }),
                           ),
