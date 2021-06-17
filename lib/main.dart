@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   check() async {
-    await FirebaseAuth.instance.signOut();
+    // await FirebaseAuth.instance.signOut();
     if (kIsWeb) {
       await FirebaseAuth.instance.authStateChanges().first;
     }

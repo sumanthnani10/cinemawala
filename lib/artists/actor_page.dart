@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/add_actor.dart';
+import 'package:cinemawala/artists/add_actor.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/roles/select_user.dart';

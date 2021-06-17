@@ -29,8 +29,9 @@ class Location {
         usedIn: i['used_in'],
         addedBy: i['added_by'],
         lastEditBy: i['last_edit_by'],
-        created: DateTime.fromMillisecondsSinceEpoch(i['created']),
-        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']));
+        created: DateTime.fromMillisecondsSinceEpoch(i['created'] ?? 0),
+        lastEditOn:
+            DateTime.fromMillisecondsSinceEpoch(i['last_edit_on'] ?? 0));
   }
 
   Map<dynamic, dynamic> toJson() {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor.dart';
+import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

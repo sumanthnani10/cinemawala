@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor_page.dart';
+import 'package:cinemawala/artists/actor_page.dart';
 import 'package:cinemawala/costumes/add_costume.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cinemawala/casting/actor.dart';
+import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/locations/location.dart';
@@ -186,6 +186,7 @@ class _SchedulePageState extends State<SchedulePage>
           selectedArtists.add(Utils.artistsMap[a]);
         });
       });
+      selectedScenes.sort((a, b) => a.titles['en'].compareTo(b.titles['en']));
       if (schedule.scenes.length != 0) {
         selectedScene = selectedScenes[0];
         selectedSceneIndex = 0;
@@ -348,18 +349,28 @@ class _SchedulePageState extends State<SchedulePage>
                                           border: Border(
                                               bottom: selectedSceneIndex == i
                                                   ? BorderSide(
-                                                      color: sceneStatus ?
-                                                  Colors.lightGreen : Colors.orangeAccent, width: 3)
+                                                      color: Colors.lightGreen,
+                                                      width: 3)
                                                   : BorderSide(
                                                       color: background,
                                                       width: 3))),
-                                      child: Text(
-                                        '${selectedScenes[i].titles['en']}',
-                                        style: selectedSceneIndex == i
-                                            ? TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: background1)
-                                            : TextStyle(color: background1),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor: sceneStatus
+                                                ? Colors.green
+                                                : Colors.deepOrange,
+                                            radius: 4,
+                                          ),
+                                          Text(
+                                            '${selectedScenes[i].titles['en']}',
+                                            style: selectedSceneIndex == i
+                                                ? TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: background1)
+                                                : TextStyle(color: background1),
+                                          ),
+                                        ],
                                       )),
                                 ),
                               ),
@@ -1192,13 +1203,26 @@ class _SchedulePageState extends State<SchedulePage>
                                                           : BorderSide(
                                                               color: background,
                                                               width: 3))),
-                                          child: Text(
-                                            '${selectedScenes[i].titles['en']}',
-                                            style: selectedSceneIndex == i
-                                                ? TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: background1)
-                                                : TextStyle(color: background1),
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor: sceneStatus
+                                                    ? Colors.green
+                                                    : Colors.grey,
+                                                radius: 4,
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                '${selectedScenes[i].titles['en']}',
+                                                style: selectedSceneIndex == i
+                                                    ? TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: background1)
+                                                    : TextStyle(
+                                                        color: background1),
+                                              ),
+                                            ],
                                           )),
                                     ),
                                   ),

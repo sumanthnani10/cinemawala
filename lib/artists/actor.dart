@@ -31,10 +31,10 @@ class Actor {
         names: i['names'],
         addedBy: i['added_by'],
         by: i['by'],
-        created: DateTime.fromMillisecondsSinceEpoch(i['created']),
+        created: DateTime.fromMillisecondsSinceEpoch(i['created'] ?? 0),
         days: i['days'],
         lastEditBy: i['last_edit_by'],
-        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']),
+        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on'] ?? 0),
         scenes: i['scenes'],
         costumes: i['costumes']);
   }

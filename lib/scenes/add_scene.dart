@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor.dart';
+import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
@@ -119,6 +119,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         "vfx": "",
         "titles": {},
         "gists": {},
+        "completed": "",
+        "completed_on": [0, 0, 0, 0],
       };
       scene['created'] = DateTime.now().millisecondsSinceEpoch;
       scene['last_edit_on'] = scene['created'];

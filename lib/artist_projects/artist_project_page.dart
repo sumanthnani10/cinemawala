@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor.dart';
+import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';

@@ -1,4 +1,4 @@
-import 'package:cinemawala/casting/actors_list.dart';
+import 'package:cinemawala/artists/actors_list.dart';
 import 'package:cinemawala/costumes/costumes_list.dart';
 import 'package:cinemawala/daily_budget/daily_budgets.dart';
 import 'package:cinemawala/locations/locations_list.dart';
@@ -43,7 +43,7 @@ class _ProjectHome extends State<ProjectHome> {
       {
         "title": "Casting",
         "key": "casting",
-        "image": "assets/images/casting.png",
+        "image": "assets/images/artists.png",
         "onClick": ActorsList(
           project: project,
         ),

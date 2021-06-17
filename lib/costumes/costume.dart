@@ -31,10 +31,11 @@ class Costume {
         title: i['title'],
         scenes: i['scenes'],
         addedBy: i['added_by'],
-        created: DateTime.fromMillisecondsSinceEpoch(i['created']),
+        created: DateTime.fromMillisecondsSinceEpoch(i['created'] ?? 0),
         changed: i['changed'],
         lastEditBy: i['last_edit_by'],
-        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']));
+        lastEditOn:
+            DateTime.fromMillisecondsSinceEpoch(i['last_edit_on'] ?? 0));
   }
 
   Map<dynamic, dynamic> toJson() {

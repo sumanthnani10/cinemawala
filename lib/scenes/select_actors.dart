@@ -1,6 +1,6 @@
-import 'package:cinemawala/casting/actor.dart';
-import 'package:cinemawala/casting/actor_page.dart';
-import 'package:cinemawala/casting/add_actor.dart';
+import 'package:cinemawala/artists/actor.dart';
+import 'package:cinemawala/artists/actor_page.dart';
+import 'package:cinemawala/artists/add_actor.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/add_scene.dart';
 import 'package:cinemawala/scenes/scene.dart';

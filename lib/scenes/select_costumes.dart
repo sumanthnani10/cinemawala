@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor.dart';
-import 'package:cinemawala/casting/actor_page.dart';
+import 'package:cinemawala/artists/actor.dart';
+import 'package:cinemawala/artists/actor_page.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
-import 'package:cinemawala/scenes/select_actors.dart';
 import 'package:cinemawala/scenes/select_costume.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

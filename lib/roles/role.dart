@@ -29,9 +29,9 @@ class Role {
         addedBy: i['added_by'],
         owner: i['owner'],
         accepted: i['accepted'],
-        created: DateTime.fromMillisecondsSinceEpoch(i['created']),
+        created: DateTime.fromMillisecondsSinceEpoch(i['created'] ?? 0),
         lastEditBy: i['last_edit_by'],
-        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']),
+        lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on'] ?? 0),
         permissions: i['permissions'],
         role: i['role']);
   }

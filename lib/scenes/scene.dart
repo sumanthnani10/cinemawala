@@ -14,8 +14,8 @@ class Scene {
       vfx;
   DateTime created, lastEditOn;
   Map<dynamic, dynamic> titles, gists, addlArtists;
-  bool day, interior;
-  List<dynamic> artists, costumes, props;
+  bool day, interior, completed;
+  List<dynamic> artists, costumes, props, completedOn;
 
   Scene(
       {@required this.project,
@@ -38,6 +38,8 @@ class Scene {
       @required this.interior,
       @required this.artists,
       @required this.costumes,
+      @required this.completed,
+      @required this.completedOn,
       @required this.props});
 
   factory Scene.fromJson(Map<dynamic, dynamic> i) {
@@ -59,10 +61,12 @@ class Scene {
       props: i['props'],
       sfx: i['sfx'],
       vfx: i['vfx'],
+      completed: i['completed'],
+      completedOn: i['completed_on'],
       addedBy: i['added_by'],
       lastEditBy: i['last_edit_by'],
-      created: DateTime.fromMillisecondsSinceEpoch(i['created']),
-      lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on']),
+      created: DateTime.fromMillisecondsSinceEpoch(i['created'] ?? 0),
+      lastEditOn: DateTime.fromMillisecondsSinceEpoch(i['last_edit_on'] ?? 0),
     );
   }
 
@@ -83,6 +87,8 @@ class Scene {
       "make_up": this.makeUp,
       "sfx": this.sfx,
       "vfx": this.vfx,
+      "completed": this.completed,
+      "completed_on": this.completedOn,
       "choreographer": this.choreographer,
       "fighter": this.fighter,
       "added_by": this.addedBy,

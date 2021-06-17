@@ -5,6 +5,8 @@ import 'package:cinemawala/personal_calender/personal_calendar.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/projects/project_card.dart';
 import 'package:cinemawala/projects/project_home.dart';
+import 'package:cinemawala/user/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -133,6 +135,32 @@ class _ProjectsList extends State<ProjectsList> {
               ),
               icon: Icon(
                 Icons.calendar_today,
+                size: 24,
+                color: background1,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () async {
+                if (await Utils.showdialog(
+                    context, "Sign Out", "Do you want to sign out?", () {
+                  Navigator.pop(context, true);
+                }, () {
+                  Navigator.pop(context);
+                })) {
+                  Utils.showLoadingDialog(context, "Signing Out");
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                      context, Utils.createRoute(Login(), Utils.UTD));
+                }
+              },
+              label: Text(
+                "",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
+              ),
+              icon: Icon(
+                Icons.person,
                 size: 24,
                 color: background1,
               ),

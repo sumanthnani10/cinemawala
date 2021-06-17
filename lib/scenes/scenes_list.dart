@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cinemawala/casting/actor.dart';
+import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/scenes/add_scene.dart';
 import 'package:cinemawala/scenes/scene.dart';
