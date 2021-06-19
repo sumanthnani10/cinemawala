@@ -224,6 +224,7 @@ class Utils {
         await showErrorDialog(context, '', '${r['msg']}');
       }
     } else {
+      debugPrint("${resp.body}");
       await showErrorDialog(
           context, '', 'Something went Wrong. Please try again');
     }
@@ -531,82 +532,83 @@ class Utils {
   // static const String DOMAIN = "10.0.2.2:5001";
   // static const String URL_PATH = "/cinemawala-2021b/us-central1/cinemawala";
 
-  static const String DOMAIN =
-      "ec2-13-233-167-9.ap-south-1.compute.amazonaws.com";
+  static const String DOMAIN = "cinemawala.in";
   static const String URL_PATH = "";
 
   // static const String DOMAIN = "us-central1-cinemawala-2021b.cloudfunctions.net";
   // static const String URL_PATH = "/cinemawala";
 
-  static Uri UPLOAD_IMAGE = Uri.http('${DOMAIN}', '${URL_PATH}/uploadImage');
-  static Uri UPLOAD_IMAGES = Uri.http('${DOMAIN}', '${URL_PATH}/uploadImages');
+  static Uri UPLOAD_IMAGE = Uri.https('${DOMAIN}', '${URL_PATH}/uploadImage');
+  static Uri UPLOAD_IMAGES = Uri.https('${DOMAIN}', '${URL_PATH}/uploadImages');
 
-  static Uri GET_USER = Uri.http('${DOMAIN}', '${URL_PATH}/getUser');
-  static Uri ADD_USER = Uri.http('${DOMAIN}', '${URL_PATH}/addUser');
+  static Uri GET_USER = Uri.https('${DOMAIN}', '${URL_PATH}/getUser');
+  static Uri ADD_USER = Uri.https('${DOMAIN}', '${URL_PATH}/addUser');
   static Uri VALIDATE_USERNAME =
-      Uri.http('${DOMAIN}', '${URL_PATH}/validateUsername');
+      Uri.https('${DOMAIN}', '${URL_PATH}/validateUsername');
   static Uri GET_USERNAMES =
-      Uri.http('${DOMAIN}', '${URL_PATH}/getAllUsernames');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getAllUsernames');
 
-  static Uri ADD_NOTE = Uri.http('${DOMAIN}', '${URL_PATH}/addNote');
-  static Uri REMOVE_NOTE = Uri.http('${DOMAIN}', '${URL_PATH}/removeNote');
+  static Uri ADD_NOTE = Uri.https('${DOMAIN}', '${URL_PATH}/addNote');
+  static Uri REMOVE_NOTE = Uri.https('${DOMAIN}', '${URL_PATH}/removeNote');
 
-  static Uri GET_PROJECTS = Uri.http('${DOMAIN}', '${URL_PATH}/getProjects');
-  static Uri GET_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/getProject');
+  static Uri GET_PROJECTS = Uri.https('${DOMAIN}', '${URL_PATH}/getProjects');
+  static Uri GET_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/getProject');
   static Uri GET_COMPLETE_PROJECT =
-      Uri.http('${DOMAIN}', '${URL_PATH}/getCompleteProject');
-  static Uri ADD_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/addProject');
-  static Uri EDIT_PROJECT = Uri.http('${DOMAIN}', '${URL_PATH}/editProject');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getCompleteProject');
+  static Uri ADD_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/addProject');
+  static Uri EDIT_PROJECT = Uri.https('${DOMAIN}', '${URL_PATH}/editProject');
 
   static Uri GET_ARTIST_PROJECTS =
-      Uri.http('${DOMAIN}', '${URL_PATH}/getArtistProjects');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getArtistProjects');
   static Uri GET_ARTIST_PROJECT =
-      Uri.http('${DOMAIN}', '${URL_PATH}/getArtistProject');
-  static Uri REMOVE_CAST = Uri.http('${DOMAIN}', '${URL_PATH}/removeCast');
-  static Uri ASSIGN_CAST = Uri.http('${DOMAIN}', '${URL_PATH}/assignCast');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getArtistProject');
+  static Uri REMOVE_CAST = Uri.https('${DOMAIN}', '${URL_PATH}/removeCast');
+  static Uri ASSIGN_CAST = Uri.https('${DOMAIN}', '${URL_PATH}/assignCast');
   static Uri VALIDATE_CAST_CODE =
-      Uri.http('${DOMAIN}', '${URL_PATH}/validateCastCode');
+      Uri.https('${DOMAIN}', '${URL_PATH}/validateCastCode');
   static Uri GENERATE_CAST_CODE =
-      Uri.http('${DOMAIN}', '${URL_PATH}/generateCastCode');
+      Uri.https('${DOMAIN}', '${URL_PATH}/generateCastCode');
 
-  static Uri GET_ARTISTS = Uri.http('${DOMAIN}', '${URL_PATH}/getArtists');
-  static Uri ADD_ARTIST = Uri.http('${DOMAIN}', '${URL_PATH}/addArtist');
-  static Uri EDIT_ARTIST = Uri.http('${DOMAIN}', '${URL_PATH}/editArtist');
+  static Uri GET_ARTISTS = Uri.https('${DOMAIN}', '${URL_PATH}/getArtists');
+  static Uri ADD_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/addArtist');
+  static Uri EDIT_ARTIST = Uri.https('${DOMAIN}', '${URL_PATH}/editArtist');
   static Uri UPLOAD_ARTIST_IMAGE =
-      Uri.http('${DOMAIN}', '${URL_PATH}/uploadArtistImage');
+      Uri.https('${DOMAIN}', '${URL_PATH}/uploadArtistImage');
 
-  static Uri GET_COSTUMES = Uri.http('${DOMAIN}', '${URL_PATH}/getCostumes');
-  static Uri ADD_COSTUME = Uri.http('${DOMAIN}', '${URL_PATH}/addCostume');
-  static Uri EDIT_COSTUME = Uri.http('${DOMAIN}', '${URL_PATH}/editCostume');
+  static Uri GET_COSTUMES = Uri.https('${DOMAIN}', '${URL_PATH}/getCostumes');
+  static Uri ADD_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/addCostume');
+  static Uri EDIT_COSTUME = Uri.https('${DOMAIN}', '${URL_PATH}/editCostume');
 
-  static Uri GET_PROPS = Uri.http('${DOMAIN}', '${URL_PATH}/getProps');
-  static Uri ADD_PROP = Uri.http('${DOMAIN}', '${URL_PATH}/addProp');
-  static Uri EDIT_PROP = Uri.http('${DOMAIN}', '${URL_PATH}/editProp');
+  static Uri GET_PROPS = Uri.https('${DOMAIN}', '${URL_PATH}/getProps');
+  static Uri ADD_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/addProp');
+  static Uri EDIT_PROP = Uri.https('${DOMAIN}', '${URL_PATH}/editProp');
 
-  static Uri GET_LOCATIONS = Uri.http('${DOMAIN}', '${URL_PATH}/getLocations');
-  static Uri ADD_LOCATION = Uri.http('${DOMAIN}', '${URL_PATH}/addLocation');
-  static Uri EDIT_LOCATION = Uri.http('${DOMAIN}', '${URL_PATH}/editLocation');
+  static Uri GET_LOCATIONS = Uri.https('${DOMAIN}', '${URL_PATH}/getLocations');
+  static Uri ADD_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/addLocation');
+  static Uri EDIT_LOCATION = Uri.https('${DOMAIN}', '${URL_PATH}/editLocation');
 
-  static Uri GET_SCENES = Uri.http('${DOMAIN}', '${URL_PATH}/getScenes');
-  static Uri ADD_SCENE = Uri.http('${DOMAIN}', '${URL_PATH}/addScene');
-  static Uri EDIT_SCENE = Uri.http('${DOMAIN}', '${URL_PATH}/editScene');
+  static Uri GET_SCENES = Uri.https('${DOMAIN}', '${URL_PATH}/getScenes');
+  static Uri ADD_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/addScene');
+  static Uri EDIT_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/editScene');
 
-  static Uri GET_SCHEDULES = Uri.http('${DOMAIN}', '${URL_PATH}/getSchedules');
-  static Uri ADD_SCHEDULE = Uri.http('${DOMAIN}', '${URL_PATH}/addSchedule');
+  static Uri GET_SCHEDULES = Uri.https('${DOMAIN}', '${URL_PATH}/getSchedules');
+  static Uri ADD_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/addSchedule');
   static Uri ADD_SCHEDULE_NAME =
-      Uri.http('${DOMAIN}', '${URL_PATH}/addScheduleName');
-  static Uri EDIT_SCHEDULE = Uri.http('${DOMAIN}', '${URL_PATH}/editSchedule');
+      Uri.https('${DOMAIN}', '${URL_PATH}/addScheduleName');
+  static Uri EDIT_SCHEDULE = Uri.https('${DOMAIN}', '${URL_PATH}/editSchedule');
+  static Uri UPDATE_SCENE_STATUS =
+      Uri.https('${DOMAIN}', '${URL_PATH}/updateSceneStatus');
 
   static Uri GET_DAILY_BUDGETS =
-      Uri.http('${DOMAIN}', '${URL_PATH}/getDailyBudgets');
+      Uri.https('${DOMAIN}', '${URL_PATH}/getDailyBudgets');
   static Uri ADD_DAILY_BUDGET =
-      Uri.http('${DOMAIN}', '${URL_PATH}/addDailyBudget');
+      Uri.https('${DOMAIN}', '${URL_PATH}/addDailyBudget');
   static Uri EDIT_DAILY_BUDGET =
-      Uri.http('${DOMAIN}', '${URL_PATH}/editDailyBudget');
+      Uri.https('${DOMAIN}', '${URL_PATH}/editDailyBudget');
 
-  static Uri ADD_ROLE = Uri.http('${DOMAIN}', '${URL_PATH}/addRole');
-  static Uri EDIT_ROLE = Uri.http('${DOMAIN}', '${URL_PATH}/editRole');
-  static Uri RESPOND_ROLE = Uri.http('${DOMAIN}', '${URL_PATH}/respondRole');
+  static Uri ADD_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/addRole');
+  static Uri EDIT_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/editRole');
+  static Uri RESPOND_ROLE = Uri.https('${DOMAIN}', '${URL_PATH}/respondRole');
 
 /*---------------------------------------------------------------------------------*/
 

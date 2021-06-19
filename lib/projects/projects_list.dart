@@ -149,6 +149,8 @@ class _ProjectsList extends State<ProjectsList> {
                 })) {
                   Utils.showLoadingDialog(context, "Signing Out");
                   await FirebaseAuth.instance.signOut();
+                  Utils.allCastProjects = {};
+                  Utils.allCrewProjects = {};
                   Navigator.pop(context);
                   Navigator.pushReplacement(
                       context, Utils.createRoute(Login(), Utils.UTD));

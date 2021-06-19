@@ -68,6 +68,7 @@ class _SchedulePageState extends State<SchedulePage>
   final int workingDay;
   final DateTime date;
   final VoidCallback nextDate, prevDate, getAll;
+  bool dayCrossed = false;
 
   _SchedulePageState(
       this.nextDate,
@@ -86,9 +87,6 @@ class _SchedulePageState extends State<SchedulePage>
   Set<Actor> selectedArtists = {};
   Set<Costume> selectedCostumes = {};
   Actor selectedArtist;
-  Actor setIterator;
-  String sceneDate;//added on june 16
-  bool sceneStatus;//added on june 16
   Map<dynamic, dynamic> artistTimings = {},
       addlTimings = {},
       callSheetTimings = {},
@@ -112,9 +110,7 @@ class _SchedulePageState extends State<SchedulePage>
       unselectedIndicator = BorderSide(width: 3);
   int selectedSceneIndex = 0;
   Scene selectedScene;
-  Scene locationScene;
   Location sceneLoc;
-  String check;
   Color background, background1, color;
 
   Future<String> createAlertDialog(BuildContext context) async {
@@ -127,7 +123,7 @@ class _SchedulePageState extends State<SchedulePage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(selectedArtists.length, (i) {
-                  setIterator = selectedArtists.elementAt(i);
+                  var setIterator = selectedArtists.elementAt(i);
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     child: TextButton(
@@ -161,11 +157,11 @@ class _SchedulePageState extends State<SchedulePage>
 
   @override
   void initState() {
-    sceneStatus = sceneStatus ?? false;
-    print("scene ${sceneStatus}");
     isPopUp = isPopUp ?? true;
     setContent();
     selectedScheduleIndex = [];
+    dayCrossed = DateTime(schedule.year, schedule.month, schedule.day)
+        .isBefore(DateTime.now());
     showDates = false;
     super.initState();
     animationController = AnimationController(vsync: this);
@@ -220,11 +216,10 @@ class _SchedulePageState extends State<SchedulePage>
 
   Widget widget2(scrollController, scheduless) {
     if (selectedScenes.length != 0) {
-      locationScene = selectedScenes[selectedSceneIndex];
-      sceneLoc = Utils.locationsMap[locationScene.location];
+      selectedScene = selectedScenes[selectedSceneIndex];
+      sceneLoc = Utils.locationsMap[selectedScene.location];
     }
     List<dynamic> schelist;
-    sceneDate = "WD: ${workingDay} / ${date.day > 9 ? date.day : "0${date.day}"}-${date.month > 9 ? date.month : "0${date.month}"}-${date.year}, ${weeksDays[date.weekday - 1]}";
     test = {};
     if (schedule == null) {
       schelist = scheduless.keys.toList();
@@ -357,9 +352,7 @@ class _SchedulePageState extends State<SchedulePage>
                                       child: Row(
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor: sceneStatus
-                                                ? Colors.green
-                                                : Colors.deepOrange,
+                                            backgroundColor: Colors.white,
                                             radius: 4,
                                           ),
                                           Text(
@@ -430,71 +423,88 @@ class _SchedulePageState extends State<SchedulePage>
                           ],
                         ),
                         // Scene Status
-                        if(project.role.permissions["scenes"]["add"] ||
+                        if (project.role.permissions["scenes"]["add"] ||
                             project.role.permissions["scenes"]["edit"] ||
                             project.role.permissions["schedule"]["add"] ||
                             project.role.permissions["schedule"]["edit"])
-                        Divider(
-                          thickness: 2,
-                          height: 1,
-                        ),
-                        if(project.role.permissions["scenes"]["add"] ||
-                            project.role.permissions["scenes"]["edit"] ||
-                            project.role.permissions["schedule"]["add"] ||
-                            project.role.permissions["schedule"]["edit"] || !sceneStatus)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
-                                child: Text("Scene Status",style: bottomSheetHeadingStyle,),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Row(
-                                  //mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    InkWell(
-                                      onTap: (){
-                                        setState(() {
-                                          sceneStatus = true;
-                                          //sceneDate
-                                          print("add sceneDate variable and add scene status to scene");
-                                        });
-
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Colors.lightGreen,
-                                        ),
-                                        child: Text("Completed"),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: (){
-                                        if(!sceneStatus){
-                                          setState(() {
-                                            sceneStatus = false;
-                                            print("add scene status");
-                                          });
-                                        }
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Colors.orangeAccent,
-                                        ),
-                                        child: Text("InComplete"),
-                                      ),
-                                    ),
-                                  ],
+                          Divider(
+                            thickness: 2,
+                            height: 1,
+                          ),
+                        if (project.role.permissions["schedule"]["edit"] &&
+                            selectedScene.completedOn[0] == 0 &&
+                            dayCrossed)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Scene Status",
+                                  style: bottomSheetHeadingStyle,
                                 ),
-                              ),
-                            ],
+                                Spacer(),
+                                InkWell(
+                                  onTap: () async {
+                                    await updateSceneStatus(
+                                        false, selectedScene.id);
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 16,
+                                          backgroundColor: Colors.deepOrange,
+                                          child: Center(
+                                              child: Icon(
+                                            Icons.close_rounded,
+                                            color: Colors.white,
+                                          )),
+                                        ),
+                                        Text(
+                                          "Not Done",
+                                          style: TextStyle(
+                                              color: Colors.deepOrangeAccent,
+                                              fontSize: 8),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 24,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await updateSceneStatus(
+                                        true, selectedScene.id);
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 16,
+                                          backgroundColor: Colors.green,
+                                          child: Center(
+                                              child: Icon(
+                                            Icons.done_rounded,
+                                            color: Colors.white,
+                                          )),
+                                        ),
+                                        Text(
+                                          "Done",
+                                          style: TextStyle(
+                                              color: Colors.green, fontSize: 8),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                )
+                              ],
+                            ),
                           ),
                         if (project.role.permissions["casting"]["view"])
                           Divider(
@@ -1176,11 +1186,9 @@ class _SchedulePageState extends State<SchedulePage>
                                       },
                                       onTap: () async {
                                         selectedSceneIndex = i;
-                                        locationScene =
-                                            selectedScenes[selectedSceneIndex];
-                                        sceneLoc = Utils.locationsMap[
-                                            locationScene.location];
                                         selectedScene = selectedScenes[i];
+                                        sceneLoc = Utils.locationsMap[
+                                            selectedScene.location];
                                         selectedCostumes.clear();
                                         for (var i in selectedScene.costumes) {
                                           for (var j in i['costumes']) {
@@ -1206,9 +1214,16 @@ class _SchedulePageState extends State<SchedulePage>
                                           child: Row(
                                             children: [
                                               CircleAvatar(
-                                                backgroundColor: sceneStatus
+                                                backgroundColor: selectedScenes[
+                                                            i]
+                                                        .completed
                                                     ? Colors.green
-                                                    : Colors.grey,
+                                                    : selectedScenes[i]
+                                                                    .completedOn[
+                                                                0] ==
+                                                            0
+                                                        ? Colors.grey
+                                                        : Colors.deepOrange,
                                                 radius: 4,
                                               ),
                                               SizedBox(width: 4),
@@ -1422,6 +1437,70 @@ class _SchedulePageState extends State<SchedulePage>
             ),
           )
         : widget2(ScrollController(), scheduless);
+  }
+
+  updateSceneStatus(bool completed, String sceneID) async {
+    Utils.showLoadingDialog(context, 'Updating Scene Status');
+    DateTime now = DateTime.now();
+
+    try {
+      var resp = await http.post(Utils.UPDATE_SCENE_STATUS,
+          body: jsonEncode({
+            "last_edit_on": now.millisecondsSinceEpoch,
+            "project_id": "${schedule.project}",
+            "id": sceneID,
+            "last_edit_by": Utils.USER_ID,
+            "completed": completed,
+            "completed_on": [
+              schedule.day,
+              schedule.month,
+              schedule.year,
+              workingDay
+            ]
+          }),
+          headers: {"Content-Type": "application/json"});
+      // debugPrint(resp.body);
+      var r = jsonDecode(resp.body);
+      Navigator.pop(context);
+      if (resp.statusCode == 200) {
+        if (r['status'] == 'success') {
+          var scene = Utils.scenesMap[sceneID].toJson();
+          scene['completed'] = completed;
+          scene['completed_on'] = [
+            schedule.day,
+            schedule.month,
+            schedule.year,
+            workingDay
+          ];
+          Utils.scenesMap[sceneID] = Scene.fromJson(scene);
+          Utils.scenes = Utils.scenesMap.values.toList();
+
+          int i = selectedScenes.indexWhere((element) => element.id == sceneID);
+          selectedScenes[i] = Utils.scenesMap[sceneID];
+          setState(() {});
+
+          await Utils.showSuccessDialog(
+              context,
+              'Scene Status Updated',
+              'Scene status has been updated successfully.',
+              Colors.green,
+              background, () {
+            Navigator.pop(context);
+          });
+        } else {
+          await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
+        }
+      } else {
+        await Utils.showErrorDialog(context, 'Something went wrong.',
+            'Please try again after sometime.');
+      }
+    } catch (e) {
+      // debugPrint(e);
+      Navigator.pop(context);
+      await Utils.showErrorDialog(
+          context, 'Something went wrong.', 'Please try again after sometime.');
+    }
+    // Navigator.pop(context, back);
   }
 
   editSchedule() async {
