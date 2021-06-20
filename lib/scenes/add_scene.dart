@@ -1393,7 +1393,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
       body['artists'].add(a.toJson());
     });
 
-    var selectedCostumesIds = [];
+    Set selectedCostumesIds = {};
+    selectedCostumes = selectedCostumes.toSet().toList();
 
     selectedCostumes.forEach((c) {
       selectedCostumesIds.add(c.id);

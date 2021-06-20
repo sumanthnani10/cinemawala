@@ -160,8 +160,9 @@ class _SchedulePageState extends State<SchedulePage>
     isPopUp = isPopUp ?? true;
     setContent();
     selectedScheduleIndex = [];
-    dayCrossed = DateTime(schedule.year, schedule.month, schedule.day)
-        .isBefore(DateTime.now());
+    if (schedule != null)
+      dayCrossed = DateTime(schedule.year, schedule.month, schedule.day)
+          .isBefore(DateTime.now());
     showDates = false;
     super.initState();
     animationController = AnimationController(vsync: this);
