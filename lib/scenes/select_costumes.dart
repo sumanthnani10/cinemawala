@@ -19,10 +19,11 @@ class SelectCostumes extends StatefulWidget {
   final List<Actor> selectedActors;
   final List<dynamic> costumes;
 
-  SelectCostumes({Key key,
-    @required this.project,
-    @required this.selectedActors,
-    @required this.costumes})
+  SelectCostumes(
+      {Key key,
+      @required this.project,
+      @required this.selectedActors,
+      @required this.costumes})
       : super(key: key);
 
   @override
@@ -52,9 +53,9 @@ class _SelectCostumes extends State<SelectCostumes>
   Widget build(BuildContext context) {
     var showActors = costumes
         .where((e) => Utils.artistsMap[e['id']].names
-        .toString()
-        .toLowerCase()
-        .contains(search.toLowerCase()))
+            .toString()
+            .toLowerCase()
+            .contains(search.toLowerCase()))
         .toList();
     background = Colors.white;
     color = Color(0xff6fd8a8);
@@ -165,12 +166,16 @@ class _SelectCostumes extends State<SelectCostumes>
                             var actorCostumes = showActors[i];
                             return ListTile(
                               onTap: () async {
-                                if(project.role.permissions["costumes"]["view"] ||
-                                    project.role.permissions["scenes"]["view"] ||
-                                    project.role.permissions["schedule"]["view"]){
+                                if (project.role.permissions["costumes"]
+                                        ["view"] ||
+                                    project.role.permissions["scenes"]
+                                        ["view"] ||
+                                    project.role.permissions["schedule"]
+                                        ["view"]) {
                                   List<Costume> selectedCostumes = [];
                                   actorCostumes['costumes'].forEach((c) {
-                                    selectedCostumes.add(Utils.costumesMap['$c']);
+                                    selectedCostumes
+                                        .add(Utils.costumesMap['$c']);
                                   });
                                   var costs = await Navigator.push(
                                       context,
@@ -178,7 +183,7 @@ class _SelectCostumes extends State<SelectCostumes>
                                           SelectCostume(
                                             actor: '${actor.names['en']}',
                                             character:
-                                            '${actor.characters['en']}',
+                                                '${actor.characters['en']}',
                                             project: project,
                                             selectedCostumes: selectedCostumes,
                                             sceneTitle: '',
@@ -186,18 +191,21 @@ class _SelectCostumes extends State<SelectCostumes>
                                           Utils.DTU));
                                   if (costs != null) {
                                     costumes[costumes.indexWhere((element) =>
-                                    element['id'] == actor.id)]
-                                    ['costumes'] = costs;
+                                            element['id'] == actor.id)]
+                                        ['costumes'] = costs;
                                   }
                                   setState(() {});
-                                }else{
+                                } else {
                                   Utils.notAllowed(context);
                                 }
                               },
                               onLongPress: () async {
-                                if(project.role.permissions["casting"]["view"] ||
-                                    project.role.permissions["scenes"]["view"] ||
-                                    project.role.permissions["schedule"]["view"]){
+                                if (project.role.permissions["casting"]
+                                        ["view"] ||
+                                    project.role.permissions["scenes"]
+                                        ["view"] ||
+                                    project.role.permissions["schedule"]
+                                        ["view"]) {
                                   Navigator.push(
                                       context,
                                       Utils.createRoute(
@@ -207,7 +215,7 @@ class _SelectCostumes extends State<SelectCostumes>
                                             project: project,
                                           ),
                                           Utils.DTU));
-                                }else{
+                                } else {
                                   Utils.notAllowed(context);
                                 }
                               },
@@ -219,51 +227,56 @@ class _SelectCostumes extends State<SelectCostumes>
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: List<Widget>.generate(
-                                    actorCostumes['costumes'].length, (j) {
-                                  Costume costume = Utils.costumesMap[
-                                  '${actorCostumes['costumes'][j]}'];
-                                  return Container(
-                                    margin: EdgeInsets.only(left: 4),
-                                    padding: EdgeInsets.all(1),
-                                    width: 25,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                      color:project.role.permissions["costumes"]["view"] ||
-                                          project.role.permissions["scenes"]["view"] ||
-                                          project.role.permissions["schedule"]["view"] ?
-                                      color : Colors.grey,
-                                      borderRadius:
-                                      BorderRadius.circular(4),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          progressIndicatorBuilder:
-                                              (context, url, progress) =>
-                                              LinearProgressIndicator(
-                                                value:
-                                                progress.progress,
-                                              ),
-                                          errorWidget: (context, url,
-                                              error) =>
-                                              Container(
-                                                color: background,
-                                                child: Center(
-                                                    child: Text(
+                                        actorCostumes['costumes'].length, (j) {
+                                      Costume costume = Utils.costumesMap[
+                                          '${actorCostumes['costumes'][j]}'];
+                                      return Container(
+                                        margin: EdgeInsets.only(left: 4),
+                                        padding: EdgeInsets.all(1),
+                                        width: 25,
+                                        height: 25,
+                                        decoration: BoxDecoration(
+                                          color: project.role.permissions[
+                                                      "costumes"]["view"] ||
+                                                  project.role
+                                                          .permissions["scenes"]
+                                                      ["view"] ||
+                                                  project.role.permissions[
+                                                      "schedule"]["view"]
+                                              ? color
+                                              : Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              progressIndicatorBuilder:
+                                                  (context, url, progress) =>
+                                                      LinearProgressIndicator(
+                                                        value:
+                                                            progress.progress,
+                                                      ),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Container(
+                                                    color: background,
+                                                    child: Center(
+                                                        child: Text(
                                                       '${costume.title}',
                                                       style: TextStyle(
                                                           color: background1,
                                                           fontSize: 8),
                                                     )),
-                                              ),
-                                          useOldImageOnUrlChange: true,
-                                          imageUrl:
-                                          costume.referenceImage ?? ''),
-                                    ),
-                                  );
-                                }) +
+                                                  ),
+                                              useOldImageOnUrlChange: true,
+                                              imageUrl:
+                                                  costume.referenceImage ?? ''),
+                                        ),
+                                      );
+                                    }) +
                                     [
                                       Container(
                                         margin: EdgeInsets.only(left: 4),
@@ -306,11 +319,12 @@ class SelectedCostumes extends StatefulWidget {
   final bool isPopUp;
   final Scene scene;
 
-  SelectedCostumes({Key key,
-    @required this.project,
-    @required this.costumes,
-    @required this.scene,
-    this.isPopUp})
+  SelectedCostumes(
+      {Key key,
+      @required this.project,
+      @required this.costumes,
+      @required this.scene,
+      this.isPopUp})
       : super(key: key);
 
   @override
@@ -343,9 +357,9 @@ class _SelectedCostumes extends State<SelectedCostumes>
     // Navigator.pop(context);
     var showActors = costumes
         .where((e) => Utils.artistsMap[e['id']].names
-        .toString()
-        .toLowerCase()
-        .contains(search.toLowerCase()))
+            .toString()
+            .toLowerCase()
+            .contains(search.toLowerCase()))
         .toList();
     background = Colors.white;
     color = Color(0xff6fd8a8);
@@ -356,14 +370,15 @@ class _SelectedCostumes extends State<SelectedCostumes>
     }
     return GestureDetector(
       onTap: () {
-        if(isPopUp) {
+        if (isPopUp) {
           Navigator.of(context).pop();
         }
       },
       child: Scaffold(
         backgroundColor: isPopUp ? Colors.black26 : Colors.white,
         body: Container(
-          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.black))),
+          decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: Colors.black))),
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -387,10 +402,10 @@ class _SelectedCostumes extends State<SelectedCostumes>
                       children: [
                         isPopUp
                             ? IconButton(
-                            icon: Icon(Icons.arrow_back_rounded),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            })
+                                icon: Icon(Icons.arrow_back_rounded),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })
                             : Container(),
                         Text(
                           "Selected Costumes",
@@ -399,7 +414,7 @@ class _SelectedCostumes extends State<SelectedCostumes>
                         ),
                         Spacer(),
                         IconButton(
-                            icon: Icon(Icons.add),
+                            icon: Icon(Icons.edit),
                             onPressed: () async {
                               Utils.showLoadingDialog(context, "Loading");
                               Set oldCostumes = {};
@@ -410,7 +425,6 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                 }
                               }
 
-                              print(oldCostumes);
                               List selectedArtists = List<Actor>.generate(
                                   scene.artists.length,
                                   (ar) => Utils.artistsMap[scene.artists[ar]]);
@@ -435,7 +449,9 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                   "id": scene.id,
                                   "last_edit_by": Utils.USER_ID,
                                 };
+
                                 sceneCostumesMap = selected;
+
                                 Set selectedCostumes = {};
                                 for (var i in sceneCostumesMap) {
                                   for (var j in i['costumes']) {
@@ -492,76 +508,68 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                   }
                                 });
                                 body['scene_costumes'] = sceneCostumesMap;
-                                if (await Utils.showScrollingDialog(
-                                        context, "", "${body}", () {
-                                      Navigator.pop(context, true);
-                                    }, () {
-                                      Navigator.pop(context, false);
-                                    }) ??
-                                    false) {
-                                  try {
-                                    var resp = await http.post(
-                                        Utils.EDIT_SCENE_COSTUMES,
-                                        body: jsonEncode(body),
-                                        headers: {
-                                          "Content-Type": "application/json"
-                                        });
-                                    // debugPrint(resp.body);
-                                    var r = jsonDecode(resp.body);
-                                    if (resp.statusCode == 200) {
-                                      if (r['status'] == 'success') {
-                                        scene.costumes = sceneCostumesMap;
-                                        Utils.scenesMap[scene.id] = scene;
-                                        Utils.scenes =
-                                            Utils.scenesMap.values.toList();
 
-                                        body['artists'].forEach((a) {
-                                          Utils.artistsMap[a['id']] =
-                                              Actor.fromJson(a);
-                                        });
-                                        Utils.artists =
-                                            Utils.artistsMap.values.toList();
+                                try {
+                                  var resp = await http.post(
+                                      Utils.EDIT_SCENE_COSTUMES,
+                                      body: jsonEncode(body),
+                                      headers: {
+                                        "Content-Type": "application/json"
+                                      });
+                                  // debugPrint(resp.body);
+                                  var r = jsonDecode(resp.body);
+                                  if (resp.statusCode == 200) {
+                                    if (r['status'] == 'success') {
+                                      scene.costumes = sceneCostumesMap;
+                                      Utils.scenesMap[scene.id] = scene;
+                                      Utils.scenes =
+                                          Utils.scenesMap.values.toList();
 
-                                        body['costumes'].forEach((c) {
-                                          Utils.costumesMap[c['id']] =
-                                              Costume.fromJson(c);
-                                        });
-                                        Utils.costumes =
-                                            Utils.costumesMap.values.toList();
+                                      body['artists'].forEach((a) {
+                                        Utils.artistsMap[a['id']] =
+                                            Actor.fromJson(a);
+                                      });
+                                      Utils.artists =
+                                          Utils.artistsMap.values.toList();
 
+                                      body['costumes'].forEach((c) {
+                                        Utils.costumesMap[c['id']] =
+                                            Costume.fromJson(c);
+                                      });
+                                      Utils.costumes =
+                                          Utils.costumesMap.values.toList();
+
+                                      Navigator.pop(context);
+
+                                      await Utils.showSuccessDialog(
+                                          context,
+                                          'Costumes Updated',
+                                          'Costumes has been updated successfully.',
+                                          Colors.green,
+                                          background, () {
                                         Navigator.pop(context);
-
-                                        await Utils.showSuccessDialog(
-                                            context,
-                                            'Costumes Updated',
-                                            'Costumes has been updated successfully.',
-                                            Colors.green,
-                                            background, () {
-                                          Navigator.pop(context);
-                                        });
-                                      } else {
-                                        Navigator.pop(context);
-                                        await Utils.showErrorDialog(context,
-                                            'Unsuccessful', '${r['msg']}');
-                                      }
+                                      });
                                     } else {
                                       Navigator.pop(context);
-                                      await Utils.showErrorDialog(
-                                          context,
-                                          'Something went wrong.',
-                                          'Please try again after sometime.');
+                                      await Utils.showErrorDialog(context,
+                                          'Unsuccessful', '${r['msg']}');
                                     }
-                                  } catch (e) {
-                                    // debugPrint(e);
+                                  } else {
                                     Navigator.pop(context);
                                     await Utils.showErrorDialog(
                                         context,
                                         'Something went wrong.',
                                         'Please try again after sometime.');
                                   }
-                                } else {
+                                } catch (e) {
+                                  // debugPrint(e);
                                   Navigator.pop(context);
+                                  await Utils.showErrorDialog(
+                                      context,
+                                      'Something went wrong.',
+                                      'Please try again after sometime.');
                                 }
+                                Navigator.pop(context);
                                 setState(() {});
                               } else {
                                 Navigator.pop(context);
@@ -635,7 +643,7 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                   children: List<Widget>.generate(
                                       actorCostumes['costumes'].length, (j) {
                                     Costume costume = Utils.costumesMap[
-                                    '${actorCostumes['costumes'][j]}'];
+                                        '${actorCostumes['costumes'][j]}'];
                                     return InkWell(
                                       onTap: () async {
                                         await Navigator.push(
@@ -654,31 +662,35 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: color,
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                         ),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                           child: CachedNetworkImage(
                                               fit: BoxFit.cover,
                                               progressIndicatorBuilder:
                                                   (context, url, progress) =>
-                                                  LinearProgressIndicator(
-                                                    value: progress.progress,
-                                                  ),
-                                              errorWidget:
-                                                  (context, url, error) =>
+                                                      LinearProgressIndicator(
+                                                        value:
+                                                            progress.progress,
+                                                      ),
+                                              errorWidget: (context, url,
+                                                      error) =>
                                                   Container(
                                                     color: background,
                                                     child: Center(
                                                         child: Text(
-                                                          '${costume.title}',
-                                                          style: TextStyle(
-                                                              color: background1,
-                                                              fontSize: 8),
-                                                        )),
+                                                      '${costume.title}',
+                                                      style: TextStyle(
+                                                          color: background1,
+                                                          fontSize: 8),
+                                                    )),
                                                   ),
                                               useOldImageOnUrlChange: true,
-                                              imageUrl: costume.referenceImage ?? ''),
+                                              imageUrl:
+                                                  costume.referenceImage ?? ''),
                                         ),
                                       ),
                                     );

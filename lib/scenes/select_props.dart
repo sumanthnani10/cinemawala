@@ -1,12 +1,15 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/props/add_prop.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/props/prop_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart' as http;
+
 import '../utils.dart';
-import 'add_scene.dart';
 import 'scene.dart';
 
 class SelectProps extends StatefulWidget {
@@ -42,7 +45,7 @@ class _SelectProps extends State<SelectProps> {
   Widget build(BuildContext context) {
     var showProps = props
         .where((e) =>
-            e.title.toString().toLowerCase().contains(search.toLowerCase()))
+        e.title.toString().toLowerCase().contains(search.toLowerCase()))
         .toList();
     showProps.sort((a, b) {
       int x, y;
@@ -116,9 +119,13 @@ class _SelectProps extends State<SelectProps> {
                         },
                         child: Container(
                           margin: EdgeInsets.all(2),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          child: Text('+ Add Prop'),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          child: Icon(
+                            Icons.add,
+                            size: 24,
+                            color: Colors.indigo,
+                          ),
                         ),
                       ),
                       TextButton.icon(
@@ -130,13 +137,13 @@ class _SelectProps extends State<SelectProps> {
                           Navigator.pop(context, [selected, selectedProps]);
                         },
                         label: Text(
-                          "Save",
+                          "",
                           style: TextStyle(color: Colors.indigo),
                           textAlign: TextAlign.right,
                         ),
                         icon: Icon(
                           Icons.done,
-                          size: 18,
+                          size: 24,
                           color: Colors.indigo,
                         ),
                       ),
@@ -187,18 +194,23 @@ class _SelectProps extends State<SelectProps> {
                           spacing: 4,
                           runSpacing: 4,
                           children: <Widget>[
-
-                              ] +
+                          ] +
                               List<Widget>.generate(showProps.length, (i) {
-                                Prop prop = props[i];
+                                Prop prop = showProps[i];
                                 return InkWell(
                                   onTap: () {
-                                    if(project.role.permissions["props"]["add"] ||
-                                        project.role.permissions["props"]["edit"] ||
-                                        project.role.permissions["scenes"]["edit"] ||
-                                        project.role.permissions["scenes"]["add"] ||
-                                        project.role.permissions["schedule"]["edit"] ||
-                                        project.role.permissions["schedule"]["add"]){
+                                    if (project.role.permissions["props"]
+                                            ["add"] ||
+                                        project.role.permissions["props"]
+                                            ["edit"] ||
+                                        project.role.permissions["scenes"]
+                                            ["edit"] ||
+                                        project.role.permissions["scenes"]
+                                            ["add"] ||
+                                        project.role.permissions["schedule"]
+                                            ["edit"] ||
+                                        project.role.permissions["schedule"]
+                                            ["add"]) {
                                       setState(() {
                                         if (selectedProps
                                             .contains(showProps[i])) {
@@ -217,43 +229,60 @@ class _SelectProps extends State<SelectProps> {
                                         Utils.createRoute(
                                             PropPage(
                                               project: project,
-                                              prop: prop,
+                                              prop: showProps[i],
                                             ),
                                             Utils.DTU));
                                   },
                                   splashColor: background1.withOpacity(0.2),
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child:
-                                      prop.referenceImage == ''
-                                          ? Container(
-                                        height: 70,
-                                        width: 70,
-                                        color: Colors.grey,
-                                        child: Center(
-                                            child: Text(
-                                              'No Image',
-                                              style: TextStyle(color: background),
-                                            )),
-                                      )
-                                          : Container(
+                                      child: Container(
                                         height: 70,
                                         width: 70,
                                         decoration: BoxDecoration(
-                                          border: Border.all(color: Utils.notPermitted),
-                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color: selectedProps
+                                                      .contains(showProps[i])
+                                                  ? Colors.blue
+                                                  : Colors.white,
+                                              width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
-                                        child: CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                            progressIndicatorBuilder:
-                                                (context, url, progress) =>
-                                                LinearProgressIndicator(
-                                                  value: progress.progress,
-                                                ),
-                                            errorWidget: (context, url, error) =>
-                                                Center(child: Text('Image')),
-                                            useOldImageOnUrlChange: true,
-                                            imageUrl: prop.referenceImage),
+                                        child: prop.referenceImage == ''
+                                            ? Container(
+                                                height: 70,
+                                                width: 70,
+                                                color: Colors.grey,
+                                                child: Center(
+                                                    child: Text(
+                                                  'No Image',
+                                                  style: TextStyle(
+                                                      color: background),
+                                                )),
+                                              )
+                                            : ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: CachedNetworkImage(
+                                                    fit: BoxFit.cover,
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                progress) =>
+                                                            LinearProgressIndicator(
+                                                              value: progress
+                                                                  .progress,
+                                                            ),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Center(
+                                                            child:
+                                                                Text('Image')),
+                                                    useOldImageOnUrlChange:
+                                                        true,
+                                                    imageUrl:
+                                                        prop.referenceImage),
+                                              ),
                                       )),
                                 );
                               }),
@@ -277,12 +306,11 @@ class SelectedProps extends StatefulWidget {
   final bool isPopUp;
   final Scene scene;
 
-  SelectedProps(
-      {Key key,
-      @required this.project,
-      @required this.selectedProps,
-      @required this.scene,
-      this.isPopUp})
+  SelectedProps({Key key,
+    @required this.project,
+    @required this.selectedProps,
+    @required this.scene,
+    this.isPopUp})
       : super(key: key);
 
   @override
@@ -312,7 +340,7 @@ class _SelectedProps extends State<SelectedProps>
   Widget build(BuildContext context) {
     var showProps = selectedProps
         .where((e) =>
-            e.title.toString().toLowerCase().contains(search.toLowerCase()))
+        e.title.toString().toLowerCase().contains(search.toLowerCase()))
         .toList();
     background = Colors.white;
     color = Color(0xff6fd8a8);
@@ -352,34 +380,128 @@ class _SelectedProps extends State<SelectedProps>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         isPopUp ? IconButton(
-                            icon: Icon(Icons.arrow_back_rounded),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }):Container(),
+                                icon: Icon(Icons.arrow_back_rounded),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })
+                            : Container(),
                         Text(
                           "Selected Props",
                           style: TextStyle(fontSize: 20, color: background1),
                           textAlign: TextAlign.center,
                         ),
                         Spacer(),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddScene(
-                                      project: project,
-                                      scene: scene.toJson()),
-                                ));
-                          },
-                          child: Container(
-                            //color: color,
-                            margin: EdgeInsets.all(2),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            child: Text('+ Add Prop'),
-                          ),
-                        ),
+                        IconButton(
+                            icon: Icon(Icons.edit_rounded),
+                            onPressed: () async {
+                              Utils.showLoadingDialog(context, 'Loading');
+
+                              var selected = await Navigator.push(
+                                  context,
+                                  Utils.createRoute(
+                                      SelectProps(
+                                        project: project,
+                                        selectedProps: selectedProps.sublist(0),
+                                      ),
+                                      Utils.DTU));
+
+                              if (selected != null) {
+                                Map sceneMap = {};
+                                List oldProps = selectedProps.sublist(0);
+
+                                Map body = {
+                                  "props": [],
+                                  "last_edit_on":
+                                      DateTime.now().millisecondsSinceEpoch,
+                                  "project_id": "${project.id}",
+                                  "id": scene.id,
+                                  "last_edit_by": Utils.USER_ID,
+                                };
+
+                                sceneMap['props'] = selected[0];
+                                List _selectedProps = selected[1];
+
+                                oldProps.forEach((p) {
+                                  if (!sceneMap['props'].contains(p.id)) {
+                                    p = Prop.fromJson(p.toJson());
+                                    if (p.usedIn.contains(scene.id)) {
+                                      p.usedIn.remove(scene.id);
+                                    }
+                                    body['props'].add(p.toJson());
+                                  }
+                                });
+
+                                _selectedProps.forEach((p) {
+                                  p = Prop.fromJson(p.toJson());
+                                  if (!p.usedIn.contains(scene.id)) {
+                                    p.usedIn.add(scene.id);
+                                  }
+                                  body['props'].add(p.toJson());
+                                });
+
+                                print(body['props'].length);
+
+                                body['scene_props'] = sceneMap['props'];
+
+                                try {
+                                  var resp = await http.post(
+                                      Utils.EDIT_SCENE_PROPS,
+                                      body: jsonEncode(body),
+                                      headers: {
+                                        "Content-Type": "application/json"
+                                      });
+                                  // debugPrint(resp.body);
+                                  var r = jsonDecode(resp.body);
+                                  if (resp.statusCode == 200) {
+                                    if (r['status'] == 'success') {
+                                      scene.props = sceneMap['props'];
+                                      Utils.scenesMap[scene.id] = scene;
+                                      Utils.scenes =
+                                          Utils.scenesMap.values.toList();
+
+                                      body['props'].forEach((a) {
+                                        Utils.propsMap[a['id']] =
+                                            Prop.fromJson(a);
+                                      });
+                                      Utils.props =
+                                          Utils.propsMap.values.toList();
+
+                                      Navigator.pop(context);
+
+                                      await Utils.showSuccessDialog(
+                                          context,
+                                          'Props Updated',
+                                          'Props has been updated successfully.',
+                                          Colors.green,
+                                          background, () {
+                                        Navigator.pop(context);
+                                      });
+                                    } else {
+                                      Navigator.pop(context);
+                                      await Utils.showErrorDialog(context,
+                                          'Unsuccessful', '${r['msg']}');
+                                    }
+                                  } else {
+                                    Navigator.pop(context);
+                                    await Utils.showErrorDialog(
+                                        context,
+                                        'Something went wrong.',
+                                        'Please try again after sometime.');
+                                  }
+                                } catch (e) {
+                                  // debugPrint(e);
+                                  Navigator.pop(context);
+                                  await Utils.showErrorDialog(
+                                      context,
+                                      'Something went wrong.',
+                                      'Please try again after sometime.');
+                                }
+                                Navigator.pop(context);
+                                setState(() {});
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            })
                       ],
                     ),
                     TextField(
@@ -427,7 +549,7 @@ class _SelectedProps extends State<SelectedProps>
                             spacing: 4,
                             runSpacing: 4,
                             children: <Widget>[
-                                ] +
+                            ] +
                                 List<Widget>.generate(showProps.length, (i) {
                                   Prop prop = showProps[i];
                                   return InkWell(
@@ -440,39 +562,53 @@ class _SelectedProps extends State<SelectedProps>
                                                 project: project,
                                               ),
                                               Utils.DTU));
-                                },
-                                splashColor: background1.withOpacity(0.2),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child:
-                                    prop.referenceImage == ''
-                                        ? Container(
-                                      color: Colors.grey,
-                                      child: Center(
-                                          child: Text(
-                                            'No Image',
-                                            style: TextStyle(color: background),
-                                          )),
-                                    )
-                                        : Container(
+                                    },
+                                    splashColor: background1.withOpacity(0.2),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child:
+                                        prop.referenceImage == ''
+                                            ? Container(
+                                          color: Colors.grey,
+                                          child: Center(
+                                              child: Text(
+                                                'No Image',
+                                                style: TextStyle(color: background),
+                                              )),
+                                        )
+                                            : Container(
                                           height: 70,
-                                          width: 70,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: Utils.notPermitted),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                          progressIndicatorBuilder:
-                                              (context, url, progress) =>
-                                              LinearProgressIndicator(
-                                                value: progress.progress,
-                                              ),
-                                          errorWidget: (context, url, error) =>
-                                              Center(child: Text('Image')),
-                                          useOldImageOnUrlChange: true,
-                                          imageUrl: prop.referenceImage),
-                                        )),
+                                                width: 70,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color:
+                                                          Utils.notPermitted),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: CachedNetworkImage(
+                                                      fit: BoxFit.cover,
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  progress) =>
+                                                              LinearProgressIndicator(
+                                                                value: progress
+                                                                    .progress,
+                                                              ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Center(
+                                                              child: Text(
+                                                                  'Image')),
+                                                      useOldImageOnUrlChange:
+                                                          true,
+                                                      imageUrl:
+                                                          prop.referenceImage),
+                                                ),
+                                              )),
                                     /*Container(
                                   //color: color,
                                   margin: EdgeInsets.all(2),
@@ -484,8 +620,8 @@ class _SelectedProps extends State<SelectedProps>
                                   ),
                                   child: Text('${prop.title}'),
                                 ),*/
-                              );
-                            }),
+                                  );
+                                }),
                           ),
                         ),
                       ),

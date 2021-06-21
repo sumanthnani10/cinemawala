@@ -733,7 +733,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                               Utils.createRoute(
                                   SelectActors(
                                     project: project,
-                                    selectedActors: selectedArtists,
+                                    selectedActors: selectedArtists.sublist(0),
                                   ),
                                   Utils.DTU));
                           if (selected != null) {
@@ -751,7 +751,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       (e) => e['id'] == a,
                                   orElse: () => null);
                               if (oldCostume != null) {
-                                costumes[ind]['costumes'] = oldCostume["costumes"];
+                                costumes[ind]['costumes'] =
+                                    oldCostume["costumes"];
                               } else {
                                 costumes[ind]['costumes'] = [];
                               }
@@ -759,13 +760,20 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                             });
                             scene['costumes'] = costumes;
 
+                            costumesImages = [];
+                            selectedCostumes = [];
+
                             for (var i in scene['costumes']) {
                               for (var j in i['costumes']) {
                                 Costume costume = Utils.costumesMap[j];
                                 selectedCostumes.add(costume);
-                                costumesImages.add(costume.referenceImage ?? '');
+                                costumesImages
+                                    .add(costume.referenceImage ?? '');
                               }
                             }
+                            costumesImages = costumesImages.toSet().toList();
+                            selectedCostumes =
+                                selectedCostumes.toSet().toList();
 
                             Navigator.pop(context);
                             setState(() {});

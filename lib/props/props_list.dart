@@ -35,7 +35,7 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
   void initState() {
     loading = true;
     props = Utils.props ?? [];
-    scenes = Utils.scenes ?? [];
+    scenes = Utils.scenes.sublist(0) ?? [];
     if (Utils.props == null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         getProps();
@@ -119,10 +119,7 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                                 title: Text('${scene.titles['en']}'),
                         subtitle: Text(
                             '${scene.props.length} ${scene.props.length == 1 ? "Prop" : "Props"}'),
-                        onTap: () {
-                                  print(scene.props);
-                                  print(Utils.propsMap[scene.props.first]);
-                                  Prop prop = Utils.propsMap[scene.props.first];
+                                onTap: () async {
                           if (maxWidth > Utils.mobileWidth) {
                             setState(() {
                               sideWidget = SelectedProps(
@@ -133,20 +130,23 @@ class _PropsList extends State<PropsList> with SingleTickerProviderStateMixin {
                                   selectedProps: List<Prop>.generate(
                                       scene.props.length,
                                       (p) => Utils.propsMap[scene.props[p]]));
-                                    });
+                            });
                                   }else{
-                                    Navigator.push(
-                                        context,
-                                        Utils.createRoute(
-                                            SelectedProps(
-                                                project: project,
+                                    await Navigator.push(
+                                context,
+                                Utils.createRoute(
+                                    SelectedProps(
+                                        project: project,
                                         scene: scene,
                                         selectedProps: List<Prop>.generate(
                                             scene.props.length,
                                             (p) => Utils
                                                 .propsMap[scene.props[p]])),
-                                            Utils.DTU));
-                                  }
+                                    Utils.DTU));
+
+                            scenes = Utils.scenes.sublist(0);
+                            setState(() {});
+                          }
                                 },
                               );
                             }))),
