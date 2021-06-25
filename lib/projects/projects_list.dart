@@ -87,8 +87,6 @@ class _ProjectsList extends State<ProjectsList> {
       Utils.allCrewProjects[proj.id] = {};
       await Utils.getCompleteProject(context, proj.id);
       project = Utils.project;
-      print(project.roles);
-      print(project.roles.length);
     }
     Navigator.pop(context);
     setState(() {

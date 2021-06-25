@@ -16,6 +16,7 @@ class DailyBudgetPage extends StatefulWidget {
   final DailyBudget dailyBudget;
   final DateTime date;
   final Map budget;
+  final Map scenesBudget;
   final String id;
   final ScrollController scrollController;
   final VoidCallback nextDate, prevDate, getDailyBudgets;
@@ -25,6 +26,7 @@ class DailyBudgetPage extends StatefulWidget {
     Key key,
     @required this.project,
     @required this.budget,
+    @required this.scenesBudget,
     @required this.dailyBudget,
     @required this.date,
     @required this.id,
@@ -37,16 +39,17 @@ class DailyBudgetPage extends StatefulWidget {
 
   @override
   _DailyBudgetPage createState() => _DailyBudgetPage(
-        this.project,
-        this.budget,
-        this.dailyBudget,
-        this.date,
-        this.id,
-        this.getDailyBudgets,
-        this.nextDate,
-        this.prevDate,
-        this.isPopUp,
-        this.scrollController,
+    this.project,
+    this.budget,
+    this.scenesBudget,
+    this.dailyBudget,
+    this.date,
+    this.id,
+    this.getDailyBudgets,
+    this.nextDate,
+    this.prevDate,
+    this.isPopUp,
+    this.scrollController,
       );
 }
 
@@ -56,14 +59,15 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   DailyBudget dailyBudget;
   DateTime date;
   Map budget;
+  Map scenesBudget;
   bool isPopUp;
   String id;
   ScrollController scrollController;
   VoidCallback nextDate, prevDate, getDailyBudgets;
 
-  _DailyBudgetPage(
-      this.project,
+  _DailyBudgetPage(this.project,
       this.budget,
+      this.scenesBudget,
       this.dailyBudget,
       this.date,
       this.id,
@@ -78,7 +82,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   var categoryHeading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   var subheading = TextStyle(fontSize: 18);
 
-  List<dynamic> categories, subCategories;
+  List<dynamic> categories, subCategories, sceneKeys;
 
   List<TextEditingController> contactControllers,
       quantityControllers,
@@ -91,6 +95,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
   var dialogActionHeading = TextStyle(color: Colors.indigo, fontSize: 16);
   TimeOfDay _timeOfDay = TimeOfDay.now();
   List<String> callSheetType = ["Daily Report","Daily Program"];
+
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
@@ -156,6 +161,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
     callSheetControllers = [];
     rateControllers = [];
     categories = budget.keys.toList();
+    sceneKeys = scenesBudget.keys.toList();
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -181,7 +187,6 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                 overscroll.disallowGlow();
                 Timer(Duration(milliseconds: 100), () {
                   viewCats += 3;
-                  print(viewCats);
                   setState(() {});
                 });
                 return;
@@ -261,10 +266,9 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                 ),
                               )
                             ] +
-                            List<Widget>.generate(
-                                min<int>(viewCats, budget.length), (i) {
+                            List<Widget>.generate(scenesBudget.length, (i) {
                               subCategories =
-                                  budget[categories[i]].keys.toList();
+                                  scenesBudget[sceneKeys[i]].keys.toList();
                               return Column(
                                 children: [
                                   Divider(
@@ -280,7 +284,8 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            "${reFormatKey(categories[i])}",
+                                            "${Utils.scenesMap[sceneKeys[i]]
+                                                .titles['en']}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: categoryHeading,
@@ -295,7 +300,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                     child: Wrap(
                                         children: List<Widget>.generate(
                                             subCategories.length, (j) {
-                                      var subcategory = budget[categories[i]]
+                                          var subcategory = scenesBudget[sceneKeys[i]]
                                           [subCategories[j]];
 
                                       contactControllers.add(
@@ -527,7 +532,295 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                                           ],
                                         ),
                                       );
-                                    })),
+                                        })),
+                                  ),
+                                ],
+                              );
+                            }) +
+                            List<Widget>.generate(
+                                min<int>(viewCats, budget.length), (i) {
+                              subCategories =
+                                  budget[categories[i]].keys.toList();
+                              return Column(
+                                children: [
+                                  Divider(
+                                    thickness: 1,
+                                    color: background1,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            "${reFormatKey(categories[i])}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: categoryHeading,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(horizontal: 16),
+                                    child: Wrap(
+                                        children: List<Widget>.generate(
+                                            subCategories.length, (j) {
+                                          var subcategory = budget[categories[i]]
+                                          [subCategories[j]];
+
+                                          contactControllers.add(
+                                              new TextEditingController(
+                                                  text:
+                                                  "${subcategory["contact"] !=
+                                                      ""
+                                                      ? subcategory["contact"]
+                                                      : "-"}"));
+                                          quantityControllers.add(
+                                              new TextEditingController(
+                                                  text:
+                                                  "${subcategory["quantity"] !=
+                                                      ""
+                                                      ? subcategory["quantity"]
+                                                      : "-"}"));
+                                          rateControllers.add(
+                                              new TextEditingController(
+                                                  text:
+                                                  "${subcategory["rate"] != ""
+                                                      ? subcategory["rate"]
+                                                      : "-"}"));
+                                          callSheetControllers.add(
+                                              new TextEditingController(
+                                                  text:
+                                                  "${subcategory["callSheet"] !=
+                                                      ""
+                                                      ? subcategory["callSheet"]
+                                                      : "-"}"));
+                                          // print("ispopup ${isPopUp}");
+                                          return Container(
+                                            constraints:
+                                            BoxConstraints(maxWidth: 480),
+                                            decoration: BoxDecoration(
+                                                border: Border(
+                                                    top: BorderSide(
+                                                        color: j != 0
+                                                            ? background1
+                                                            : background,
+                                                        width: 1))),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                                  children: [
+                                                    Transform.scale(
+                                                      scale: 1.1,
+                                                      child: Checkbox(
+                                                          value: budget[
+                                                          categories[i]][
+                                                          budget[categories[i]]
+                                                              .keys
+                                                              .elementAt(
+                                                              j)]["use"],
+                                                          activeColor: color,
+                                                          onChanged: (
+                                                              value) {}),
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        "${reFormatKey(
+                                                            subCategories[j])}",
+                                                        maxLines: 1,
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                        style: subheading,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Flexible(
+                                                      child: Padding(
+                                                        padding:
+                                                        const EdgeInsets.all(4),
+                                                        child: TextField(
+                                                          controller:
+                                                          contactControllers
+                                                              .last,
+                                                          keyboardType:
+                                                          TextInputType.text,
+                                                          decoration:
+                                                          InputDecoration(
+                                                            enabled: false,
+                                                            disabledBorder:
+                                                            OutlineInputBorder(
+                                                                borderSide:
+                                                                BorderSide(
+                                                                    color:
+                                                                    background)),
+                                                            labelText: 'Name and Contact',
+                                                            labelStyle: TextStyle(
+                                                                color: background1,
+                                                                fontSize: 14),
+                                                            contentPadding:
+                                                            EdgeInsets.all(8),
+                                                            border:
+                                                            OutlineInputBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Flexible(
+                                                      child: Container(
+                                                        width:
+                                                        MediaQuery
+                                                            .of(context)
+                                                            .size
+                                                            .width /
+                                                            4,
+                                                        padding:
+                                                        const EdgeInsets.all(4),
+                                                        child: TextField(
+                                                          onChanged: (value) {},
+                                                          controller:
+                                                          callSheetControllers
+                                                              .last,
+                                                          keyboardType:
+                                                          TextInputType.number,
+                                                          decoration:
+                                                          InputDecoration(
+                                                            enabled: false,
+                                                            disabledBorder:
+                                                            OutlineInputBorder(
+                                                                borderSide:
+                                                                BorderSide(
+                                                                    color:
+                                                                    background)),
+                                                            labelText: 'Call Sheet',
+                                                            labelStyle: TextStyle(
+                                                                color: background1,
+                                                                fontSize: 14),
+                                                            contentPadding:
+                                                            EdgeInsets.all(8),
+                                                            border:
+                                                            OutlineInputBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Flexible(
+                                                      child: Padding(
+                                                        padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                        child: Text(
+                                                          "Subtotal: ${budget[categories[i]][budget[categories[i]]
+                                                              .keys.elementAt(
+                                                              j)]["subtotal"]}",
+                                                          style: subheading,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Flexible(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 4,
+                                                            vertical: 8),
+                                                        child: TextField(
+                                                          controller:
+                                                          quantityControllers
+                                                              .last,
+                                                          keyboardType:
+                                                          TextInputType.number,
+                                                          decoration:
+                                                          InputDecoration(
+                                                            enabledBorder:
+                                                            OutlineInputBorder(
+                                                                borderSide:
+                                                                BorderSide(
+                                                                    color:
+                                                                    background)),
+                                                            labelText: 'Quantity',
+                                                            labelStyle: TextStyle(
+                                                                color: background1,
+                                                                fontSize: 14),
+                                                            contentPadding:
+                                                            EdgeInsets.all(8),
+                                                            border:
+                                                            OutlineInputBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Flexible(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 4,
+                                                            vertical: 8),
+                                                        child: TextField(
+                                                          controller:
+                                                          rateControllers.last,
+                                                          keyboardType:
+                                                          TextInputType.number,
+                                                          decoration:
+                                                          InputDecoration(
+                                                            enabled: false,
+                                                            disabledBorder:
+                                                            OutlineInputBorder(
+                                                                borderSide:
+                                                                BorderSide(
+                                                                    color:
+                                                                    background)),
+                                                            labelText: 'Rate',
+                                                            labelStyle: TextStyle(
+                                                                color: background1,
+                                                                fontSize: 14),
+                                                            contentPadding:
+                                                            EdgeInsets.all(8),
+                                                            border:
+                                                            OutlineInputBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        })),
                                   ),
                                 ],
                               );
@@ -621,6 +914,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                       "month": date.month,
                       "added_by": Utils.USER_ID,
                       "budget": {},
+                      "scenes_budget": {},
                       "id": id,
                       "year": date.year,
                       "last_edit_by": Utils.USER_ID,

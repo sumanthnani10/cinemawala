@@ -151,7 +151,6 @@ class _AddScheduleState extends State<AddSchedule> {
         actions: [
           TextButton.icon(
             onPressed: () async {
-              print("this is selectedsceneindex ${selectedSceneIndex}");
               await Navigator.push(
                   context,
                   Utils.createRoute(

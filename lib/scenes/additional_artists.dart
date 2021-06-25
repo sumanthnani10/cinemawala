@@ -210,7 +210,6 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                               if (fields[j] == "id")
                                                 return Container();
 
-                                              print(field.runtimeType);
                                               textFieldControllers.add(
                                                   new TextEditingController(
                                                       //text: '$field'

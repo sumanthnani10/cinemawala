@@ -60,8 +60,6 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
     if (popUp) {
       minus = 48;
     }
-    print("roles");
-    print(project.role.permissions);
     languages = project.languages;
 
     setScene();

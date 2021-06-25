@@ -107,12 +107,17 @@ class _DailyBudgetsState extends State<DailyBudgets>
         dailyBudgets = Utils.dailyBudgetsMap;
         setState(() {});
       },
-      budget:
-      selectedDailyBudget != null ? selectedDailyBudget.budget : {},
+      budget: selectedDailyBudget != null ? selectedDailyBudget.budget : {},
+      scenesBudget: selectedDailyBudget != null ? selectedDailyBudget
+          .scenesBudget : {},
       nextDate: () async {
         selectedDate = selectedDate.add(Duration(days: 1));
         selectedDateId =
-        "${selectedDate.year}${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}";
+        "${selectedDate.year}${selectedDate.month > 9
+            ? selectedDate.month
+            : "0${selectedDate.month}"}${selectedDate.day > 9
+            ? selectedDate.day
+            : "0${selectedDate.day}"}";
         selectedDailyBudget = dailyBudgets[selectedDateId];
         calendarController.setSelectedDay(selectedDate);
         setState(() {});

@@ -580,8 +580,6 @@ class _ActorPage extends State<ActorPage> {
                                                 List<Widget>.generate(
                                                   costumes.length,
                                                       (i) {
-                                                    print(costumes);
-                                                    print(Utils.costumesMap[costumes.elementAt(i)]);
                                                     return InkWell(
                                                       onLongPress: () async {
                                                         await Navigator.push(

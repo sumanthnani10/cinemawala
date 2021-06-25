@@ -114,14 +114,10 @@ class Utils {
       var r = jsonDecode(resp.body);
       if (r['status'] == 'success') {
         var proj = r['project'];
-        print(proj['project']['roles']);
-        print(proj['project']['roles'].length);
         projectsMap[proj['project']['id']] = Project.fromJson(proj['project']);
         projects = projectsMap.values.toList();
         project = projectsMap[proj['project']['id']];
         allCrewProjects[proj['project']['id']]['project'] = project;
-        print(project.roles);
-        print(project.roles.length);
 
         artists = [];
         artistsMap = {};
@@ -243,6 +239,7 @@ class Utils {
         r['projects'].forEach((i) {
           artistProjects.add(Project.fromJson(i));
           artistProjectsMap[artistProjects.last.id] = artistProjects.last;
+          artistProject = null;
           allCastProjects = {};
         });
       } else {
@@ -450,10 +447,9 @@ class Utils {
       var resp = await req.send();
       var res = await http.Response.fromStream(resp);
       var r = jsonDecode(res.body);
-      print(r);
+      debugPrint("$r");
       if (resp.statusCode == 200) {
         if (r['status'] == 'success') {
-          print("Uploaded");
           return [true, r['link']];
         } else {
           await showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
@@ -501,18 +497,17 @@ class Utils {
     try {
       var resp = await req.send();
       var res = await http.Response.fromStream(resp);
-      print(res.body);
+      debugPrint("${res.body}");
       var r = jsonDecode(res.body);
       if (resp.statusCode == 200) {
-        print(r);
+        debugPrint("$r");
         if (r['status'] == 'success') {
-          print("Uploaded");
           return [true, r['links']];
         } else {
           await showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
         }
       } else {
-        print(r);
+        debugPrint("$r");
         await showErrorDialog(context, 'Something went wrong.',
             'Please try again after sometime.');
       }

@@ -64,7 +64,7 @@ class _AddProject extends State<AddProject>
             "name": "${Utils.user.name}",
             "username": "${Utils.user.username}",
             "user_id": "${Utils.USER_ID}",
-            "role": "Owner",
+            "role": "Producer",
             "owner": true,
             "accepted": true,
             "project_id": projectID,
@@ -1036,7 +1036,7 @@ class _AddProject extends State<AddProject>
             await Utils.showErrorDialog(context, 'Unsuccessful', '${r['msg']}');
           }
         } else {
-          print(r);
+          debugPrint("$r");
           await Utils.showErrorDialog(context, 'Something went wrong.',
               'Please try again after sometime.');
         }

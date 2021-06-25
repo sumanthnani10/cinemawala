@@ -439,8 +439,6 @@ class _SelectedProps extends State<SelectedProps>
                                   body['props'].add(p.toJson());
                                 });
 
-                                print(body['props'].length);
-
                                 body['scene_props'] = sceneMap['props'];
 
                                 try {
