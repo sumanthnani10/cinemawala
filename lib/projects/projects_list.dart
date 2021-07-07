@@ -96,6 +96,7 @@ class _ProjectsList extends State<ProjectsList> {
 
   @override
   Widget build(BuildContext context) {
+    // Navigator.pop(context);
     color = Color(0xff6fd8a8);
     background = Colors.white;
     if (background == Colors.white) {
