@@ -119,7 +119,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         "vfx": "",
         "titles": {},
         "gists": {},
-        "completed": "",
+        "completed": false,
         "completed_on": [0, 0, 0, 0],
       };
       scene['created'] = DateTime.now().millisecondsSinceEpoch;
