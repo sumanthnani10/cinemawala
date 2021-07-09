@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
   bool isPopUp;
   Map<dynamic, dynamic> dailyBudget;
   bool edit;
+  String locations = "";
 
 
   _AddDailyBudget(this.project, this.dailyBudget, this.edit, this.isPopUp);
@@ -89,6 +91,9 @@ class _AddDailyBudget extends State<AddDailyBudget>
           Utils.schedulesMap[dailyBudget['id']].scenes.forEach((sid) {
             String name = sid;
             dailyBudget['scenes_budget'][name] = {};
+            Location loc = Utils.locationsMap[Utils.scenesMap[sid].location];
+            locations += "${loc.location} (${loc.shootLocation}) | ";
+
             Utils.scenesMap[sid].specialEquipment.split(",").forEach((e) {
               e = e.trim();
               if (e.isNotEmpty) {
@@ -1249,22 +1254,48 @@ class _AddDailyBudget extends State<AddDailyBudget>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "${selectedDate.day > 9 ? selectedDate.day : "0${selectedDate.day}"}-${selectedDate.month > 9 ? selectedDate.month : "0${selectedDate.month}"}-${selectedDate.year}, ${weeksDays[selectedDate.weekday - 1]}",
+                            "${selectedDate.day > 9
+                                ? selectedDate.day
+                                : "0${selectedDate.day}"}-${selectedDate.month >
+                                9 ? selectedDate.month : "0${selectedDate
+                                .month}"}-${selectedDate
+                                .year}, ${weeksDays[selectedDate.weekday - 1]}",
                             style: TextStyle(fontSize: 18),
                           ),
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                if(locations.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            createAlertDialog(context, "Category").then((v) {
-                              if (v == null) {
-                              } else if (budget['$v'] == null) {
-                                v = formatKey(v);
-                                dailyBudget['budget']['$v'] = {};
+                        Text(
+                          "Locations: ",
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                        Flexible(
+                          child: Text(
+                            "$locations",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 12,),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        createAlertDialog(context, "Category").then((v) {
+                          if (v == null) {} else if (budget['$v'] == null) {
+                            v = formatKey(v);
+                            dailyBudget['budget']['$v'] = {};
                                 budget['$v'] = {};
                                 setState(() {});
                               } else {

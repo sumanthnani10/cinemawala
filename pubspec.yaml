@@ -20,6 +20,8 @@ dependencies:
   country_code_picker: ^2.0.2
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
 
 
   cupertino_icons:
