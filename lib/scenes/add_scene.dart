@@ -10,6 +10,7 @@ import 'package:cinemawala/scenes/additional_artists.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
 import 'package:cinemawala/scenes/select_location.dart';
 import 'package:cinemawala/scenes/select_props.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -358,10 +359,13 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                 addScene();
               }
             },
-            label: Text(
-              edit ? "Save" : "Add",
-              style: TextStyle(color: Colors.indigo),
-              textAlign: TextAlign.right,
+            label: Container(
+              padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+              child: Text(
+                edit ? "Save" : "Add",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
+              ),
             ),
             icon: Icon(
               edit ? Icons.done : Icons.add,
@@ -1186,7 +1190,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                         true : false,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: background1)),
-                        labelText: 'Fighter',
+                        labelText: 'Action Director',
                         labelStyle: TextStyle(color: background1, fontSize: 14),
                         contentPadding: EdgeInsets.all(8),
                         border: OutlineInputBorder(

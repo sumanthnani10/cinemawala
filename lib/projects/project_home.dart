@@ -7,6 +7,7 @@ import 'package:cinemawala/roles/roles_list.dart';
 import 'package:cinemawala/scenes/scenes_list.dart';
 import 'package:cinemawala/schedule/schedules.dart';
 import 'package:cinemawala/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'add_project.dart';
@@ -176,10 +177,13 @@ class _ProjectHome extends State<ProjectHome> {
                 setCategories();
                 setState(() {});
               },
-              label: Text(
-                "Edit Project",
-                style: TextStyle(color: Colors.indigo),
-                textAlign: TextAlign.right,
+              label: Container(
+                padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+                child: Text(
+                  "Edit Project",
+                  style: TextStyle(color: Colors.indigo),
+                  textAlign: TextAlign.right,
+                ),
               ),
               icon: Icon(
                 Icons.edit,

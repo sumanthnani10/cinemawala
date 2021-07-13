@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:cinemawala/projects/project.dart";
 import 'package:cinemawala/roles/select_user.dart';
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import "package:http/http.dart" as http;
@@ -145,10 +146,13 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                 addRole();
               }
             },
-            label: Text(
-              edit ? "Edit" : "Add",
-              style: TextStyle(color: Colors.indigo),
-              textAlign: TextAlign.right,
+            label: Container(
+              padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+              child: Text(
+                edit ? "Edit" : "Add",
+                style: TextStyle(color: Colors.indigo),
+                textAlign: TextAlign.right,
+              ),
             ),
             icon: Icon(
               edit ? Icons.edit : Icons.add,
@@ -276,39 +280,15 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                   child: InkWell(
                                     onTap: () {
                                       setState(() {
-                                        if (role["permissions"]
-                                                        [permissionsKeys[i]]
-                                                    [keysVal[0]] ==
-                                                true &&
-                                            j != 0) {
-                                          role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]] =
-                                              !role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]];
+                                        if (role["permissions"][permissionsKeys[i]][keysVal[0]] == true && j != 0) {
+                                          role["permissions"][permissionsKeys[i]][keysVal[j]] = !role["permissions"][permissionsKeys[i]][keysVal[j]];
                                         } else if (j == 0) {
-                                          role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]] =
-                                              !role["permissions"]
-                                                      [permissionsKeys[i]]
-                                                  [keysVal[j]];
-                                          if (!role["permissions"]
-                                                  [permissionsKeys[i]]
-                                              [keysVal[j]]) {
-                                            role["permissions"]
-                                                    [permissionsKeys[i]]
-                                                [keysVal[1]] = false;
-                                            role["permissions"]
-                                                    [permissionsKeys[i]]
-                                                [keysVal[2]] = false;
+                                          role["permissions"][permissionsKeys[i]][keysVal[j]] = !role["permissions"][permissionsKeys[i]][keysVal[j]];
+                                          if (!role["permissions"][permissionsKeys[i]][keysVal[j]]) {
+                                            role["permissions"][permissionsKeys[i]][keysVal[1]] = false;
+                                            role["permissions"][permissionsKeys[i]][keysVal[2]] = false;
                                           }
-                                        } else if (role["permissions"]
-                                                        [permissionsKeys[i]]
-                                                    [keysVal[0]] ==
-                                                false &&
-                                            j != 0) {
+                                        } else if (role["permissions"][permissionsKeys[i]][keysVal[0]] == false && j != 0) {
                                           scaffoldKey.currentState.showSnackBar(
                                               SnackBar(
                                                   content: Text(
@@ -323,54 +303,39 @@ class _AddRole extends State<AddRole> with SingleTickerProviderStateMixin {
                                             MainAxisAlignment.center,
                                         children: [
                                           Checkbox(
-                                              value: role["permissions"][
-                                                          permissionsKeys[
-                                                              i]][keysVal[0]] ==
-                                                      true
-                                                  ? role["permissions"]
-                                                          [permissionsKeys[i]]
-                                                      [keysVal[j]]
-                                                  : false,
+                                              value: role["permissions"][permissionsKeys[i]][keysVal[0]] == true
+                                                  ? role["permissions"][permissionsKeys[i]][keysVal[j]] : false,
                                               activeColor: color,
                                               onChanged: (value) {
                                                 setState(() {
-                                                  if (role["permissions"][
-                                                              permissionsKeys[
-                                                                  i]][keysVal[
-                                                              0]] ==
-                                                          true &&
-                                                      j != 0) {
-                                                    role["permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[j]] = !role[
-                                                                "permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[j]];
-                                                  } else if (j == 0) {
-                                                    role["permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[j]] = !role[
-                                                                "permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[j]];
-                                                    if (!role["permissions"]
-                                                            [permissionsKeys[i]]
-                                                        [keysVal[j]]) {
-                                                      role["permissions"][
-                                                              permissionsKeys[
-                                                                  i]]
-                                                          [keysVal[1]] = false;
-                                                      role["permissions"][
-                                                              permissionsKeys[
-                                                                  i]]
-                                                          [keysVal[2]] = false;
+                                                  if(role["permissions"][permissionsKeys[i]][keysVal[0]] == true && j != 0 && permissionsKeys[i]!="schedule"
+                                                  && permissionsKeys[i]!="scenes") {
+                                                    role["permissions"][permissionsKeys[i]][keysVal[j]] = !role["permissions"][permissionsKeys[i]][keysVal[j]];
+                                                  }
+                                                  if((!role["permissions"]["schedule"][keysVal[j]] && permissionsKeys[i]=="schedule") ||
+                                                      (!role["permissions"]["scenes"][keysVal[j]] && permissionsKeys[i]=="scenes")
+                                                  ){
+                                                    for(int r=1;r<=8;r++){
+                                                      role["permissions"][permissionsKeys[r]][keysVal[j]] = true;
                                                     }
-                                                  } else if (role["permissions"]
-                                                              [permissionsKeys[
-                                                                  i]][keysVal[
-                                                              0]] ==
-                                                          false &&
-                                                      j != 0) {
+                                                  }
+                                                  else if((role["permissions"]["schedule"][keysVal[j]] && permissionsKeys[i]=="schedule") ||
+                                                      (role["permissions"]["scenes"][keysVal[j]] && permissionsKeys[i]=="scenes")
+                                                  ){
+                                                    for(int r=1;r<=8;r++){
+                                                      if(role["permissions"][permissionsKeys[i]][keysVal[j]]){
+                                                        role["permissions"][permissionsKeys[r]][keysVal[j]] = true;
+                                                      }
+                                                      role["permissions"][permissionsKeys[i]][keysVal[j]] = false;
+                                                    }
+                                                  }
+                                                  else if (j == 0) {
+                                                    role["permissions"][permissionsKeys[i]][keysVal[j]] = !role["permissions"][permissionsKeys[i]][keysVal[j]];
+                                                    if (!role["permissions"][permissionsKeys[i]][keysVal[j]]) {
+                                                      role["permissions"][permissionsKeys[i]][keysVal[1]] = false;
+                                                      role["permissions"][permissionsKeys[i]][keysVal[2]] = false;
+                                                    }
+                                                  } else if (role["permissions"][permissionsKeys[i]][keysVal[0]] == false && j != 0) {
                                                     scaffoldKey.currentState
                                                         .showSnackBar(SnackBar(
                                                             content: Text(

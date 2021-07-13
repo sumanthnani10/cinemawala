@@ -184,7 +184,6 @@ class _CostumesListState extends State<CostumesList>
                                   context,
                                   Utils.createRoute(
                                       CostumesPage(
-
                                         project: project,
                                         costume: costume,
                                       ),

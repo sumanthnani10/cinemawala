@@ -16,11 +16,13 @@ import 'scene.dart';
 
 class SelectCostumes extends StatefulWidget {
   final Project project;
+  final Scene scene;
   final List<Actor> selectedActors;
   final List<dynamic> costumes;
 
   SelectCostumes(
       {Key key,
+         this.scene,
       @required this.project,
       @required this.selectedActors,
       @required this.costumes})
@@ -28,7 +30,7 @@ class SelectCostumes extends StatefulWidget {
 
   @override
   _SelectCostumes createState() =>
-      _SelectCostumes(this.project, this.selectedActors, this.costumes);
+      _SelectCostumes(this.project, this.selectedActors, this.costumes,this.scene);
 }
 
 class _SelectCostumes extends State<SelectCostumes>
@@ -36,13 +38,14 @@ class _SelectCostumes extends State<SelectCostumes>
   final Project project;
   final List<Actor> selectedActors;
   List<dynamic> costumes;
+  Scene scene;
   Color background, background1, color;
   TextEditingController searchController = new TextEditingController();
   String search = '';
 
   TextStyle nameStyle, characterStyle;
 
-  _SelectCostumes(this.project, this.selectedActors, this.costumes);
+  _SelectCostumes(this.project, this.selectedActors, this.costumes,this.scene);
 
   @override
   void initState() {
