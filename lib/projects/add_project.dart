@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'project.dart';
 
@@ -26,7 +27,7 @@ class _AddProject extends State<AddProject>
     with SingleTickerProviderStateMixin {
   Color background, background1, color;
   Map<dynamic, dynamic> project;
-  File projectImage;
+  XFile fImage;
   GlobalKey<FormState> formKey = new GlobalKey<FormState>();
   TextEditingController nameController,
       productionNameController,
@@ -228,28 +229,27 @@ class _AddProject extends State<AddProject>
                               child: Container(
                                 child: InkWell(
                                   onTap: () async {
-                                    String imagePath = await Utils.askSource(context);
-                                    if (imagePath != null) {
-                                      projectImage = File(imagePath);
-                                    }
-                                    setState(() {});
-                                  },
+                                    pickImageFile();
+                                          },
                                   child: AspectRatio(
                                       aspectRatio: 4 / 2,
                                       child: ClipRRect(
                                           borderRadius: BorderRadius.circular(16),
-                                          child: projectImage == null
-                                              ? project['image'] == ''
-                                              ? ColoredBox(
-                                            color: Colors.grey,
-                                            child: Center(
-                                              child: Text(
-                                                'Add Image',
-                                                style: TextStyle(
-                                                    color: background,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
+                                          child: fImage == null
+                                                      ? project['image'] == ''
+                                                          ? ColoredBox(
+                                                              color:
+                                                                  Colors.grey,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Add Image',
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          background,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ),
                                           )
                                               : CachedNetworkImage(
                                             progressIndicatorBuilder:
@@ -270,9 +270,13 @@ class _AddProject extends State<AddProject>
                                             fit: BoxFit.cover,
                                           )
                                               : Image(
-                                            image: FileImage(projectImage),
-                                            fit: BoxFit.cover,
-                                          ))),
+                                            image: kIsWeb
+                                                              ? NetworkImage(
+                                                                  fImage.path)
+                                                              : FileImage(File(
+                                                                  fImage.path)),
+                                                          fit: BoxFit.cover,
+                                                        ))),
                                 ),
                               ),
                             ),
@@ -281,18 +285,18 @@ class _AddProject extends State<AddProject>
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  if (projectImage != null)
-                                    ElevatedButton.icon(
-                                      onPressed: () async {
-                                        setState(() {
-                                          projectImage = null;
-                                          project['image'] = "";
-                                        });
-                                      },
-                                      style: Utils.elevatedButtonStyle,
-                                      label: Text(
-                                        'Remove',
-                                        style: TextStyle(color: background1),
+                                  if (fImage != null)
+                                            ElevatedButton.icon(
+                                              onPressed: () async {
+                                                setState(() {
+                                                  fImage = null;
+                                                  project['image'] = "";
+                                                });
+                                              },
+                                              style: Utils.elevatedButtonStyle,
+                                              label: Text(
+                                                'Remove',
+                                                style: TextStyle(color: background1),
                                       ),
                                       icon: Icon(
                                         Icons.close,
@@ -302,13 +306,8 @@ class _AddProject extends State<AddProject>
                                     ),
                                   ElevatedButton.icon(
                                       onPressed: () async {
-                                        String imagePath =
-                                        await Utils.askSource(context);
-                                        if (imagePath != null) {
-                                          projectImage = File(imagePath);
-                                        }
-                                        setState(() {});
-                                      },
+                                        pickImageFile();
+                                              },
                                       style: Utils.elevatedButtonStyle,
                                       label: Text(
                                         'Edit',
@@ -612,28 +611,25 @@ class _AddProject extends State<AddProject>
                         child: Container(
                           child: InkWell(
                             onTap: () async {
-                              String imagePath = await Utils.askSource(context);
-                              if (imagePath != null) {
-                                projectImage = File(imagePath);
-                              }
-                              setState(() {});
-                            },
+                              pickImageFile();
+                                    },
                             child: AspectRatio(
                                 aspectRatio: 4 / 2,
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
-                                    child: projectImage == null
-                                        ? project['image'] == ''
-                                            ? ColoredBox(
-                                                color: Colors.grey,
-                                                child: Center(
-                                                  child: Text(
-                                                    'Add Image',
-                                                    style: TextStyle(
-                                                        color: background,
-                                                        fontSize: 16),
-                                                  ),
-                                                ),
+                                    child: fImage == null
+                                                ? project['image'] == ''
+                                                    ? ColoredBox(
+                                                        color: Colors.grey,
+                                                        child: Center(
+                                                          child: Text(
+                                                            'Add Image',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    background,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ),
                                               )
                                             : CachedNetworkImage(
                                                 progressIndicatorBuilder:
@@ -654,9 +650,13 @@ class _AddProject extends State<AddProject>
                                                 fit: BoxFit.cover,
                                               )
                                         : Image(
-                                            image: FileImage(projectImage),
-                                            fit: BoxFit.cover,
-                                          ))),
+                                      image: kIsWeb
+                                                        ? NetworkImage(
+                                                            fImage.path)
+                                                        : FileImage(
+                                                            File(fImage.path)),
+                                                    fit: BoxFit.cover,
+                                                  ))),
                           ),
                         ),
                       ),
@@ -665,18 +665,18 @@ class _AddProject extends State<AddProject>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            if (projectImage != null)
-                              ElevatedButton.icon(
-                                onPressed: () async {
-                                  setState(() {
-                                    projectImage = null;
-                                    project['image'] = "";
-                                  });
-                                },
-                                style: Utils.elevatedButtonStyle,
-                                label: Text(
-                                  'Remove',
-                                  style: TextStyle(color: background1),
+                            if (fImage != null)
+                                      ElevatedButton.icon(
+                                        onPressed: () async {
+                                          setState(() {
+                                            fImage = null;
+                                            project['image'] = "";
+                                          });
+                                        },
+                                        style: Utils.elevatedButtonStyle,
+                                        label: Text(
+                                          'Remove',
+                                          style: TextStyle(color: background1),
                                 ),
                                 icon: Icon(
                                   Icons.close,
@@ -686,13 +686,8 @@ class _AddProject extends State<AddProject>
                               ),
                             ElevatedButton.icon(
                                 onPressed: () async {
-                                  String imagePath =
-                                      await Utils.askSource(context);
-                                  if (imagePath != null) {
-                                    projectImage = File(imagePath);
-                                  }
-                                  setState(() {});
-                                },
+                                  pickImageFile();
+                                        },
                                 style: Utils.elevatedButtonStyle,
                                 label: Text(
                                   'Edit',
@@ -973,14 +968,20 @@ class _AddProject extends State<AddProject>
                                 fontSize: 16),
                           )),
                     ),
-                  ),
-                ],
+                          ),
+                        ],
+                      ),
               ),
             ),
           ),
-        ),
-      ); }),
+        );
+      }),
     );
+  }
+
+  pickImageFile() async {
+    fImage = await Utils.askSource(context) ?? fImage;
+    setState(() {});
   }
 
   addProject() async {
@@ -988,11 +989,11 @@ class _AddProject extends State<AddProject>
 
     bool imageUploaded = true;
 
-    if (projectImage != null) {
+    if (fImage != null) {
       try {
         project['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: projectImage,
+            file: fImage,
             projectId: "${project["id"]}",
             userId: "${Utils.USER_ID}",
             id: "${project["id"]}",
@@ -1060,11 +1061,11 @@ class _AddProject extends State<AddProject>
 
     bool imageUploaded = true;
 
-    if (projectImage != null) {
+    if (fImage != null) {
       try {
         project['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: projectImage,
+            file: fImage,
             projectId: "${project["id"]}",
             userId: "${Utils.USER_ID}",
             id: "${project["id"]}",

@@ -6,6 +6,7 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../utils.dart';
 import 'prop.dart';
@@ -26,16 +27,16 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
   bool isPopUp;
   Map<dynamic, dynamic> prop;
   final Project project;
-  File propImage;
+  XFile fImage;
   bool loading = true, edit = false;
 
-  _AddProp(this.project, this.prop,this.isPopUp);
-  Widget widget1(){
+  _AddProp(this.project, this.prop, this.isPopUp);
+
+  Widget widget1() {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        padding:
-        const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           child: Column(
@@ -43,28 +44,23 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
             children: [
               InkWell(
                 onTap: () async {
-                  String imagePath = await Utils.askSource(context);
-                  if (imagePath != null) {
-                    propImage = File(imagePath);
-                  }
-                  setState(() {});
+                  pickImageFile();
                 },
                 child: AspectRatio(
                     aspectRatio: 4 / 3,
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: propImage == null
+                        child: fImage == null
                             ? prop['reference_image'] == ''
-                            ? ColoredBox(
-                          color: Colors.grey,
-                          child: Center(
-                            child: Text(
-                              'Add Image',
-                              style: TextStyle(
-                                  color: background,
-                                  fontSize: 16),
-                            ),
-                          ),
+                                ? ColoredBox(
+                                    color: Colors.grey,
+                                    child: Center(
+                                      child: Text(
+                                        'Add Image',
+                                        style: TextStyle(
+                                            color: background, fontSize: 16),
+                                      ),
+                                    ),
                         )
                             : CachedNetworkImage(
                           progressIndicatorBuilder:
@@ -84,9 +80,11 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                           fit: BoxFit.cover,
                         )
                             : Image(
-                          image: FileImage(propImage),
-                          fit: BoxFit.cover,
-                        ))),
+                          image: kIsWeb
+                                    ? NetworkImage(fImage.path)
+                                    : FileImage(File(fImage.path)),
+                                fit: BoxFit.cover,
+                              ))),
               ),
               SizedBox(
                 height: 8,
@@ -94,14 +92,12 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  if (prop['reference_image'] != '' ||
-                      propImage != null)
+                  if (prop['reference_image'] != '' || fImage != null)
                     ElevatedButton.icon(
                         style: Utils.elevatedButtonStyle,
                         label: Text(
                           'Remove',
-                          style: TextStyle(
-                              color: background1, fontSize: 20),
+                          style: TextStyle(color: background1, fontSize: 20),
                         ),
                         icon: Icon(
                           Icons.close,
@@ -110,7 +106,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                         ),
                         onPressed: () async {
                           prop['reference_image'] = '';
-                          propImage = null;
+                          fImage = null;
                           setState(() {});
                         }),
                   ElevatedButton.icon(
@@ -126,12 +122,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
                         size: 20,
                       ),
                       onPressed: () async {
-                        String imagePath =
-                        await Utils.askSource(context);
-                        if (imagePath != null) {
-                          propImage = File(imagePath);
-                        }
-                        setState(() {});
+                        pickImageFile();
                       }),
                 ],
               )
@@ -261,7 +252,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    propImage = null;
+    fImage = null;
     isPopUp = isPopUp ?? true;
     if (prop == null) {
       prop = {
@@ -326,15 +317,20 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
             Flexible(
               flex: 6,
               child: widget1(),
-            ),
-            Flexible(
-              flex: 4,
-              child: widget2(),
-            )
-          ],
-        ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: widget2(),
+                  )
+                ],
+              ),
       ),
     );
+  }
+
+  pickImageFile() async {
+    fImage = await Utils.askSource(context) ?? fImage;
+    setState(() {});
   }
 
   addProp() async {
@@ -342,11 +338,11 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     bool imageUploaded = true;
 
-    if (propImage != null) {
+    if (fImage != null) {
       try {
         prop['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: propImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${prop["id"]}",
@@ -414,11 +410,11 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     bool imageUploaded = true;
 
-    if (propImage != null) {
+    if (fImage != null) {
       try {
         prop['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: propImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${prop["id"]}",

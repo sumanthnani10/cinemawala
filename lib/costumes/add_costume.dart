@@ -6,6 +6,7 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../utils.dart';
 import 'costume.dart';
@@ -27,15 +28,15 @@ class _AddCostume extends State<AddCostume>
   Color background, background1, color;
   var nameController, descriptionController;
   Map<dynamic, dynamic> costume;
-  File costumeImage;
+  XFile fImage;
   bool loading = true, edit = false;
 
-  _AddCostume(this.project, this.costume,this.isPopUp);
+  _AddCostume(this.project, this.costume, this.isPopUp);
 
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
-    costumeImage = null;
+    fImage = null;
     if (costume == null) {
       costume = {
         "added_by": '${Utils.USER_ID}',
@@ -76,28 +77,23 @@ class _AddCostume extends State<AddCostume>
             children: [
               InkWell(
                 onTap: () async {
-                  var imagePath = await Utils.askSource(context);
-                  if (imagePath != null) {
-                    costumeImage = File(imagePath);
-                  }
-                  setState(() {});
+                  pickImageFile();
                 },
                 child: AspectRatio(
                     aspectRatio: 4 / 3,
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: costumeImage == null
+                        child: fImage == null
                             ? costume['reference_image'] == ''
-                            ? ColoredBox(
-                          color: Colors.grey,
-                          child: Center(
-                            child: Text(
-                              'Add Image',
-                              style: TextStyle(
-                                  color: background,
-                                  fontSize: 16),
-                            ),
-                          ),
+                                ? ColoredBox(
+                                    color: Colors.grey,
+                                    child: Center(
+                                      child: Text(
+                                        'Add Image',
+                                        style: TextStyle(
+                                            color: background, fontSize: 16),
+                                      ),
+                                    ),
                         )
                             : CachedNetworkImage(
                           progressIndicatorBuilder:
@@ -118,9 +114,11 @@ class _AddCostume extends State<AddCostume>
                           fit: BoxFit.cover,
                         )
                             : Image(
-                          image: FileImage(costumeImage),
-                          fit: BoxFit.cover,
-                        ))),
+                          image: kIsWeb
+                                    ? NetworkImage(fImage.path)
+                                    : FileImage(File(fImage.path)),
+                                fit: BoxFit.cover,
+                              ))),
               ),
               SizedBox(
                 height: 8,
@@ -128,14 +126,12 @@ class _AddCostume extends State<AddCostume>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  if (costume['reference_image'] != '' ||
-                      costumeImage != null)
+                  if (costume['reference_image'] != '' || fImage != null)
                     ElevatedButton.icon(
                         style: Utils.elevatedButtonStyle,
                         label: Text(
                           'Remove',
-                          style: TextStyle(
-                              color: background1, fontSize: 20),
+                          style: TextStyle(color: background1, fontSize: 20),
                         ),
                         icon: Icon(
                           Icons.close,
@@ -144,7 +140,7 @@ class _AddCostume extends State<AddCostume>
                         ),
                         onPressed: () async {
                           costume['reference_image'] = '';
-                          costumeImage = null;
+                          fImage = null;
                           setState(() {});
                         }),
                   ElevatedButton.icon(
@@ -160,12 +156,7 @@ class _AddCostume extends State<AddCostume>
                         size: 20,
                       ),
                       onPressed: () async {
-                        String imagePath =
-                        await Utils.askSource(context);
-                        if (imagePath != null) {
-                          costumeImage = File(imagePath);
-                        }
-                        setState(() {});
+                        pickImageFile();
                       }),
                 ],
               )
@@ -328,16 +319,17 @@ class _AddCostume extends State<AddCostume>
           ],
         ):Row(
           children: [
-            Flexible(
-                flex: 6,
-                child: widget1()),
-            Flexible(
-                flex: 4,
-                child: widget2())
-          ],
-        ),
+            Flexible(flex: 6, child: widget1()),
+                  Flexible(flex: 4, child: widget2())
+                ],
+              ),
       ),
     );
+  }
+
+  pickImageFile() async {
+    fImage = await Utils.askSource(context) ?? fImage;
+    setState(() {});
   }
 
   addCostume() async {
@@ -345,11 +337,11 @@ class _AddCostume extends State<AddCostume>
 
     bool imageUploaded = true;
 
-    if (costumeImage != null) {
+    if (fImage != null) {
       try {
         costume['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: costumeImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${costume["id"]}",
@@ -417,11 +409,11 @@ class _AddCostume extends State<AddCostume>
 
     bool imageUploaded = true;
 
-    if (costumeImage != null) {
+    if (fImage != null) {
       try {
         costume['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: costumeImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${costume["id"]}",

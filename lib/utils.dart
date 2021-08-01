@@ -420,17 +420,18 @@ class Utils {
 /*-------------------------------------------------IMAGE UPLOAD-------------------------------------------------------*/
 
   static uploadImage(context,
-      {File file,
+      {XFile file,
       String type,
       String projectId,
       String id,
       String userId,
       String process}) async {
     var req = http.MultipartRequest('POST', UPLOAD_IMAGE);
+    int length = await file.length();
 
     req.files.add(http.MultipartFile(
-        'image_file', file.readAsBytes().asStream(), file.lengthSync(),
-        filename: file.path.split('/').last));
+        'image_file', file.readAsBytes().asStream(), length,
+        filename: "image"));
 
     req.fields.addAll({
       "type": type,
@@ -680,23 +681,23 @@ class Utils {
         opaque: false);
   }
 
-  static Future<String> openGallery() async {
-    var pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 25);
-    if (pickedFile != null) {
-      return pickedFile.path;
-    } else {
-      return null;
+  static Future<XFile> openGallery() async {
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      return pickedFile;
+    } catch (e) {
+      print(e);
     }
   }
 
-  static Future<String> openCamera() async {
-    var pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.camera, imageQuality: 25);
-    if (pickedFile != null) {
-      return pickedFile.path;
-    } else {
-      return null;
+  static Future<XFile> openCamera() async {
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.camera);
+      return pickedFile;
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -713,22 +714,23 @@ class Utils {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: TextButton.icon(
-                      onPressed: () async {
-                        String s = await openCamera();
-                        Navigator.of(context).pop(s);
-                      },
-                      label: Text('Camera'),
-                      icon: Icon(Icons.camera),
+                  if (!kIsWeb)
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: TextButton.icon(
+                        onPressed: () async {
+                          XFile s = await openCamera();
+                          Navigator.of(context).pop(s);
+                        },
+                        label: Text('Camera'),
+                        icon: Icon(Icons.camera),
+                      ),
                     ),
-                  ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(8),
                     child: TextButton.icon(
                       onPressed: () async {
-                        String s = await openGallery();
+                        XFile s = await openGallery();
                         Navigator.of(context).pop(s);
                       },
                       label: Text('Gallery'),

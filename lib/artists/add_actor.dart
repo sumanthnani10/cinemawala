@@ -14,11 +14,12 @@ class AddActor extends StatefulWidget {
   final Project project;
   final Map<dynamic, dynamic> actor;
   final bool isPopUp;
-  const AddActor({Key key, @required this.project, this.actor,this.isPopUp})
+
+  const AddActor({Key key, @required this.project, this.actor, this.isPopUp})
       : super(key: key);
 
   @override
-  _AddActorState createState() => _AddActorState(project, actor,isPopUp);
+  _AddActorState createState() => _AddActorState(project, actor, isPopUp);
 }
 
 class _AddActorState extends State<AddActor>
@@ -34,16 +35,16 @@ class _AddActorState extends State<AddActor>
   List<String> langsInLang = Utils.langsInLang;
   List<dynamic> languages = [];
   Map<dynamic, dynamic> actor;
-  File actorImage;
+  var fImage;
 
   ScrollController cardScrollController = new ScrollController();
 
-  _AddActorState(this.project, this.actor,this.isPopUp);
+  _AddActorState(this.project, this.actor, this.isPopUp);
 
   @override
   void initState() {
     isPopUp = isPopUp ?? true;
-    actorImage = null;
+    fImage = null;
     languages = project.languages;
     if (actor == null) {
       actor = {
@@ -86,7 +87,7 @@ class _AddActorState extends State<AddActor>
     super.initState();
   }
 
-  Widget widget1(){
+  Widget widget1() {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
@@ -97,64 +98,59 @@ class _AddActorState extends State<AddActor>
           children: [
             Positioned(
                 child: InkWell(
-                  onTap: () async {
-                    String imagePath = await Utils.askSource(context);
-                    if (imagePath != null) {
-                      actorImage = File(imagePath);
-                    }
-                    setState(() {});
-                  },
-                  child: actorImage == null
-                      ? actor['image'] == ''
+              onTap: () async {
+                    pickImageFile();
+              },
+                  child: fImage == null
+                  ? actor['image'] == ''
                       ? CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    radius: 100,
-                    child: Text(
-                      'Add Image',
-                      style: TextStyle(color: background),
-                    ),
-                  )
-                      : CachedNetworkImage(
-                      width: 200,
-                      height: 200,
-                      imageBuilder: (context, imageProvider) =>
-                          Container(
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover),
-                            ),
-                          ),
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder:
-                          (context, url, progress) => Center(
-                          child: LinearProgressIndicator(
-                            value: progress.progress,
-                          )),
-                      errorWidget: (context, url, error) => Center(
+                          backgroundColor: Colors.grey,
+                          radius: 100,
                           child: Text(
-                            'Image',
-                            style:
-                            const TextStyle(color: Colors.grey),
-                          )),
-                      useOldImageOnUrlChange: true,
-                      imageUrl: actor['image'])
+                            'Add Image',
+                            style: TextStyle(color: background),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          width: 200,
+                          height: 200,
+                          imageBuilder: (context, imageProvider) => Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
+                              ),
+                          fit: BoxFit.cover,
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              Center(
+                                  child: LinearProgressIndicator(
+                                value: progress.progress,
+                              )),
+                          errorWidget: (context, url, error) => Center(
+                                  child: Text(
+                                'Image',
+                                style: const TextStyle(color: Colors.grey),
+                              )),
+                          useOldImageOnUrlChange: true,
+                          imageUrl: actor['image'])
                       : CircleAvatar(
-                    backgroundImage: FileImage(actorImage),
-                    radius: 100,
-                  ),
+                    backgroundImage: kIsWeb
+                          ? NetworkImage(fImage.path)
+                          : FileImage(File(fImage.path)),
+                      radius: 100,
+                    ),
                 )),
-            if (actor['image'] != '' || actorImage != null)
+            if (actor['image'] != '' || fImage != null)
               Positioned(
                 bottom: 10,
                 left: 10,
                 child: InkWell(
                   onTap: () async {
                     actor['image'] = '';
-                    actorImage = null;
+                    fImage = null;
                     setState(() {});
                   },
                   child: Container(
@@ -178,11 +174,7 @@ class _AddActorState extends State<AddActor>
               right: 10,
               child: InkWell(
                 onTap: () async {
-                  String imagePath = await Utils.askSource(context);
-                  if (imagePath != null) {
-                    actorImage = File(imagePath);
-                  }
-                  setState(() {});
+                  pickImageFile();
                 },
                 child: Container(
                   height: 40,
@@ -206,7 +198,7 @@ class _AddActorState extends State<AddActor>
     );
   }
 
-  Widget widget2(){
+  Widget widget2() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -237,8 +229,7 @@ class _AddActorState extends State<AddActor>
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: List<Widget>.generate(
-                        languages.length, (i) {
+                    children: List<Widget>.generate(languages.length, (i) {
                       return Container(
                         decoration: BoxDecoration(
                           color: i == selectedLanguage
@@ -246,8 +237,7 @@ class _AddActorState extends State<AddActor>
                               : color.withOpacity(10 / 16),
                           borderRadius: BorderRadius.circular(32),
                         ),
-                        margin:
-                        const EdgeInsets.symmetric(horizontal: 4),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 2),
                         child: InkWell(
@@ -319,25 +309,22 @@ class _AddActorState extends State<AddActor>
                           children: [
                             TextField(
                               textInputAction: TextInputAction.next,
-                              textCapitalization:
-                              TextCapitalization.words,
+                              textCapitalization: TextCapitalization.words,
                               controller: nameControllers[i],
                               onChanged: (v) {
                                 actor['names'][languages[i]] = v;
                               },
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: background1)
-                                  //borderSide: const BorderSide(color: Colors.white)
-                                ),
+                                    borderSide: BorderSide(color: background1)
+                                    //borderSide: const BorderSide(color: Colors.white)
+                                    ),
                                 labelText: 'Artist Name',
-                                labelStyle: TextStyle(
-                                    color: background1, fontSize: 14),
+                                labelStyle:
+                                    TextStyle(color: background1, fontSize: 14),
                                 contentPadding: EdgeInsets.all(8),
                                 border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                             ),
@@ -346,26 +333,23 @@ class _AddActorState extends State<AddActor>
                             ),
                             TextField(
                               textInputAction: TextInputAction.done,
-                              textCapitalization:
-                              TextCapitalization.words,
+                              textCapitalization: TextCapitalization.words,
                               controller: characterControllers[i],
                               onChanged: (v) {
                                 actor['characters'][languages[i]] = v;
                               },
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: background1)
-                                  // borderSide: const BorderSide(color: Colors.white)
-                                ),
+                                    borderSide: BorderSide(color: background1)
+                                    // borderSide: const BorderSide(color: Colors.white)
+                                    ),
                                 labelText: 'Character Name',
-                                labelStyle: TextStyle(
-                                    color: background1, fontSize: 14),
+                                labelStyle:
+                                    TextStyle(color: background1, fontSize: 14),
                                 focusColor: Colors.white,
                                 contentPadding: EdgeInsets.all(8),
                                 border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                             ),
@@ -389,10 +373,10 @@ class _AddActorState extends State<AddActor>
                     color: color,
                     borderRadius: BorderRadius.circular(32),
                   ),
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Center(
                     child: Text(
                       'Save',
@@ -461,16 +445,21 @@ class _AddActorState extends State<AddActor>
     );
   }
 
+  pickImageFile() async {
+    fImage = await Utils.askSource(context) ?? fImage;
+    setState(() {});
+  }
+
   addArtist() async {
     Utils.showLoadingDialog(context, 'Adding Artist');
 
     bool imageUploaded = true;
 
-    if (actorImage != null) {
+    if (fImage != null) {
       try {
         actor['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: actorImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${actor["id"]}",
@@ -536,11 +525,11 @@ class _AddActorState extends State<AddActor>
 
     bool imageUploaded = true;
 
-    if (actorImage != null) {
+    if (fImage != null) {
       try {
         actor['image'] = "";
         var r = await Utils.uploadImage(context,
-            file: actorImage,
+            file: fImage,
             projectId: "${project.id}",
             userId: "${Utils.USER_ID}",
             id: "${actor["id"]}",
