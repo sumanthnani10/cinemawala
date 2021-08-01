@@ -148,8 +148,9 @@ class _SelectScheduleNames extends State<SelectScheduleNames>
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                                 InkWell(
                                   onTap: () async {

@@ -10,6 +10,7 @@ import 'package:cinemawala/scenes/additional_artists.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/scenes/select_costumes.dart';
 import 'package:cinemawala/scenes/select_props.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -306,10 +307,13 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                       // await setScene();
                       // setState(() {});
                     },
-                    label: Text(
-                      "Edit",
-                      style: TextStyle(color: Colors.indigo),
-                      textAlign: TextAlign.right,
+                    label: Container(
+                      padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(color: Colors.indigo),
+                        textAlign: TextAlign.right,
+                      ),
                     ),
                     icon: Icon(
                       Icons.edit,
@@ -440,6 +444,17 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                               ),
                             ),
                           ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 2),
+                          child: scene.completedOn[0]!=0 ? Container(
+                            color: scene.completed ? Color(0xFFC5E1A5) : Color(0xFFFFAB91),
+                            child: Center(child:Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("WD: ${scene.completedOn[3]} / ${scene.completedOn[0]}-${scene.completedOn[1]}-${scene.completedOn[2]}",
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                            ),),
+                          ):Container(),
+                        ),
                         Container(
                           width: MediaQuery.of(context).size.width - minus,
                           color: Colors.grey.shade400,
@@ -958,7 +973,7 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                 enabled: false,
                                 disabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: background)),
-                                labelText: 'Fighter',
+                                labelText: 'Action Director',
                                 labelStyle:
                                     TextStyle(color: background1, fontSize: 14),
                                 contentPadding: EdgeInsets.all(8),

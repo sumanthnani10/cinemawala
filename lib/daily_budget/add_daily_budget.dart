@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -1322,10 +1323,13 @@ class _AddDailyBudget extends State<AddDailyBudget>
                         ),
                         TextButton(
                             onPressed: () async {},
-                            child: Text(
-                              'View Daily Budget',
-                              style:
-                              TextStyle(fontSize: 12, color: Colors.indigo),
+                            child: Container(
+                              padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+                              child: Text(
+                                'View Daily Budget',
+                                style:
+                                TextStyle(fontSize: 12, color: Colors.indigo),
+                              ),
                             )),
                       ],
                     ),

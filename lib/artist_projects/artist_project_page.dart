@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
 import 'package:cinemawala/locations/location.dart';
+import 'package:cinemawala/pdf_generator.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
@@ -50,7 +51,7 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
   Location selectedLocation;
   Schedule selectedSchedule;
   Color background, color, background1;
-
+  List<dynamic> scenesId = [];
   _ArtistProjectPageState(this.artistProject);
 
   @override
@@ -83,13 +84,18 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
     _controller = AnimationController(vsync: this);
     scenes.forEach((element) {
       scenesMap[element.id] = element;
+      scenesId.add(element.id);
     });
+    print(scenesMap);
     costumes.forEach((element) {
       costumesMap[element.id] = element;
     });
     locations.forEach((element) {
       locationsMap[element.id] = element;
     });
+    var name = Utils.artistsMap[artist.id];
+    print(name);
+    PdfGenerator.artistWise(scenesMap,locationsMap,schedules,name);
     if (schedules.length > 0) {
       selectedSchedule = schedules.first;
       cday = selectedSchedule.day;
@@ -201,6 +207,8 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                   cday = tempday;
                   cmonth = tempmonth;
                   cyear = tempyear;
+                  selectedScene = scenesMap[selectedSchedule.scenes[0]];
+                  selectedLocation = locationsMap[selectedScene.location];
                   callSheetTimings = selectedSchedule.callSheetTimings;
                   timings = callSheetTimings[selectedSchedule.scenes[0]];
                   artistTiming = selectedSchedule
@@ -295,6 +303,9 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: List.generate(selectedSchedule.scenes.length, (i) {
+            if(i==0){
+              selectedScene = scenesMap[selectedSchedule.scenes[0]];
+            }
             return InkWell(
               onTap: () {
                 setState(() {
@@ -302,6 +313,12 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                   selectedLocation = locationsMap[selectedScene.location];
                   callSheetTimings = selectedSchedule.callSheetTimings;
                   timings = callSheetTimings[selectedSchedule.scenes[i]];
+                  print("yep");
+                  print(selectedSchedule.scenes[i]);
+                  print(scenesMap[selectedSchedule.scenes[i]].titles['en']);
+                  print(selectedSchedule.artistTimings[selectedSchedule.scenes[i]]);
+                  print(artist.id);
+                  print("yep");
                   artistTiming = selectedSchedule
                       .artistTimings[selectedSchedule.scenes[i]][artist.id];
                   sceneDetails = scenesMap[selectedSchedule.scenes[i]];
@@ -317,20 +334,20 @@ class _ArtistProjectPageState extends State<ArtistProjectPage>
                   }
                 });
               },
-              child: Container(
+              child: scenesId.contains(selectedSchedule.scenes[i]) ? Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
                             color: scenesMap[selectedSchedule.scenes[i]].id ==
-                                    selectedScene.id
-                                ? color
+                                    selectedScene.id ?
+                            color
                                 : color.withOpacity(0.1),
                             width: 3))),
                 child: Text(
                     "${scenesMap[selectedSchedule.scenes[i]].titles['en']}"),
                 //child: Text("${selectedSchedule.scenes[i]}"),
-              ),
+              ):Container(child: Text("${selectedSchedule.scenes[i]}"),),
             );
           }),
         ),

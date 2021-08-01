@@ -302,6 +302,109 @@ class PdfGenerator {
     );
     savePdf(dailyReport.id,pdf);
   }
+  static artistWise(
+      Map<dynamic,Scene> scenesMap,
+          Map<String,Location> locationsMap,
+      List<Schedule> schedules,
+      Actor artist
+      ) async{
+    var artistTiming;
+    String workTime;
+    Location stLoc;
+    Scene scene;
+    int hours;
+    Document pdf = Document();
+    pdf.addPage(
+        Page(margin: const EdgeInsets.all(16),
+            pageFormat: PdfPageFormat(595.2, double.infinity),
+          build: (context) {
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:List.generate(schedules.length, (i){
+                  Schedule schedule = schedules[i];
+                  return Table(
+                    children: [
+                      TableRow(children: [
+                  Column(
+                  children: List.generate(schedule.scenes.length, (j){
+                    if(schedule.scenes[j]!='scene_OtudreeM' && i==0){
+                      scene = scenesMap[schedule.scenes[j]];
+                      print(schedule.scenes[j]);
+                      print(scene);
+                      stLoc = locationsMap[scene.location];
+                      artistTiming = schedule.artistTimings[scene.id][artist.id];
+                      print(artistTiming);
+                      var startHour,endHour,startMinute,endMinute;
+                      startHour = (artistTiming['start'][0]);
+                      endHour = (artistTiming['end'][0]);
+                      startMinute = (artistTiming['start'][1]);
+                      endMinute = (artistTiming['end'][1]);
+                      if(artistTiming['start'][2]==artistTiming['end'][2]){
+                        workTime = "${endHour-startHour} : ${ startMinute>endMinute ? startMinute-endMinute : endMinute-startMinute } hrs";
+                      }else{
+                        if(startHour>endHour){
+                          var diff = startHour-endHour;
+                          hours = 12 - diff;
+                          workTime = "$hours : ${startMinute>endMinute ? startMinute-endMinute : endMinute-startMinute} hrs";
+                        }else{
+                          var diff = endHour - startHour;
+                          hours = 12 + diff;
+                          workTime = "$hours : ${startMinute>endMinute ? startMinute-endMinute : endMinute-startMinute} hrs";
+                        }
+                      }
+                    }
+                    return Column(
+                        children: [
+                          Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: PdfColors.black),
+                                  ),
+                                  child: Text("${j+1}"),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: PdfColors.black),
+                                  ),
+                                  child: Text("${schedule.day} - ${schedule.month} - ${schedule.year}"),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: PdfColors.black),
+                                  ),
+                                  child: stLoc!=null ?  Text("${stLoc.shootLocation}") : Text(""),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: PdfColors.black),
+                                  ),
+                                  child: scene!=null ? Text("${scene.titles['en']}") : Text(""),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: PdfColors.black),
+                                  ),
+                                  child: Text(workTime),
+                                ),
+                              ]
+                          ),
+                        ]
+                    );
+                  })
+                  ),
+                      ])
+                    ]
+                  );
+
+                })
+              ),
+            );
+          })
+    );
+    savePdf(artist.id,pdf);
+  }
   static sceneCallSheet(
       Project project,
       context,

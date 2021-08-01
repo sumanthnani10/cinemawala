@@ -5,6 +5,7 @@ import 'package:cinemawala/artists/add_actor.dart';
 import 'package:cinemawala/costumes/costume_page.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/roles/select_user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -86,9 +87,9 @@ class _ActorPage extends State<ActorPage> {
               : AppBar(
             automaticallyImplyLeading: !popUp ? true : false,
             flexibleSpace: Container(
-              decoration: popUp
+              decoration: !popUp
                   ? BoxDecoration(
-                // border: Border(left: BorderSide(color: Colors.black)),
+                  border: Border(left: BorderSide(color: Colors.black)),
                   color: Colors.white)
                   : BoxDecoration(
                 gradient: Utils.linearGradient,
@@ -124,10 +125,13 @@ class _ActorPage extends State<ActorPage> {
                     Utils.notAllowed(context);
                   }
                 },
-                label: Text(
-                  "Edit",
-                  style: TextStyle(color: Colors.indigo),
-                  textAlign: TextAlign.right,
+                label: Container(
+                  padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),
+                  child: Text(
+                    "Edit",
+                    style: TextStyle(color: Colors.indigo),
+                    textAlign: TextAlign.right,
+                  ),
                 ),
                 icon: Icon(
                   Icons.edit,
@@ -147,6 +151,7 @@ class _ActorPage extends State<ActorPage> {
                   ? BoxDecoration(
                   color: background, borderRadius: BorderRadius.circular(8))
                   : BoxDecoration(
+                border: Border(left: BorderSide(color: Colors.black)),
                 color: background,
               ),
               child: Stack(
@@ -216,8 +221,7 @@ class _ActorPage extends State<ActorPage> {
                   ),
                   SizedBox.expand(
                     child: DraggableScrollableSheet(
-                      initialChildSize:
-                          318 / MediaQuery.of(context).size.height,
+                      initialChildSize: popUp ? 318 / MediaQuery.of(context).size.height : 428 / MediaQuery.of(context).size.height ,
                       minChildSize: 318 / MediaQuery.of(context).size.height,
                       maxChildSize: 1,
                       builder: (context, scrollController) {
@@ -701,16 +705,24 @@ class _ActorPage extends State<ActorPage> {
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: selectedUser==null ? 8 : 16),
                       decoration: BoxDecoration(
                           gradient: Utils.linearGradient,
                           borderRadius: BorderRadius.circular(8)),
-                      child: Text(
-                          "${selectedUser == null ? "Tap to choose." : "@ ${selectedUser['username']}"}",
-                          style: TextStyle(
-                              color: Colors.black,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          selectedUser==null ? Text("${"Select User"}",style: TextStyle(color: Colors.black,
                               fontSize: 14,
-                              fontWeight: FontWeight.bold)),
+                          ),):Container(),
+                          Text("${selectedUser == null ? "Tap to choose." : "@ ${selectedUser['username']}"}",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: selectedUser==null ? 10 : 14,
+                              fontWeight: selectedUser==null ? FontWeight.normal : FontWeight.bold,
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                   if (showError)

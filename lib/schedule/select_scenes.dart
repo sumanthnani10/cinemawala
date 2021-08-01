@@ -100,7 +100,7 @@ class _SelectScenes extends State<SelectScenes>
                           Navigator.pop(context, selected);
                         },
                         label: Text(
-                          "Done",
+                          "Save",
                           style: TextStyle(color: Colors.indigo),
                           textAlign: TextAlign.right,
                         ),
@@ -152,8 +152,9 @@ class _SelectScenes extends State<SelectScenes>
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: Wrap(
-                          direction: Axis.horizontal,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                                 InkWell(
                                   onTap: () {
