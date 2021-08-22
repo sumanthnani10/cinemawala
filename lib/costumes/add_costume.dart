@@ -339,7 +339,7 @@ class _AddCostume extends State<AddCostume>
 
     if (fImage != null) {
       try {
-        costume['image'] = "";
+        costume['reference_image'] = "";
         var r = await Utils.uploadImage(context,
             file: fImage,
             projectId: "${project.id}",
@@ -349,7 +349,7 @@ class _AddCostume extends State<AddCostume>
             process: "add");
         imageUploaded = r[0];
         if (r[0]) {
-          costume['image'] = r[1];
+          costume['reference_image'] = r[1];
         }
       } catch (e) {
         imageUploaded = false;
@@ -411,7 +411,7 @@ class _AddCostume extends State<AddCostume>
 
     if (fImage != null) {
       try {
-        costume['image'] = "";
+        costume['reference_image'] = "";
         var r = await Utils.uploadImage(context,
             file: fImage,
             projectId: "${project.id}",
@@ -421,7 +421,7 @@ class _AddCostume extends State<AddCostume>
             process: "edit");
         imageUploaded = r[0];
         if (r[0]) {
-          costume['image'] = r[1];
+          costume['reference_image'] = r[1];
         }
       } catch (e) {
         imageUploaded = false;
@@ -429,7 +429,7 @@ class _AddCostume extends State<AddCostume>
       }
     }
 
-    // debugPrint("${costume}");
+    debugPrint("${costume}");
 
     try {
       if (imageUploaded) {

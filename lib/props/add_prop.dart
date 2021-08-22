@@ -340,7 +340,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     if (fImage != null) {
       try {
-        prop['image'] = "";
+        prop['reference_image'] = "";
         var r = await Utils.uploadImage(context,
             file: fImage,
             projectId: "${project.id}",
@@ -350,7 +350,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
             process: "add");
         imageUploaded = r[0];
         if (r[0]) {
-          prop['image'] = r[1];
+          prop['reference_image'] = r[1];
         }
       } catch (e) {
         imageUploaded = false;
@@ -412,7 +412,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
 
     if (fImage != null) {
       try {
-        prop['image'] = "";
+        prop['reference_image'] = "";
         var r = await Utils.uploadImage(context,
             file: fImage,
             projectId: "${project.id}",
@@ -422,7 +422,7 @@ class _AddProp extends State<AddProp> with SingleTickerProviderStateMixin {
             process: "edit");
         imageUploaded = r[0];
         if (r[0]) {
-          prop['image'] = r[1];
+          prop['reference_image'] = r[1];
         }
       } catch (e) {
         imageUploaded = false;

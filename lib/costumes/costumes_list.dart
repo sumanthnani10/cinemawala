@@ -168,17 +168,18 @@ class _CostumesListState extends State<CostumesList>
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: List<Widget>.generate(costumes.length, (i) {
                         var costume = costumes[i];
-                        return InkWell(
-                          onTap: () async {
-                            if(maxWidth>Utils.mobileWidth){
-                              setState(() {
-                                sideWidget = CostumesPage(
-                                  project: project,
-                                  costume: costume,
-                                  key: UniqueKey(),
-                                  isPopUp: false,
-                                );
-                              });
+                          print("${costume.id}: ${costume.referenceImage}");
+                          return InkWell(
+                            onTap: () async {
+                              if (maxWidth > Utils.mobileWidth) {
+                                setState(() {
+                                  sideWidget = CostumesPage(
+                                    project: project,
+                                    costume: costume,
+                                    key: UniqueKey(),
+                                    isPopUp: false,
+                                  );
+                                });
                             }else{
                               await Navigator.push(
                                   context,

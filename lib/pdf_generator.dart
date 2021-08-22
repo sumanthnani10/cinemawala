@@ -7,10 +7,12 @@ import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/props/prop.dart';
 import 'package:cinemawala/scenes/scene.dart';
 import 'package:cinemawala/schedule/schedule.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'artists/actor.dart';
 import 'costumes/costume.dart';
@@ -215,8 +217,16 @@ class PdfGenerator {
   static savePdf(dynamic fileName,dynamic pdf) async{
     Directory documentDirectory = await path.getExternalStorageDirectory();
     String documentPath = documentDirectory.path;
-    File file = File("$documentPath/${fileName}.pdf");
-    file.writeAsBytesSync(await pdf.save());
+    if (kIsWeb) {
+      html.AnchorElement()
+        ..href = '${Uri.dataFromBytes(pdf)}'
+        ..download = "$documentPath/${fileName}.pdf"
+        ..style.display = 'none'
+        ..click();
+    } else {
+      File file = File("$documentPath/${fileName}.pdf");
+      file.writeAsBytesSync(await pdf.save());
+    }
     return;
   }
   static dailyReportCallSheet(
