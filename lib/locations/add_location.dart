@@ -6,6 +6,7 @@ import 'package:cinemawala/projects/project.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../utils.dart';
 import 'location.dart';
@@ -30,10 +31,10 @@ class _AddLocation extends State<AddLocation>
   Color background, background1, color;
   var locationController, shootLocationController, descriptionController;
   Map<dynamic, dynamic> location;
-  List<File> locationImages = [];
+  List<XFile> locationImages = [];
   bool loading = true, edit = false;
 
-  _AddLocation(this.project, this.location,this.isPopUp);
+  _AddLocation(this.project, this.location, this.isPopUp);
 
   @override
   void initState() {
@@ -88,12 +89,7 @@ class _AddLocation extends State<AddLocation>
                 children: [
                   InkWell(
                     onTap: () async {
-                      String image_path =
-                      await Utils.askSource(context);
-                      if (image_path != null) {
-                        locationImages[i] = File(image_path);
-                      }
-                      setState(() {});
+                      pickImageFile(i);
                     },
                     child: SizedBox(
                       width: isPopUp ? 100 : 200,
@@ -136,10 +132,12 @@ class _AddLocation extends State<AddLocation>
                                 fit: BoxFit.cover,
                               )
                                   : Image(
-                                image:
-                                FileImage(locationImages[i]),
-                                fit: BoxFit.cover,
-                              ))),
+                                      image: kIsWeb
+                                          ? NetworkImage(locationImages[i].path)
+                                          : FileImage(
+                                              File(locationImages[i].path)),
+                                      fit: BoxFit.cover,
+                                    ))),
                     ),
                   ),
                   SizedBox(
@@ -174,13 +172,7 @@ class _AddLocation extends State<AddLocation>
                         maxRadius: 14,
                         child: IconButton(
                           onPressed: () async {
-                            String image_path =
-                            await Utils.askSource(context);
-                            if (image_path != null) {
-                              location['images'][i] = "";
-                              locationImages[i] = File(image_path);
-                            }
-                            setState(() {});
+                            pickImageFile(i);
                           },
                           icon: Icon(
                             Icons.edit,
@@ -340,6 +332,11 @@ class _AddLocation extends State<AddLocation>
     );
   }
 
+  pickImageFile(int i) async {
+    locationImages[i] = await Utils.askSource(context) ?? locationImages[i];
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     background = Colors.white;
@@ -395,7 +392,7 @@ class _AddLocation extends State<AddLocation>
     bool imageUploaded = true;
 
     var imagesLinks = [];
-    Map<String, File> tempLocImages = {};
+    Map<String, XFile> tempLocImages = {};
 
     var i = 0;
 
@@ -481,7 +478,7 @@ class _AddLocation extends State<AddLocation>
     bool imageUploaded = true;
 
     var imagesLinks = [];
-    Map<String, File> tempLocImages = {};
+    Map<String, XFile> tempLocImages = {};
     int j = 1;
 
     for (int i = 0; i < 4; i++) {
