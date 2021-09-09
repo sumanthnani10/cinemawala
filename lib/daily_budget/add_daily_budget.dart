@@ -1098,7 +1098,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
             },
           };
         }
-
         setState(() {});
       }
       Navigator.pop(context);
@@ -1268,7 +1267,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                     ),
                 if(locations.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                    padding: const EdgeInsets.fromLTRB(12, 0, 2, 0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,

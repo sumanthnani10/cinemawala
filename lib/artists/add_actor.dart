@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:io';
 //import 'dart:html';
@@ -98,50 +99,50 @@ class _AddActorState extends State<AddActor>
           children: [
             Positioned(
                 child: InkWell(
-              onTap: () async {
+                  onTap: () async {
                     pickImageFile();
-              },
+                  },
                   child: fImage == null
-                  ? actor['image'] == ''
+                      ? actor['image'] == ''
                       ? CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          radius: 100,
-                          child: Text(
-                            'Add Image',
-                            style: TextStyle(color: background),
-                          ),
-                        )
+                    backgroundColor: Colors.grey,
+                    radius: 100,
+                    child: Text(
+                      'Add Image',
+                      style: TextStyle(color: background),
+                    ),
+                  )
                       : CachedNetworkImage(
-                          width: 200,
-                          height: 200,
-                          imageBuilder: (context, imageProvider) => Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover),
-                                ),
-                              ),
-                          fit: BoxFit.cover,
-                          progressIndicatorBuilder: (context, url, progress) =>
-                              Center(
-                                  child: LinearProgressIndicator(
+                      width: 200,
+                      height: 200,
+                      imageBuilder: (context, imageProvider) => Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover),
+                        ),
+                      ),
+                      fit: BoxFit.cover,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                              child: LinearProgressIndicator(
                                 value: progress.progress,
                               )),
-                          errorWidget: (context, url, error) => Center(
-                                  child: Text(
-                                'Image',
-                                style: const TextStyle(color: Colors.grey),
-                              )),
-                          useOldImageOnUrlChange: true,
-                          imageUrl: actor['image'])
+                      errorWidget: (context, url, error) => Center(
+                          child: Text(
+                            'Image',
+                            style: const TextStyle(color: Colors.grey),
+                          )),
+                      useOldImageOnUrlChange: true,
+                      imageUrl: actor['image'])
                       : CircleAvatar(
                     backgroundImage: kIsWeb
-                          ? NetworkImage(fImage.path)
-                          : FileImage(File(fImage.path)),
-                      radius: 100,
-                    ),
+                        ? NetworkImage(fImage.path)
+                        : FileImage(File(fImage.path)),
+                    radius: 100,
+                  ),
                 )),
             if (actor['image'] != '' || fImage != null)
               Positioned(
@@ -290,9 +291,9 @@ class _AddActorState extends State<AddActor>
                       return Container(
                         width: MediaQuery.of(context).size.width - 24,
                         constraints:
-                            BoxConstraints(maxWidth: Utils.mobileWidth - (24)),
+                        BoxConstraints(maxWidth: Utils.mobileWidth - (24)),
                         margin:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         padding: EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           color: background,
@@ -317,11 +318,11 @@ class _AddActorState extends State<AddActor>
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: background1)
-                                    //borderSide: const BorderSide(color: Colors.white)
-                                    ),
+                                  //borderSide: const BorderSide(color: Colors.white)
+                                ),
                                 labelText: 'Artist Name',
                                 labelStyle:
-                                    TextStyle(color: background1, fontSize: 14),
+                                TextStyle(color: background1, fontSize: 14),
                                 contentPadding: EdgeInsets.all(8),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -341,11 +342,11 @@ class _AddActorState extends State<AddActor>
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: background1)
-                                    // borderSide: const BorderSide(color: Colors.white)
-                                    ),
+                                  // borderSide: const BorderSide(color: Colors.white)
+                                ),
                                 labelText: 'Character Name',
                                 labelStyle:
-                                    TextStyle(color: background1, fontSize: 14),
+                                TextStyle(color: background1, fontSize: 14),
                                 focusColor: Colors.white,
                                 contentPadding: EdgeInsets.all(8),
                                 border: OutlineInputBorder(
@@ -374,9 +375,9 @@ class _AddActorState extends State<AddActor>
                     borderRadius: BorderRadius.circular(32),
                   ),
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Center(
                     child: Text(
                       'Save',
@@ -441,7 +442,7 @@ class _AddActorState extends State<AddActor>
                     child: widget2()),
               ],
             ),*/
-          ),
+      ),
     );
   }
 

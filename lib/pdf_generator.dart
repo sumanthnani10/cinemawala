@@ -20,6 +20,7 @@ import 'projects/project.dart';
 import 'utils.dart';
 
 class PdfGenerator {
+
   static Future<Uint8List> getImageBytes(String link) async {
     Uint8List response =
         (await NetworkAssetBundle(Uri.parse("${link}")).load("${link}"))
@@ -1045,7 +1046,6 @@ class PdfGenerator {
     );
     savePdf(schedule.id, pdf);
   }
-
   static artistCallSheet(Project project, context, Scene scene,
       Schedule schedule, String date, String language, Actor artists) async {
     TextStyle labelStyle = TextStyle(fontSize: 12),
@@ -1282,7 +1282,144 @@ class PdfGenerator {
     );
     savePdf(schedule.id, pdf);
   }
+  static projectCallSheet(
+      Map<DateTime, List<dynamic>> projectDates,Project project) async{
+    Document pdf = Document();
+    Map<dynamic,List<String>> temp = {};
+    List dates = [];
+    List info = [];
+    projectDates.forEach((key, value) {
+      dates.add(key);
+    });
+    List<dynamic> callme(var date){
+      List scenes = projectDates[date].toList();
+      for(var b=0;b<scenes.length;b++){
+        Scene scene = Utils.scenesMap[scenes[b]];
+        var datee = date.toString();
+        datee = datee.substring(0,10);
+        Location sceneLoc = Utils.locationsMap[scene.location];
 
+      }
+    }
+    pdf.addPage(
+        Page(
+            margin: const EdgeInsets.all(16),
+            pageFormat: PdfPageFormat(595.2, double.infinity),
+            build: (context) {
+              return Container(
+                child: Column(
+                  children:[
+                   Column(
+                     children: List.generate(dates.length, (i){
+                       List scenes = projectDates[dates[i]].toList();
+                       var date = dates[i].toString();
+                       date = date.substring(0,10);
+                       print("hello fefe ${scenes.length}");
+                       print(date);
+                       return Column(
+                         children: [
+                           Center(
+                             child: Container(
+                               padding : scenes.length!=0 ? EdgeInsets.all(12) : EdgeInsets.all(0),
+                               child: scenes.length!=0 ? Text("${date}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)) : Text(""),
+                             ),
+                           ),
+                       Table(
+                       border: i==0 ? TableBorder.all(color: PdfColors.black) : TableBorder.all(),
+                       children: <TableRow>[
+                       i==0 ? TableRow(children: [
+                         Container(
+                           padding: EdgeInsets.all(6),
+                           child: Text("Location",style: TextStyle(fontWeight: FontWeight.bold)),
+                         ),
+                         Container(
+                           padding: EdgeInsets.all(6),
+                           child: Text("Shoot Location",style: TextStyle(fontWeight: FontWeight.bold)),
+                         ),
+                         Container(
+                           padding: EdgeInsets.all(6),
+                           child: Text("Scene No",style: TextStyle(fontWeight: FontWeight.bold)),
+                         ),
+                         Container(
+                           padding: EdgeInsets.all(6),
+                           child: Text("Scene Gist",style: TextStyle(fontWeight: FontWeight.bold)),
+                         ),
+                         Container(
+                           padding: EdgeInsets.all(6),
+                           child: Text("Artists",style: TextStyle(fontWeight: FontWeight.bold)),
+                         ),
+                       ]) : TableRow(children: [
+                         Text(""),
+                         Text(""),
+                         Text(""),
+                         Text(""),
+                         Text(""),
+                       ]),
+                       ]+List<TableRow>.generate(scenes.length, (j){
+                       Scene scene = Utils.scenesMap[scenes[j]];
+                       Location sceneLoc = Utils.locationsMap[scene.location];
+                       var artists = scene.artists;
+                       return TableRow(
+                       children: [
+                       Container(
+                       padding: EdgeInsets.all(8),
+                       decoration : BoxDecoration(
+                         border: Border(left: BorderSide(color: PdfColors.black),right: BorderSide(color: PdfColors.black)),
+                       ),
+                       child: Text(sceneLoc.location),
+                       ),
+                       Container(
+                       padding: EdgeInsets.all(8),
+                       decoration : BoxDecoration(
+                       border: Border(left: BorderSide(color: PdfColors.black),right: BorderSide(color: PdfColors.black)),
+                       ),
+                       child: Text("${scene.titles['en']}"),
+                       ),
+                       Container(
+                       padding: EdgeInsets.all(8),
+                       decoration : BoxDecoration(
+                         border: Border(left: BorderSide(color: PdfColors.black),right: BorderSide(color: PdfColors.black)),
+                       ),
+                       child: Text("${sceneLoc.shootLocation}"),
+                       ),
+                       Container(
+                       padding: EdgeInsets.all(8),
+                       decoration : BoxDecoration(
+                         border: Border(left: BorderSide(color: PdfColors.black),right: BorderSide(color: PdfColors.black)),
+                       ),
+                       child: Text("${scene.gists['en']}"),
+                       ),
+                       Container(
+                       padding: EdgeInsets.all(8),
+                       decoration : BoxDecoration(
+                         border: Border(left: BorderSide(color: PdfColors.black),right: BorderSide(color: PdfColors.black)),
+                       ),
+                       child: Wrap(
+                       direction: Axis.horizontal,
+                       children: List.generate(artists.length, (artist){
+                       Actor actor = Utils.artistsMap[artists[artist]];
+                       print(artist);
+                       return Container(
+                       child: artists.length-1==artist ? Text(" ${actor.names['en']}") : Text(" ${actor.names['en']}, "),
+                       );
+                       })
+                       ),
+                       ),
+                       ],
+                       );
+                       })
+                       ),
+                         ],
+                       );
+                     })
+                   ),
+                  ],
+                )
+              );
+            }
+        ));
+    savePdf(project.id, pdf);
+  }
   static costumeCallSheet(
       Project project,
       context,

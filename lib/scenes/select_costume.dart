@@ -174,7 +174,7 @@ class _SelectCostume extends State<SelectCostume>
                             MaterialPageRoute(
                                 builder: (context) => AddCostume(
                                   project: project,
-                                )));
+                                  )));
                       }
                       else{
                         Utils.notAllowed(context);
