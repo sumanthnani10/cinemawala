@@ -202,9 +202,18 @@ class _ActorPage extends State<ActorPage> {
                                 fit: BoxFit.cover,
                                 progressIndicatorBuilder:
                                     (context, url, progress) =>
-                                    LinearProgressIndicator(
-                                      value: progress.progress,
-                                    ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 40,
+                                              child: LinearProgressIndicator(
+                                                value: progress.progress,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                 errorWidget: (context, url, error) =>
                                     Center(
                                         child: Text(
@@ -615,9 +624,18 @@ class _ActorPage extends State<ActorPage> {
                                                               fit: BoxFit.cover,
                                                               progressIndicatorBuilder:
                                                                   (context, url, progress) =>
-                                                                  LinearProgressIndicator(
-                                                                    value: progress.progress,
-                                                                  ),
+                                                                        Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            SizedBox(
+                                                                              width: 40,
+                                                                              child: LinearProgressIndicator(
+                                                                                value: progress.progress,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                               errorWidget: (context, url, error) =>
                                                                   Container(
                                                                     color: background,

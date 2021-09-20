@@ -258,9 +258,20 @@ class _SelectCostumes extends State<SelectCostumes>
                                               fit: BoxFit.cover,
                                               progressIndicatorBuilder:
                                                   (context, url, progress) =>
-                                                      LinearProgressIndicator(
-                                                        value:
-                                                            progress.progress,
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 40,
+                                                            child:
+                                                                LinearProgressIndicator(
+                                                              value: progress
+                                                                  .progress,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                               errorWidget: (context, url,
                                                       error) =>
@@ -675,9 +686,20 @@ class _SelectedCostumes extends State<SelectedCostumes>
                                               fit: BoxFit.cover,
                                               progressIndicatorBuilder:
                                                   (context, url, progress) =>
-                                                      LinearProgressIndicator(
-                                                        value:
-                                                            progress.progress,
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 40,
+                                                            child:
+                                                                LinearProgressIndicator(
+                                                              value: progress
+                                                                  .progress,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                               errorWidget: (context, url,
                                                       error) =>

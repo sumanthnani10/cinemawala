@@ -141,9 +141,6 @@ class _ActorsListState extends State<ActorsList>
   }
   @override
   Widget build(BuildContext context) {
-    // print(Utils.artistsMap);
-    // print(Utils.artists);
-    // print(scenes);
     background = Colors.white;
     color = Color(0xff6fd8a8);
     if (background == Colors.white) {
@@ -298,17 +295,207 @@ class _ActorsListState extends State<ActorsList>
                                       child: Text(
                                         "Artists",
                                         style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          })
-                      ),
+                              ],
+                            ),
+                          ),
+                        );
+                      })),
                     ),
                   ),
-                   GridView.count(
+                  Builder(
+                    builder: (context) {
+                      int maxRows = maxWidth > Utils.mobileWidth ? 4 : 3;
+                      int cols = (artists.length / maxRows).ceil();
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: List.generate(cols, (col) {
+                            return Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: List.generate(maxRows, (row) {
+                                row = col * maxRows + row;
+                                return Flexible(
+                                  child: row < artists.length
+                                      ? InkWell(
+                                          onTap: () async {
+                                            if (maxWidth > Utils.mobileWidth) {
+                                              setState(() {
+                                                sideWidget = ActorPage(
+                                                  key: UniqueKey(),
+                                                  actor: artists[row],
+                                                  popUp: false,
+                                                  project: project,
+                                                );
+                                                // artists = Utils.artists.sublist(0);
+                                              });
+                                            } else {
+                                              await Navigator.push(
+                                                  context,
+                                                  Utils.createRoute(
+                                                      ActorPage(
+                                                        actor: artists[row],
+                                                        project: project,
+                                                      ),
+                                                      Utils.DTU));
+                                              setState(() {
+                                                artists =
+                                                    Utils.artists.sublist(0);
+                                              });
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                artists[row].image == ''
+                                                    ? CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.grey,
+                                                        radius: 50,
+                                                        child: Text(
+                                                          'No Image',
+                                                          style: TextStyle(
+                                                              color: background,
+                                                              fontSize: 12),
+                                                        ),
+                                                      )
+                                                    : CachedNetworkImage(
+                                                        width: 100,
+                                                        height: 100,
+                                                        imageBuilder: (context,
+                                                                imageProvider) =>
+                                                            Container(
+                                                              width: 100,
+                                                              height: 100,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                              ),
+                                                            ),
+                                                        fit: BoxFit.cover,
+                                                        progressIndicatorBuilder:
+                                                            (context, url,
+                                                                    progress) =>
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: 60,
+                                                                      child:
+                                                                          LinearProgressIndicator(
+                                                                        value: progress
+                                                                            .progress,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Center(
+                                                                child: Text(
+                                                              'Image',
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .grey),
+                                                            )),
+                                                        useOldImageOnUrlChange:
+                                                            true,
+                                                        imageUrl:
+                                                            artists[row].image),
+                                                SizedBox(
+                                                  height: 4,
+                                                ),
+                                                Text(
+                                                    '${artists[row].names['en']}',
+                                                    maxLines: 2,
+                                                    softWrap: true,
+                                                    textAlign: TextAlign.center,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                                Text(
+                                                  '${artists[row].characters['en']}',
+                                                  maxLines: 1,
+                                                  softWrap: true,
+                                                  textAlign: TextAlign.center,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      color: Colors.black45),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                );
+                              }),
+                            );
+                          }),
+                        ),
+                      );
+                    },
+                  )
+                ]),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  if(project.role.permissions["casting"]["add"]||
+                      project.role.permissions["scenes"]["add"]||
+                      project.role.permissions["schedule"]["add"]){
+                    await Navigator.push(
+                        context,
+                        Utils.createRoute(
+                            AddActor(
+                              project: project,
+                              isPopUp: maxWidth>Utils.mobileWidth ? false : true,
+                            ),
+                            Utils.DTU));
+                    setState(() {
+                      artists = Utils.artists.sublist(0);
+                    });
+                  }else{
+                    print('you are not permitted');
+                  }
+                },
+                backgroundColor: project.role.permissions["casting"]["add"]||
+                    project.role.permissions["scenes"]["add"]||
+                    project.role.permissions["schedule"]["add"] ?
+                Color(0xff6fd8a8) : Utils.notPermitted,
+                child: Icon(
+                  Icons.add,
+                  color: background,
+                  size: 36,
+                ),
+              ),
+    ),
+            ),
+          ),
+          if(maxWidth>Utils.mobileWidth)
+            Flexible(
+              flex: 4,
+              child: Scaffold(body: sideWidget ?? SizedBox.expand(child: Container(
+                decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: Colors.black))
+                ),
+                child: Center(child: Text("No Field Selected")),)),),
+            )
+        ],
+      ); });
+  }
+}
+
+/*GridView.count(
                   crossAxisCount: maxWidth>Utils.mobileWidth ? 4 : 3,
                   childAspectRatio: 0.7,
                   children: List<Widget>.generate(artists.length, (i) {
@@ -397,51 +584,4 @@ class _ActorsListState extends State<ActorsList>
                       ),
                     );
                   }),
-                ),
-                    ]),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  if(project.role.permissions["casting"]["add"]||
-                      project.role.permissions["scenes"]["add"]||
-                      project.role.permissions["schedule"]["add"]){
-                    await Navigator.push(
-                        context,
-                        Utils.createRoute(
-                            AddActor(
-                              project: project,
-                              isPopUp: maxWidth>Utils.mobileWidth ? false : true,
-                            ),
-                            Utils.DTU));
-                    setState(() {
-                      artists = Utils.artists.sublist(0);
-                    });
-                  }else{
-                    print('you are not permitted');
-                  }
-                },
-                backgroundColor: project.role.permissions["casting"]["add"]||
-                    project.role.permissions["scenes"]["add"]||
-                    project.role.permissions["schedule"]["add"] ?
-                Color(0xff6fd8a8) : Utils.notPermitted,
-                child: Icon(
-                  Icons.add,
-                  color: background,
-                  size: 36,
-                ),
-              ),
-    ),
-            ),
-          ),
-          if(maxWidth>Utils.mobileWidth)
-            Flexible(
-              flex: 4,
-              child: Scaffold(body: sideWidget ?? SizedBox.expand(child: Container(
-                decoration: BoxDecoration(
-                    border: Border(left: BorderSide(color: Colors.black))
-                ),
-                child: Center(child: Text("No Field Selected")),)),),
-            )
-        ],
-      ); });
-  }
-}
+                ),*/

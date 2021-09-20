@@ -101,9 +101,20 @@ class _LocationPageState extends State<LocationPage> {
                                             child: CachedNetworkImage(
                                                 progressIndicatorBuilder:
                                                     (context, url, progress) =>
-                                                        LinearProgressIndicator(
-                                                          value:
-                                                              progress.progress,
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 40,
+                                                              child:
+                                                                  LinearProgressIndicator(
+                                                                value: progress
+                                                                    .progress,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                 errorWidget: (context, url,
                                                         error) =>
