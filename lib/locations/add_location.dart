@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -61,9 +62,9 @@ class _AddLocation extends State<AddLocation>
     }
     locationController = new TextEditingController(text: location['location']);
     shootLocationController =
-        new TextEditingController(text: location['shoot_location']);
+    new TextEditingController(text: location['shoot_location']);
     descriptionController =
-        new TextEditingController(text: location['description']);
+    new TextEditingController(text: location['description']);
     for (int i = location['images'].length; i < 4; i++) {
       location['images'].add('');
     }
@@ -132,12 +133,12 @@ class _AddLocation extends State<AddLocation>
                                 fit: BoxFit.cover,
                               )
                                   : Image(
-                                      image: kIsWeb
-                                          ? NetworkImage(locationImages[i].path)
-                                          : FileImage(
-                                              File(locationImages[i].path)),
-                                      fit: BoxFit.cover,
-                                    ))),
+                                image: kIsWeb
+                                    ? NetworkImage(locationImages[i].path)
+                                    : FileImage(
+                                    File(locationImages[i].path)),
+                                fit: BoxFit.cover,
+                              ))),
                     ),
                   ),
                   SizedBox(

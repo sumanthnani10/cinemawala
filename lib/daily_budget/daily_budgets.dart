@@ -45,12 +45,13 @@ class _DailyBudgetsState extends State<DailyBudgets>
     selectedDateId =
         "${date.year}${date.month > 9 ? date.month : "0${date.month}"}${date.day > 9 ? date.day : "0${date.day}"}";
     selectedDailyBudget = dailyBudgets[selectedDateId];
-
+    print(dailyBudgets);
     dailyBudgets.forEach((k, v) {
       // print(k);
-      calenderDailyBudget[DateTime(v.year, v.month, v.day)] = [1];
+      calenderDailyBudget[DateTime(v.year, v.month, v.day)] = [];
+      calenderDailyBudget[DateTime(v.year, v.month, v.day)].add("forDot");
     });
-
+    print(calenderDailyBudget);
     calendarController = new CalendarController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // getDailyBudgets();

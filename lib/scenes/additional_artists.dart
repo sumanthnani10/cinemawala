@@ -213,7 +213,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                               textFieldControllers.add(
                                                   new TextEditingController(
                                                       //text: '$field'
-                                                      text: '${field}'
+                                                      text: field==0 ? '' : '${field}'
 
                                                   )
                                               );
@@ -239,9 +239,7 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                           keyboardType:
                                                               TextInputType
                                                                   .number,
-                                                          controller:
-                                                              textFieldControllers
-                                                                  .last,
+                                                          controller: textFieldControllers.last,
                                                           textInputAction:
                                                               TextInputAction
                                                                   .next,
@@ -254,18 +252,15 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                             if (v.isNotEmpty) {
                                                               additionalArtists[
                                                                               '${categories[i]}']
-                                                                          [
-                                                                          'field_values'][k]
-                                                                      [
-                                                                      '${fields[j]}'] =
+                                                                          ['field_values'][k]
+                                                                      ['${fields[j]}'] =
                                                                   int.parse(v);
                                                             } else {
+                                                              print("Hello");
                                                               additionalArtists[
                                                                           '${categories[i]}']
-                                                                      [
-                                                                      'field_values'][k]
-                                                                  [
-                                                                  '${fields[j]}'] = 0;
+                                                                      ['field_values'][k]
+                                                                  ['${fields[j]}'] = 0;
                                                             }
                                                           },
                                                           textAlign:

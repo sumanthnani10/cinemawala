@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:cinemawala/pdf_generator.dart';
 import 'package:cinemawala/projects/project.dart';
 import 'package:cinemawala/schedule/schedule_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -80,6 +81,7 @@ class _SchedulesState extends State<Schedules>
     setState(() {
       loading = false;
     });
+
   }
 
   getAll() async {
@@ -101,6 +103,10 @@ class _SchedulesState extends State<Schedules>
     setState(() {
       loading = false;
     });
+    print(calenderSchedule);
+    print(schedules);
+    print("gelo");
+    PdfGenerator.projectCallSheet(calenderSchedule,project);
   }
 
   Widget widget1() {

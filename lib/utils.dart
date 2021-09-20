@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cinemawala/artists/actor.dart';
 import 'package:cinemawala/costumes/costume.dart';
@@ -467,13 +468,15 @@ class Utils {
     return [false, ""];
   }
 
+
+
   static uploadImages(context,
       {Map<String, XFile> files,
-      String type,
-      String projectId,
-      String id,
-      String userId,
-      String process}) async {
+        String type,
+        String projectId,
+        String id,
+        String userId,
+        String process}) async {
     var req = http.MultipartRequest('POST', UPLOAD_IMAGES);
 
     var keys = files.keys.toList();

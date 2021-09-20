@@ -1319,7 +1319,10 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               'Scene has been added successfully.',
               Colors.green,
               background, () {
-            Navigator.pop(context);
+                if(!kIsWeb){
+                  print("hello");
+                  Navigator.pop(context);
+                }
           });
         } else {
           Navigator.pop(context);
@@ -1344,7 +1347,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
 
   editScene() async {
     Utils.showLoadingDialog(context, 'Editing Scene');
-
     Map<dynamic, dynamic> body = {
       "scene": scene,
       "artists": [],
@@ -1488,7 +1490,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
               'Scene has been edited successfully.',
               Colors.green,
               background, () {
-            Navigator.pop(context);
+                  Navigator.pop(context);
           });
         } else {
           Navigator.pop(context);

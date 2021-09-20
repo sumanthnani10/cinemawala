@@ -921,6 +921,7 @@ class _DailyBudgetPage extends State<DailyBudgetPage>
                       "last_edit_on": now.millisecondsSinceEpoch,
                       "created": now.millisecondsSinceEpoch
                     };
+                    print(dailyBudget);
                     await Navigator.push(
                         context,
                         Utils.createRoute(

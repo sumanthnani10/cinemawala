@@ -301,11 +301,9 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                           Utils.createRoute(
                               AddScene(project: project, scene: scene.toJson()),
                               Utils.RTL));
-                      Navigator.pop(context);
-                      // print(Utils.scenesMap[scene.id].gists);
-                      // scene = Utils.scenesMap[scene.id];
-                      // await setScene();
-                      // setState(() {});
+                      if(!kIsWeb) {
+                        Navigator.pop(context);
+                      }
                     },
                     label: Container(
                       padding: kIsWeb ? EdgeInsets.only(right: 12):EdgeInsets.only(right: 2),

@@ -329,6 +329,7 @@ class _AddCostume extends State<AddCostume>
 
   pickImageFile() async {
     fImage = await Utils.askSource(context) ?? fImage;
+    print(fImage);
     setState(() {});
   }
 
@@ -355,6 +356,7 @@ class _AddCostume extends State<AddCostume>
         imageUploaded = false;
         // debugPrint(e.message);
       }
+
     }
 
     // debugPrint("${costume}");
@@ -408,7 +410,7 @@ class _AddCostume extends State<AddCostume>
     Utils.showLoadingDialog(context, 'Editing Costume');
 
     bool imageUploaded = true;
-
+    print(fImage);
     if (fImage != null) {
       try {
         costume['reference_image'] = "";
