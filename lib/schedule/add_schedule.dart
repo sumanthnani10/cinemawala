@@ -830,31 +830,34 @@ class _AddScheduleState extends State<AddSchedule> {
                   Divider(
                     thickness: 2,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Spacer(),
-                        Text(
-                          selectedScene.completed ? "From" : "On Loc",
-                          style: TextStyle(
-                              fontSize: 14, decoration: TextDecoration.underline),
-                        ),
-                        SizedBox(
-                          width: selectedScene.completed ? 64 : 18,
-                        ),
-                        Text(
-                          selectedScene.completed ? "To" : "On Set",
-                          style: TextStyle(
-                              fontSize: 14, decoration: TextDecoration.underline),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                      ],
+
+                  if (selectedScenes.length > 0)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Spacer(),
+                          Text(
+                            selectedScene.completed ? "From" : "On Loc",
+                            style: TextStyle(
+                                fontSize: 14,
+                                decoration: TextDecoration.underline),
+                          ),
+                          SizedBox(
+                            width: selectedScene.completed ? 64 : 18,
+                          ),
+                          Text(
+                            selectedScene.completed ? "To" : "On Set",
+                            style: TextStyle(
+                                fontSize: 14, decoration: TextDecoration.underline),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   // ARTISTS
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),

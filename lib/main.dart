@@ -29,7 +29,8 @@ class _CinemawalaState extends State<Cinemawala> {
       title: 'Cinemawala',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Poppins',
+        fontFamily: 'BalooTammudu2',
+        // fontFamily: 'Poppins',
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
