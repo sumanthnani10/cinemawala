@@ -590,6 +590,7 @@ class Utils {
   static Uri GET_SCENES = Uri.https('${DOMAIN}', '${URL_PATH}/getScenes');
   static Uri ADD_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/addScene');
   static Uri EDIT_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/editScene');
+  static Uri DELETE_SCENE = Uri.https('${DOMAIN}', '${URL_PATH}/deleteScene');
   static Uri EDIT_SCENE_COSTUMES =
       Uri.https('${DOMAIN}', '${URL_PATH}/editSceneCostumes');
   static Uri EDIT_SCENE_ARTISTS =
