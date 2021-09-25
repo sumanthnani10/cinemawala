@@ -612,7 +612,11 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                       icon: Icon(Icons.wb_sunny_outlined,
                                           size: 22, color: background1),
                                       label: Text(
-                                        scene.day ? "Day" : "Night",
+                                        scene.day == 0
+                                            ? "Day"
+                                            : scene.interior == 1
+                                                ? "Night"
+                                                : "Day & Night",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: background1),
@@ -633,9 +637,11 @@ class _ScenePage extends State<ScenePage> with SingleTickerProviderStateMixin {
                                       ),
                                       onPressed: () {},
                                       child: Text(
-                                        scene.interior
+                                        scene.interior == 0
                                             ? "Interior"
-                                            : "Exterior",
+                                            : scene.interior == 1
+                                                ? "Exterior"
+                                                : "Interior & Exterior",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: background1),

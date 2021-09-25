@@ -289,17 +289,24 @@ class _ScenesList extends State<ScenesList>
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Spacer(),
-                                    scene.day
+                                    (scene.day == 0 || scene.day == 2)
                                         ? Icon(
                                             Icons.wb_sunny,
                                             color: Colors.orange,
                                           )
-                                        : Icon(
+                                        : Container(),
+                                    (scene.day == 1 || scene.day == 2)
+                                        ? Icon(
                                             Icons.nightlight_round,
                                             color: Colors.black,
-                                          ),
+                                          )
+                                        : Container(),
                                     Text(
-                                      scene.interior ? "  IN" : "  EX",
+                                      scene.interior == 0
+                                          ? "IN"
+                                          : scene.interior == 1
+                                              ? "EX"
+                                              : "IN&EX",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w800),
                                     ),

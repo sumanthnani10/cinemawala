@@ -71,8 +71,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
         "costumes": [],
         "artists": [],
         "props": [],
-        "day": true,
-        "interior": true,
+        "day": 0,
+        "interior": 0,
         "location": "",
         "addl_artists": {
           'Juniors': [
@@ -574,8 +574,15 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  primary: scene['day'] ? Colors.white : color,
-                                  elevation: isPopUp ? scene['day'] ? 4 : 0 : scene['day'] ? 2 : 0,
+                                  primary:
+                                      scene['day'] == 0 ? Colors.white : color,
+                                  elevation: isPopUp
+                                      ? scene['day'] == 0
+                                          ? 4
+                                          : 0
+                                      : scene['day'] == 0
+                                          ? 2
+                                          : 0,
                                 ),
                                 onPressed: () {
                                   if(
@@ -584,8 +591,8 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                   )
                                   {
                                   setState(() {
-                                    scene['day'] = true;
-                                  });
+                                    scene['day'] = 0;
+                                    });
                                   }else{
                                     Utils.notAllowed(context);
                                   }
@@ -595,7 +602,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 label: Text(
                                   "Day",
                                   style: TextStyle(
-                                      fontWeight: scene['day']
+                                      fontWeight: scene['day'] == 0
                                           ? FontWeight.bold
                                           : FontWeight.normal,
                                       color: background1),
@@ -610,8 +617,15 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  primary: !scene['day'] ? Colors.white : color,
-                                  elevation: isPopUp ? !scene['day'] ? 4 : 0 : !scene['day'] ? 2 : 0,
+                                  primary:
+                                      scene['day'] == 1 ? Colors.white : color,
+                                  elevation: isPopUp
+                                      ? scene['day'] == 1
+                                          ? 4
+                                          : 0
+                                      : scene['day'] == 1
+                                          ? 2
+                                          : 0,
                                 ),
                                 onPressed: () {
                                   if(
@@ -619,7 +633,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
                                   ){
                                     setState(() {
-                                      scene['day'] = false;
+                                      scene['day'] = 1;
                                     });
                                   }else{
                                     Utils.notAllowed(context);
@@ -630,7 +644,54 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 label: Text(
                                   "Night",
                                   style: TextStyle(
-                                      fontWeight: !scene['day']
+                                      fontWeight: scene['day'] == 1
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary:
+                                      scene['day'] == 2 ? Colors.white : color,
+                                  elevation: isPopUp
+                                      ? scene['day'] == 2
+                                          ? 4
+                                          : 0
+                                      : scene['day'] == 2
+                                          ? 2
+                                          : 0,
+                                ),
+                                onPressed: () {
+                                  if ((edit &&
+                                          (project.role.permissions["schedule"]
+                                                  ["edit"] ||
+                                              project.role.permissions["scenes"]
+                                                  ["edit"])) ||
+                                      (!edit &&
+                                              project.role
+                                                      .permissions["schedule"]
+                                                  ["add"] ||
+                                          project.role.permissions["scenes"]
+                                              ["add"])) {
+                                    setState(() {
+                                      scene['day'] = 2;
+                                    });
+                                  } else {
+                                    Utils.notAllowed(context);
+                                  }
+                                },
+                                child: Text(
+                                  "Both",
+                                  style: TextStyle(
+                                      fontWeight: scene['day'] == 2
                                           ? FontWeight.bold
                                           : FontWeight.normal,
                                       color: background1),
@@ -659,8 +720,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  primary: scene['interior'] ? Colors.white : color,
-                                  elevation: isPopUp ? scene['interior'] ? 4 : 0 : scene['interior'] ? 2 : 0,
+                                  primary: scene['interior'] == 0
+                                      ? Colors.white
+                                      : color,
+                                  elevation: isPopUp
+                                      ? scene['interior'] == 0
+                                          ? 4
+                                          : 0
+                                      : scene['interior'] == 0
+                                          ? 2
+                                          : 0,
                                 ),
                                 onPressed: () {
                                   if(
@@ -668,7 +737,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
                                   ){
                                     setState(() {
-                                      scene['interior'] = true;
+                                      scene['interior'] = 0;
                                     });
                                   }
                                   else{
@@ -678,7 +747,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 child: Text(
                                   "Interior",
                                   style: TextStyle(
-                                      fontWeight: scene['interior']
+                                      fontWeight: scene['interior'] == 0
                                           ? FontWeight.bold
                                           : FontWeight.normal,
                                       color: background1),
@@ -693,9 +762,16 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  primary:
-                                      !scene['interior'] ? Colors.white : color,
-                                  elevation: isPopUp ? !scene['interior'] ? 4 : 0 : !scene['interior'] ? 2 : 0,
+                                  primary: scene['interior'] == 1
+                                      ? Colors.white
+                                      : color,
+                                  elevation: isPopUp
+                                      ? scene['interior'] == 1
+                                          ? 4
+                                          : 0
+                                      : scene['interior'] == 1
+                                          ? 2
+                                          : 0,
                                 ),
                                 onPressed: () {
                                   if(
@@ -703,7 +779,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                       (!edit && project.role.permissions["schedule"]["add"] ||project.role.permissions["scenes"]["add"])
                                   ){
                                     setState(() {
-                                      scene['interior'] = false;
+                                      scene['interior'] = 1;
                                     });
                                   }else{
                                     Utils.notAllowed(context);
@@ -712,7 +788,55 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                 child: Text(
                                   "Exterior",
                                   style: TextStyle(
-                                      fontWeight: !scene['interior']
+                                      fontWeight: scene['interior'] == 1
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: background1),
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6, vertical: isPopUp ? 0 : 4),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  primary: scene['interior'] == 2
+                                      ? Colors.white
+                                      : color,
+                                  elevation: isPopUp
+                                      ? scene['interior'] == 2
+                                          ? 4
+                                          : 0
+                                      : scene['interior'] == 2
+                                          ? 2
+                                          : 0,
+                                ),
+                                onPressed: () {
+                                  if ((edit &&
+                                          (project.role.permissions["schedule"]
+                                                  ["edit"] ||
+                                              project.role.permissions["scenes"]
+                                                  ["edit"])) ||
+                                      (!edit &&
+                                              project.role
+                                                      .permissions["schedule"]
+                                                  ["add"] ||
+                                          project.role.permissions["scenes"]
+                                              ["add"])) {
+                                    setState(() {
+                                      scene['interior'] = 2;
+                                    });
+                                  } else {
+                                    Utils.notAllowed(context);
+                                  }
+                                },
+                                child: Text(
+                                  "Both",
+                                  style: TextStyle(
+                                      fontWeight: scene['interior'] == 2
                                           ? FontWeight.bold
                                           : FontWeight.normal,
                                       color: background1),

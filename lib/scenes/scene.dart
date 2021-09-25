@@ -14,7 +14,8 @@ class Scene {
       vfx;
   DateTime created, lastEditOn;
   Map<dynamic, dynamic> titles, gists, addlArtists;
-  bool day, interior, completed;
+  bool completed;
+  int interior, day;
   List<dynamic> artists, costumes, props, completedOn;
 
   Scene(

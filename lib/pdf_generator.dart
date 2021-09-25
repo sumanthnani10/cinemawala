@@ -203,7 +203,7 @@ class PdfGenerator {
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '${scene.interior ? "Interior" : "Exterior"}/${scene.day ? "Day\n" : "Night\n"}',
+                                  '${scene.interior == 0 ? "Interior" : scene.interior == 1 ? "Exterior" : "Interior & Exterior"}/${scene.day == 0 ? "Day" : ""} ${scene.day == 2 ? "&" : ""} ${scene.day == 1 ? "Night" : ""}\n',
                               style: valueStyle),
                         ],
                       ),
