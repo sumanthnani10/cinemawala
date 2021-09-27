@@ -942,7 +942,6 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: InkWell(
                       onTap: () async {
-                        // print(scene['addl_artists']);
                         if(
                         (project.role.permissions["scenes"]["view"] &&
                             project.role.permissions["scenes"]["add"]) ||
@@ -961,6 +960,7 @@ class _AddScene extends State<AddScene> with SingleTickerProviderStateMixin {
                                     additionalArtists: addlArtists,
                                   ),
                                   Utils.DTU));
+                          print(selected);
                           if (selected != null) {
                             for (var k in selected.keys) {
                               scene['addl_artists']['$k'] =

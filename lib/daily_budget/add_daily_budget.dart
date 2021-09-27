@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cinemawala/locations/location.dart';
 import 'package:cinemawala/projects/project.dart';
+import 'package:cinemawala/scenes/scene.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
   var categoryHeading = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   var subheading = TextStyle(fontSize: 18);
   bool loading = true;
-
+  Map<dynamic,dynamic> dynamicMapBudget;
   ScrollController scrollController = new ScrollController();
 
   List<dynamic> categories, subCategories, sceneKeys;
@@ -86,20 +87,188 @@ class _AddDailyBudget extends State<AddDailyBudget>
         DateTime(dailyBudget['year'], dailyBudget['month'], dailyBudget['day']);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      int males=0,females=0,kids=0;
+      List<String> dynamicBudget = ["Juniors","Models","Dancers","Fighters","Gang Members","Additional Artists"];
+       dynamicMapBudget = {
+        "Juniors": {
+          "Co-ordinator": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Male": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Female": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Kids": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+        },
+        "Models": {
+          "Co-ordinator": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Male": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Female": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Kids": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+        },
+        "Dancers": {
+          "Co-ordinator": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Male": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Female": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Kids": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+        },
+        "Fighters": {
+          "Co-ordinator": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Male": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Female": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+          "Kids": {
+            "contact": "",
+            "quantity": 0,
+            "rate": 0,
+            "subtotal": 0,
+            "use": true,
+            "callSheet": 0
+          },
+        },
+         "Gang Members": {
+
+         },
+         "Additional Artists": {
+
+         },
+      };
       Utils.showLoadingDialog(context, "Loading");
       if (dailyBudget['budget'].length == 0) {
         if (Utils.schedulesMap.containsKey(dailyBudget['id'])) {
           Utils.schedulesMap[dailyBudget['id']].scenes.forEach((sid) {
-            String name = sid;
-            dailyBudget['scenes_budget'][name] = {};
+            dailyBudget['scenes_budget']['special_equipment'] = {};
             Location loc = Utils.locationsMap[Utils.scenesMap[sid].location];
+            Scene scene = Utils.scenesMap[sid];
+            Map<dynamic,dynamic> tmpMap = scene.addlArtists;
+            for(int d=0;d<dynamicBudget.length;d++){
+              if(tmpMap[dynamicBudget[d]].length==0){
+                break;
+              }
+              Map<String,dynamic> category = tmpMap[dynamicBudget[d]][0];
+              if(d<4){
+                dynamicMapBudget[dynamicBudget[d]]['Male']['quantity'] += category['Male'];
+                dynamicMapBudget[dynamicBudget[d]]['Female']['quantity'] += category['Female'];
+                dynamicMapBudget[dynamicBudget[d]]['Kids']['quantity'] += category['Kids'];
+              }else{
+                dynamicMapBudget[dynamicBudget[d]][category['Name']] = {};
+                dynamicMapBudget[dynamicBudget[d]][category['Name']] = {
+                  "contact": category['Contact'],
+                  "quantity": 1,
+                  "rate": 0,
+                  "subtotal": 0,
+                  "use": true,
+                  "callSheet": 0,
+                };
+              }
+            }
+            dailyBudget["scenes_budget"].addAll(dynamicMapBudget);
             locations += "${loc.location} (${loc.shootLocation}) | ";
-
             Utils.scenesMap[sid].specialEquipment.split(",").forEach((e) {
               e = e.trim();
               if (e.isNotEmpty) {
                 e.replaceAll(" ", "_");
-                dailyBudget['scenes_budget'][name][e] = {
+                dailyBudget['scenes_budget']['special_equipment'][e] = {
                   "contact": "",
                   "quantity": 0,
                   "rate": 0,
@@ -1333,8 +1502,9 @@ class _AddDailyBudget extends State<AddDailyBudget>
                       ],
                     ),
               ] +
-                  List<Widget>.generate(scenesBudget.length, (i) {
+                  List<Widget>.generate(sceneKeys.length, (i) {
                     subCategories = scenesBudget[sceneKeys[i]].keys.toList();
+                    if(subCategories.length!=0)
                     return Column(
                       children: [
                         Divider(
@@ -1349,8 +1519,7 @@ class _AddDailyBudget extends State<AddDailyBudget>
                             children: [
                               Flexible(
                                 child: Text(
-                                  "${Utils.scenesMap[sceneKeys[i]]
-                                      .titles['en']}",
+                                  "${sceneKeys[i]}",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: categoryHeading,
@@ -1430,16 +1599,11 @@ class _AddDailyBudget extends State<AddDailyBudget>
                                       Transform.scale(
                                         scale: 1.1,
                                         child: Checkbox(
-                                            value: scenesBudget[sceneKeys[i]][
-                                            scenesBudget[sceneKeys[i]]
-                                                .keys
-                                                .elementAt(j)]["use"],
+                                            value: scenesBudget[sceneKeys[i]][scenesBudget[sceneKeys[i]].keys.elementAt(j)]["use"],
                                             activeColor: color,
                                             onChanged: (value) {
                                               setState(() {
-                                                scenesBudget[sceneKeys[i]][
-                                                scenesBudget[sceneKeys[
-                                                i]]
+                                                scenesBudget[sceneKeys[i]][scenesBudget[sceneKeys[i]]
                                                     .keys
                                                     .elementAt(j)]
                                                 ["use"] = value;
@@ -1686,6 +1850,8 @@ class _AddDailyBudget extends State<AddDailyBudget>
                         ),
                       ],
                     );
+                    else
+                      return Column();
                   }) +
                   List<Widget>.generate(min<int>(viewCats, budget.length), (i) {
                     subCategories = budget[categories[i]].keys.toList();
