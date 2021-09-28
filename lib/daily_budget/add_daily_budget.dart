@@ -280,7 +280,6 @@ class _AddDailyBudget extends State<AddDailyBudget>
             });
           });
         }
-
         if (Utils.dailyBudgets.isNotEmpty) {
           DateTime now = DateTime(
               dailyBudget['year'], dailyBudget['month'], dailyBudget['day']);
