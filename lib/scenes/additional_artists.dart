@@ -209,7 +209,6 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                       ['${fields[j]}'];
                                               if (fields[j] == "id")
                                                 return Container();
-
                                               textFieldControllers.add(
                                                   new TextEditingController(
                                                       //text: '$field'
@@ -256,7 +255,6 @@ class _AddCompanyArtists extends State<AddCompanyArtists>
                                                                       ['${fields[j]}'] =
                                                                   int.parse(v);
                                                             } else {
-                                                              print("Hello");
                                                               additionalArtists[
                                                                           '${categories[i]}']
                                                                       ['field_values'][k]
