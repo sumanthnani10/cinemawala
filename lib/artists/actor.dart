@@ -13,7 +13,7 @@ class Actor {
       @required this.characters,
       @required this.project,
       @required this.id,
-      @required this.addedBy,
+      @required this.addedBy,a
       @required this.by,
       @required this.created,
       @required this.days,

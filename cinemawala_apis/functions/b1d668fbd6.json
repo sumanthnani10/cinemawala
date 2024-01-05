@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "cinemawala-2021b",
+  "private_key_id": "b1d668fbd60ae1ca8967fc83dbe5837716e4bf6d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCosmaa1YHRdAm2\n3Z/PiVVUd4GsanCVHF3bLf7A/LAe5yuETE/HD4vooa88HZlMcZ5VU3xecwRK0auw\nzJgAXuHR7+0PdBcjWEtuE3uFRJl/CGOQpY8sNMA4eCDTzGhAgmMhXqRGO2nRfq9f\nKZolsUAfURBeDzXejeBwUO+NXusK2ZYPCCEx26MG4GffjRCP2suWl6SqD9COFT3+\nUAtR4Ka/54CwlknqHGt/IpWJduKqDV4ZVXYoBR79pg/R5hgmEv7wvcFjRwSIJ5gx\nb0TR3oLv/jG3ArClo/xV+tQmvuGHV/X5xfN7UfdDHOVd8nH5Nm1+pSh+geQcOBO1\nEFuauzVpAgMBAAECggEAI6ron8cRthfbL/NG5UnrpTrJS4uLtzMysvNUIDitAjOt\nU0ERQwzJ74sz8jlt3qhNKkxHCO83kpwnOW/gmX92Ln2UeUZ51+rEtAbhgGljLOU4\nq+4dSeLzW10mz7Exv6Xx0K3ifMj2FCm9aZjxsxN5c8WfeMutf5suv4CVTaYqevXy\nn1PLJYSDMJASNp4bd+VezIFOMkasEmQ92aVNsx5FnIOmUQkA1LsZ1vFTXzVU9IJL\nXWWGJYobGKz7Be9Xfn+FEPwNOIRRd0/1sNpxZ53yZIzxRdMQDKTq7L6XwI5XSdO6\nHckDxzDhubeENKJSaGZRzs4+C16ngwmvtAZ/k5RMqwKBgQDuH8tlgg3b1tMzoYhD\nmKvM2Nqix0dxM2pbzzonYK8cE6hL2EKkRBwjMpa4KySgjaQGE26UhvEiHvWaHwgu\nhNwvJMPINfyJkx0pvUNTA+zdywPDwxMtSrKwst82umitO3y/+uXGquo2rW/7/p7r\ntP0iLGYJOevr/tVsBMtxrY4zxwKBgQC1XF8BQhYrOpiVkMWfnk/qAVPVkAkFBOHE\nvvd0nzq12ATPT9FTiBdY5eervAhMqcc6MQZX+F5BTj2M4JOihaiD8n6tE6fyMWZ0\nrvA8z+xqnYy37nE6n88dgtc/eYH73swut1jTTsf42UVz29tobzOu5lBvoei2SNXJ\njKn61sbtTwKBgA0kYhRjHiKw840Y8C1S4sB2g3KSbwX3YXpZsIr10hRJnXM6J0tr\nmuXyZ9EYSHg3+QKA1gyKegp5DPMJnWj72i8b51ZIbHynSue/01RklhEToEyQmqFY\nSw5ngNxDY32UF+l8jmvtiOmlntWYkurNXV8idisyMCwhL2Q7y4KlooCHAoGAGZYk\nmSrXsdWcfU1ldDWDlMIHL9QYUar0pytCAiQMxmbpls3t/Fjw4kvdOW9XxGkXgHA2\nMucJdTEyodN1QLKWqbbmhEiHozWw/LlJj2rOMeR0W+a59slhEQrKj1v3KK+wIs8f\nKwCsWcFdeREFjWBS7FP1+SngiQcRklPUD12JxyUCgYEAkxJrcQhOcAX+1xnCkA8c\niqph6ge3dXkb5vClY1XQaXoxQlvWVoWnsV1dWNsrJv+CmfaBqIBMcIPe/CEbQGaD\nHNbgcoh/TGM6brYqcCtyJxv/cfqjTCeuwDiuWGu+VxA90wrulJqrEXmyH+z7uJQR\nAfmXX5x/Ps226EnkFKW+bA0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-34mdb@cinemawala-2021b.iam.gserviceaccount.com",
+  "client_id": "116865493493740921567",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-34mdb%40cinemawala-2021b.iam.gserviceaccount.com"
+}
