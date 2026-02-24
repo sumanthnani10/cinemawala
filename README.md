@@ -1,61 +1,161 @@
-# cinemawala
+# Cinemawala
 
-Cinemawal.in
+**Production management for film & video crews.**
 
-## Pushing to the repo (no secrets)
-
-This repo is **safe to push** to a public or private repo. Secrets are **not** committed:
-
-- **Backend (Node):** Service account keys are in `.gitignore`. Use **env vars** in CI/production (see below).
-- **Flutter client:** `google-services.json` and `GoogleService-Info.plist` are in `.gitignore`. Use the **.example** files and fill locally, or generate from env in CI.
-- **Web / Firebase / .firebaserc:** Only placeholders are committed. Replace locally or inject from env at build time.
-
-So you **push the code and placeholders**; each environment (your machine, CI, teammates) provides its own keys.
+Cinemawala is a cross-platform app for production teams to manage projects, cast, crew, locations, schedules, and daily operations—all in one place. Built with Flutter and Firebase.
 
 ---
 
-## How to run locally (two options)
+## What is Cinemawala?
 
-### Option A: Local secret files (simplest for dev)
+Cinemawala helps film and video production teams:
 
-1. **Backend** – Keep `b1d668fbd6.json` in `cinemawala_apis/functions/` and `cinemawala_aws/` (they are gitignored). The app will load them automatically. No env needed.
-2. **Android** – Copy `android/app/google-services.json.example` → `android/app/google-services.json` and fill in your Firebase config.
-3. **iOS** – Copy `ios/Runner/GoogleService-Info.plist.example` → `ios/Runner/GoogleService-Info.plist` and fill in your Firebase config.
-4. **Web** – Edit `web/index.html` and replace the placeholder Firebase config with your real web config.
-5. **Firebase deploy** – Run `firebase use your-project-id` or edit `cinemawala_apis/.firebaserc` (this file is committed with a placeholder).
+- **Organize** multiple projects with roles and permissions  
+- **Manage** casting, costumes, props, locations, and scenes  
+- **Plan** shoot schedules and strip boards  
+- **Track** daily budget and generate call sheets / PDF reports  
+- **Collaborate** with a personal calendar and project-based access  
 
-### Option B: Environment variables (good for CI and production)
-
-1. **Backend** – Set one of:
-   - `GOOGLE_APPLICATION_CREDENTIALS` = path to your service account JSON, or  
-   - `FIREBASE_SERVICE_ACCOUNT_JSON` = full JSON string of the service account.  
-   Optional: `FIREBASE_STORAGE_BUCKET` = `your-project.appspot.com`.
-2. Copy `.env.example` to `.env`, fill in the values, and load `.env` when starting the Node apps (e.g. `dotenv` or your shell `export`). Never commit `.env`.
-
-Flutter (Android/iOS/Web) still needs the config files or a build step that injects keys; env is mainly for the Node backends.
+The app runs on **Android**, **iOS**, and **Web**, with a shared backend (Firebase + Node.js).
 
 ---
 
-## Summary: what to push vs what stays local
+## Features
 
-| Item | Push to repo? | How to run / deploy |
-|------|----------------|---------------------|
-| Code + `.example` files | ✅ Yes | — |
-| `b1d668fbd6.json` | ❌ No (gitignored) | Keep locally **or** set `FIREBASE_SERVICE_ACCOUNT_JSON` / `GOOGLE_APPLICATION_CREDENTIALS` |
-| `google-services.json`, `GoogleService-Info.plist` | ❌ No (gitignored) | Copy from .example and fill **or** generate in CI from secrets |
-| `web/index.html` (with placeholders) | ✅ Yes | Replace placeholders locally or inject in build from env |
-| `.firebaserc` (with placeholder) | ✅ Yes | Run `firebase use <project-id>` or edit locally |
-| `.env` | ❌ No (gitignored) | Copy from `.env.example`, fill, use for Node backends |
+| Feature | Description |
+|--------|-------------|
+| **Projects** | Create projects, invite members, assign roles (owner/collaborator), and switch between projects. |
+| **Casting** | Add and manage artists/cast, link to projects, store photos and details. |
+| **Costumes** | Track costumes per project with images and notes. |
+| **Art department (props)** | Manage props, attach images, and associate with scenes. |
+| **Strip board / Scenes** | Define scenes with locations, cast, costumes, and props; build strip boards. |
+| **Roles** | Assign crew roles to users, manage permissions, and handle role requests. |
+| **Schedule** | Create and edit shoot schedules, link scenes and dates. |
+| **Locations** | Maintain a locations list with photos and reuse across scenes. |
+| **Daily budget** | Track daily budget entries per project. |
+| **Personal calendar** | Notes and calendar view for your own schedule. |
+| **PDF / call sheets** | Generate PDFs (call sheets, scene details) for print or share. |
+| **Auth** | Email/password sign-in and registration via Firebase Auth; optional forgot-password flow. |
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Tech stack
 
-A few resources to get you started if this is your first Flutter project:
+- **Client:** Flutter (Dart) — Android, iOS, Web  
+- **Auth & data:** Firebase (Auth, Firestore)  
+- **Backend APIs:**  
+  - **Firebase Functions** (`cinemawala_apis/`) — Cloud Functions (Express) for auth, users, projects, validation, uploads  
+  - **Node.js server** (`cinemawala_aws/`) — Express + MongoDB for images, projects, scenes, schedules, roles, and other app logic  
+- **Storage:** Firebase Storage (e.g. images), optional local storage for exports  
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+---
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project structure
+
+```
+cinemawala/
+├── lib/                    # Flutter app (screens, widgets, utils)
+├── android/                # Android app and config
+├── ios/                    # iOS app and config
+├── web/                    # Web app entry and assets
+├── cinemawala_apis/        # Firebase Functions backend
+│   ├── functions/           # Node (Express) + Firebase Admin
+│   └── .firebaserc         # Firebase project (use placeholder in repo)
+├── cinemawala_aws/         # Node.js backend (Express + MongoDB)
+├── assets/                 # Images, fonts
+├── .env.example            # Example env vars for backends
+└── *.example               # Example configs (Firebase, Android, iOS)
+```
+
+---
+
+## Prerequisites
+
+- **Flutter** SDK (see [flutter.dev](https://flutter.dev))  
+- **Node.js** (for backend and Firebase Functions)  
+- **Firebase** project (Auth, Firestore, Storage, Functions)  
+- **MongoDB** (for `cinemawala_aws` backend)  
+- **Google Cloud / Firebase** service account key (for backend APIs)
+
+---
+
+## How to run
+
+The repo is **safe to push**: no secrets are committed. You provide config and keys locally or via environment variables.
+
+### 1. Backend (APIs)
+
+**Option A – Local JSON key (dev)**  
+- Copy `cinemawala_apis/functions/b1d668fbd6.json.example` → `b1d668fbd6.json` in both:
+  - `cinemawala_apis/functions/`
+  - `cinemawala_aws/`
+- Replace placeholders with your Firebase service account JSON (from Firebase Console → Project settings → Service accounts).
+
+**Option B – Environment variables (CI/production)**  
+- Set one of:
+  - `GOOGLE_APPLICATION_CREDENTIALS` — path to service account JSON, or  
+  - `FIREBASE_SERVICE_ACCOUNT_JSON` — full JSON string  
+- Optional: `FIREBASE_STORAGE_BUCKET` = `your-project-id.appspot.com`  
+- See `.env.example` for a template; copy to `.env` and never commit `.env`.
+
+**Run the backends**  
+- **Firebase Functions:** From `cinemawala_apis`: `firebase emulators:start --only functions` or deploy with `firebase deploy --only functions`. Set project first: `firebase use YOUR_PROJECT_ID` (or edit `.firebaserc`).  
+- **cinemawala_aws:** From `cinemawala_aws`: `npm install` then `node index.js` (ensure MongoDB is running and configured).
+
+### 2. Flutter client (Android / iOS / Web)
+
+**Firebase config (required for Auth and Firestore)**  
+- **Android:** Copy `android/app/google-services.json.example` → `android/app/google-services.json` and fill in your Firebase Android app config.  
+- **iOS:** Copy `ios/Runner/GoogleService-Info.plist.example` → `ios/Runner/GoogleService-Info.plist` and fill in your Firebase iOS app config.  
+- **Web:** Edit `web/index.html` and replace the placeholder `firebaseConfig` with your Firebase web app config.
+
+**API base URL**  
+- The app talks to your backend via `Utils.DOMAIN` and `Utils.URL_PATH` in `lib/utils.dart`. For local dev, point these to your Node/Functions URLs (e.g. emulator or `cinemawala.in` for production).
+
+### 3. Run the app
+
+```bash
+# Dependencies
+flutter pub get
+
+# Run on connected device or emulator
+flutter run
+
+# Or target a platform
+flutter run -d chrome    # Web
+flutter run -d android   # Android
+flutter run -d ios       # iOS (macOS only)
+```
+
+---
+
+## Deployment
+
+- **Flutter:** Build release artifacts (e.g. `flutter build apk`, `flutter build ios`, `flutter build web`) and deploy to stores or hosting.  
+- **Firebase Functions:** From `cinemawala_apis`, run `firebase use YOUR_PROJECT_ID` then `firebase deploy --only functions`.  
+- **cinemawala_aws:** Deploy the Node app to your preferred host (e.g. Cloud Run, App Engine, VPS) and set env vars (including `FIREBASE_SERVICE_ACCOUNT_JSON` or `GOOGLE_APPLICATION_CREDENTIALS` and `FIREBASE_STORAGE_BUCKET`).
+
+---
+
+## Config and secrets (summary)
+
+| Item | In repo? | What to do |
+|------|----------|------------|
+| Code + `.example` files | ✅ Yes | Clone and use as-is. |
+| `b1d668fbd6.json` | ❌ No | Add locally or use env (see Backend above). |
+| `google-services.json`, `GoogleService-Info.plist` | ❌ No | Copy from `.example` and fill from Firebase Console. |
+| `web/index.html` Firebase config | ✅ Placeholders | Replace locally or inject in build. |
+| `.firebaserc` | ✅ Placeholder | Set project: `firebase use YOUR_PROJECT_ID` or edit locally. |
+| `.env` | ❌ No | Copy from `.env.example` and fill; do not commit. |
+
+---
+
+## License
+
+See repository license file (if present). Use and modification at your own responsibility.
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue or pull request and follow the project’s code style and structure.
